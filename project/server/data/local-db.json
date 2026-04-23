@@ -1,0 +1,1391 @@
+{
+  "users": [
+    {
+      "id": "7adf0f59-06df-4607-8891-634d98cae53b",
+      "name": "Test User",
+      "email": "test@example.com",
+      "password": "$2a$12$VyqeRYLrv9ldYf/2lEseLe2MbidNDa8VodvRKAASDB8zECapdFiEu",
+      "joinDate": "2026-04-22T14:14:33.570Z",
+      "totalDocuments": 0,
+      "totalFlashcards": 0,
+      "totalQuizzes": 0,
+      "studyStreak": 0
+    },
+    {
+      "id": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "name": "charitha",
+      "email": "23b01a12b7@svecw.edu.in",
+      "password": "$2a$12$PrLXgpqRtp0I7TOyLvf48OBEIZ8HN/QCCbwk74d8jI4JYWoTtClD2",
+      "joinDate": "2026-04-22T14:18:14.957Z",
+      "totalDocuments": 4,
+      "totalFlashcards": 16,
+      "totalQuizzes": 2,
+      "studyStreak": 0
+    },
+    {
+      "id": "7541166a-046e-42c0-b670-6b415c5ed0d8",
+      "name": "Test User",
+      "email": "test3@example.com",
+      "password": "$2a$12$GuSaAo8oCWhUfyL8Cee.MueFV4EO7YPvDmK5B5Vx3Yh.8vDL9Pq9y",
+      "joinDate": "2026-04-23T09:10:08.255Z",
+      "totalDocuments": 0,
+      "totalFlashcards": 0,
+      "totalQuizzes": 0,
+      "studyStreak": 0
+    },
+    {
+      "id": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "name": "Chiyya",
+      "email": "23b01a12b7@gmail.com",
+      "password": "$2a$12$dBEw11hqIP.pxdKOGh1r9uxnLZA982LEzgKTJjPNTsHDSmpoOJGS6",
+      "joinDate": "2026-04-23T10:17:39.974Z",
+      "totalDocuments": 3,
+      "totalFlashcards": 24,
+      "totalQuizzes": 3,
+      "studyStreak": 0
+    }
+  ],
+  "notes": [
+    {
+      "id": "11d9e637-0c9c-43be-ae0c-f6fdf9c8e681",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "title": "Generated Document",
+      "fileName": "CNS MID 1 ANSWERS.pdf",
+      "uploadDate": "2026-04-23T10:36:35.482Z",
+      "fileSize": "866 KB",
+      "status": "completed",
+      "sections": [
+        {
+          "id": "summary",
+          "title": "Document Summary",
+          "content": "UNIT–I \nQ1. Illustrate any five of the following terms with a neat sketch \n(a) Confidentiality \nConfidentiality ensures that information is accessible only to authorized users and is not disclosed to \nunauthorized persons. \nExample: Encryption of bank account details during online transactions. \n \n(b) Authentication \nAuthentication is the process of verifying the identity of a user or system before allowing access. \nExample: Login using username–password or OTP verification. \n \n(c) Availability \nAvailability ensures that systems, services, and data are accessible to authorized users whenever required. \nExample: Banking servers providing service 24×7. \n \n(d) Integrity \nIntegrity ensures that data remains accurate, complete, and unaltered during transmission or storage. \nExample: Use of hash functions to detect data modification. \n \n(e) Access Control \n\nAccess control determines who can access system resources and what operations they are permitted to \nperform. \nExample: File permissions such as read, write, and execute. \n \n \n \n \n \n \n \n(f) Non-repudiation \nNon-repudiation ensures that neither the sender nor the receiver can deny having sent or received the \nmessage. \nExample: Digital signatures in online transactions. \n \nQ2. Define a security attack. Explain various types of attacks with suitable examples \nA security attack is any action that compromises the security of information by violating confidentiality, \nintegrity, or availability of data or systems. \nTypes of Security Attacks \nSecurity attacks are broadly classified into Passive attacks and Active attacks. \n1. Passive Attacks \nPassive attacks involve monitoring or listening to data transmission without altering the data. \n(a) Eavesdropping / Snooping \nAn attacker secretly listens to communication between sender a",
+          "highlights": [
+            "Data",
+            "Attacks",
+            "Security",
+            "Block",
+            "Encryption",
+            "Example"
+          ]
+        },
+        {
+          "id": "details",
+          "title": "Detailed Notes",
+          "content": "nd receiver. \nExample: Attacker capturing passwords over an unsecured Wi-Fi network. \n(b) TraƯic Analysis \nAttacker observes communication patterns to gain information. \nExample: Identifying active users by analyzing network traƯic volume. \n2. Active Attacks: Active attacks involve modifying, deleting, or disrupting data or services. \n(a) Masquerade \nAn attacker pretends to be an authorized user. \nExample: Using stolen login credentials to access a system. \n\n(b) Replay Attack \nValid data is captured and retransmitted later by the attacker. \nExample: Reusing a captured authentication message to gain access. \n(c) Modification of Messages \nData is altered during transmission. \nExample: Changing transaction amount in online banking. \n(d) Denial of Service (DoS) \nSystem resources are flooded to make services unavailable. \nExample: Flooding a server with requests to crash it. \n3.Specific Attack Techniques: \nMalware: Malicious software (viruses, worms, ransomware) designed to damage or infiltrate systems. \nSocial Engineering (Phishing): Tricking individuals into revealing sensitive information. \nMan-in-the-Middle (MITM): Intercepting communication between two parties. \nSQL Injection: Inserting malicious code into web applications to manipulate databases. \nQ3. Define a security attack and explain the concepts of interruption, interception, modification, and \nfabrication \nA security attack is any action that attempts to compromise the security of information by violating \nconfidentiality, integrity, or availability. \nTypes of Security Attacks \n \n1. Interruption \nInterruption occurs when system resources or data become unavailable to authorized users. \n Security goal aƯected: Availability \n Example: Server crash or Denial of Service (DoS) attack \nSender ──X──► Receiver \n(System",
+          "highlights": [
+            "Integrity",
+            "Attacker",
+            "Attack",
+            "Round",
+            "Confidentiality",
+            "Passive"
+          ]
+        }
+      ],
+      "tags": [
+        "Uploaded Document",
+        "AI Processed",
+        "Data",
+        "Attacks",
+        "Security"
+      ],
+      "lastAccessed": "2026-04-23T10:36:35.482Z",
+      "sourceDocumentId": "e531a15a-66e9-441c-ad95-3e22bc509988"
+    },
+    {
+      "id": "be7e636a-2f06-4476-b5da-e116fea76e98",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "title": "Generated Document",
+      "fileName": "CV&RA.pdf",
+      "uploadDate": "2026-04-23T10:18:55.614Z",
+      "fileSize": "1.1 MB",
+      "status": "completed",
+      "sections": [
+        {
+          "id": "summary",
+          "title": "Document Summary",
+          "content": "Crypto Volatility and Risk Analyzer \n \n \nProject Statement \nThe project “Crypto Volatility and Risk Analyzer” aims to analyze and visualize the volatility \npatterns of selected cryptocurrencies to estimate their risk levels over time. The system fetches \nreal-time and historical cryptocurrency data from APIs such as CoinGecko or Binance and \nperforms quantitative analysis to measure volatility, Sharpe ratio, and beta coefficients. \nUsing data analytics and visualization libraries in Python (like Matplotlib and Plotly), this project \nwill generate interactive visual dashboards that display risk insights. The tool will ultimately help \ntraders, investors, and researchers identify high-risk and low-risk cryptocurrencies through \ndynamic and data-driven visual analysis. \n \nOutcomes \n1. Dynamic Data Fetching: \nAutomatically fetch live and historical cryptocurrency data using APIs (Binance / \nCoinGecko). \n\n2. Risk Analysis Metrics: \nCompute financial indicators including daily and annualized volatility, Sharpe ratio, and \nbeta coefficients. \n3. Interactive Visualizations: \nBuild real-time visual dashboards using Plotly or Matplotlib to depict price trends and \nvolatility movement. \n4. Risk Categorization: \nClassify cryptocurrencies into High-Risk, Medium-Risk, and Low-Risk groups based on \ncomputed metrics. \n5. Decision Support: \nProvide actionable insights for investors by visually comparing volatility and return \ntrade-offs. \n \nModules to be Implemented \n1. Data Acquisition Module \no Fetch live and historical price data for multiple cryptocurrencies. \no Handle missing values and format data for analysis. \no Data source integration (CoinGecko, Binance). \n2. Data Processing and Calculation Module \no Compute daily returns, volatility, Sharpe ratio, beta coefficient, and Value-",
+          "highlights": [
+            "Volatility",
+            "Data",
+            "Risk",
+            "Sharpe",
+            "Ratio",
+            "Milestone"
+          ]
+        },
+        {
+          "id": "details",
+          "title": "Detailed Notes",
+          "content": "at-Risk \n(VaR). \no Apply rolling window methods to track time-based variations. \n3. Visualization Module \no Create interactive graphs such as line charts, scatter plots, and risk-return maps \nusing Plotly or Matplotlib. \no Display comparative volatility trends across multiple assets. \n4. Risk Classification and Reporting Module \no Categorize cryptocurrencies based on volatility and Sharpe ratio thresholds. \no Generate summarized reports with key insights and visual exports. \n \n\nWeek-wise Module Implementation and High-Level Requirements \nMilestone 1 – Week 1 & Week 2: Data Acquisition and Setup \nRequirements: \n• Set up project environment and libraries (pandas, numpy, requests, plotly, dash). \n• Integrate APIs (Binance/CoinGecko) for fetching crypto price data. \n• Store fetched data into local storage (CSV/Parquet format). \n• Perform basic preprocessing – missing value handling and time-series formatting. \nOutput: \n• Successfully retrieved and stored daily price data for at least 5 cryptocurrencies (e.g., \nBTC, ETH, SOL, ADA, DOGE). \n• Verified API connectivity and data consistency. \n \n \nMilestone 2 – Week 3 & Week 4: Data Processing and Calculation \nRequirements: \n• Calculate daily returns using log-return formulas. \n• Derive statistical measures: \n\no Daily and annualized volatility \no Sharpe ratio \no Beta coefficient (vs benchmark like BTC). \n• Implement moving average and rolling window volatility. \nOutput: \n• Generated a metrics table with volatility, Sharpe ratio, and beta values for all selected \nassets. \n• Prepared intermediate dataset for visualization and risk classification. \n \n \nMilestone 3 – Week 5 & Week 6: Visualization and Dashboard Development \nRequirements: \n• Build interactive visualizations using Plotly or Matplotlib. \n• Develop an analytical dashboar",
+          "highlights": [
+            "Week",
+            "Cryptocurrencies",
+            "Using",
+            "Beta",
+            "Plotly",
+            "Interactive"
+          ]
+        }
+      ],
+      "tags": [
+        "Uploaded Document",
+        "AI Processed",
+        "Volatility",
+        "Data",
+        "Risk"
+      ],
+      "lastAccessed": "2026-04-23T10:18:55.614Z",
+      "sourceDocumentId": "1e7c898a-e3f8-4391-bbed-6d5e2f000e84"
+    },
+    {
+      "id": "af74efad-437e-4adf-b8fe-fc9de985e128",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "title": "Generated Document",
+      "fileName": "Resume (2) - MOU.pdf",
+      "uploadDate": "2026-04-23T10:18:02.860Z",
+      "fileSize": "176 KB",
+      "status": "completed",
+      "sections": [
+        {
+          "id": "summary",
+          "title": "Document Summary",
+          "content": "Nandepu N S MoulikaEmail : nandepumoulika@gmail.com\nPortfolio: https://gorgeous-fudge-c0f628.netlify.app/Mobile : (+91)7993547916\nLinkedin: https://www.linkedin.com/in/moulika-nandepu\nGithub: https://github.com/Moulika-21\nLeetCode:https://leetcode.com/u/Moulika\nN\nandepu\nEducation\n•\nShri Vishnu Engineering College For WomenBhimavaram, India\nB.Tech,Information Technology; CGPA: 9.7Expected: April 2027\n•\nAditya Junior CollegeAmalapuram, India\nHigher Secondary; percentage: 98.5June 2021 - April 2023\n•\nWisdom English Medium High SchoolBandarulanka, India\nSecondaryJune 2020 - March 2021\nSkills Summary\n•Languages: Java, Python, C, SQL\n•Web Technologies:: HTML, CSS, JavaScript, Node.js\n•Course Work: Data Structures & Algorithms(DSA), DBMS, OOPs(Object Oriented Programming), Operating Systems(OS)\n•Tools: VS Code, Github, Postman\n•Soft Skills: Adaptability, Time Management, Good Communication Skills\nAcademic Projects\n•\nBank Token Management System:\nTech Stack:Spring Boot, Java, MySQL, React.jshttps://github.com/Moulika-21/bank-token-booking-system\n◦Description:\n•Designed and developed a full-stack, scalable token management system to optimize customer flow and reduce wait times.\n•Implemented a robust backend with REST APIs for user authentication, token booking, cancellation, and status\nmanagement.\n•\nBlogging Platform:https://github.com/Moulika-21/Blog-Application\nTech Stack:Node.js, Express.js, HTML, Bootstrap, MySQL\n◦Description:\n•Developed a modern, mobile-friendly blogging platform with HTML5, CSS, and Bootstrap emphasizing responsive web\ndesign, clean UI layouts, and user interactivity.\n•Created custom components, forms, and cards for post creation and commenting. Focused on frontend development best\npractices, semantic HTML, and cross-device optimization to enhance user exp",
+          "highlights": [
+            "Github",
+            "Https",
+            "Moulika-",
+            "Tech",
+            "Java",
+            "Data"
+          ]
+        },
+        {
+          "id": "details",
+          "title": "Detailed Notes",
+          "content": "erience.\n•\nText-to-SQL Bot(GenAI):https://github.com/Moulika-21/Text-to-sql-LLM\nTech Stack:Generative AI, Streamlit, Python, SQLite3\n◦Description:\n•Integrated Gemini LLM to dynamically convert user prompts into SQL queries internally and return only the query results\nto users. Used Streamlit to create a simple UI for input prompts and result display, enhancing accessibility for\nnon-technical users\nAchievements\n•Earned a certification in Java programming fundamentals on HackerRank.\n•Infosys Springboard :Completed a comprehensive course covering core data structures (arrays, linked lists, trees,\ngraphs) and algorithms using Java.\n•LeetCode 100 Days Badge:Awarded for consistent daily problem-solving in data structures and algorithms.\n•Google Developers:Participated in a workshop on Git & GitHub and a UI/UX Design Workshop\nLeadership & Mentorship\n•Selected as a Coding Mentor to guide and assist junior students in data structures, algorithms, and logical\nproblem-solving.",
+          "highlights": [
+            "Structures",
+            "Algorithms",
+            "Management",
+            "User",
+            "Leetcode",
+            "India"
+          ]
+        }
+      ],
+      "tags": [
+        "Uploaded Document",
+        "AI Processed",
+        "Github",
+        "Https",
+        "Moulika-"
+      ],
+      "lastAccessed": "2026-04-23T10:18:02.860Z",
+      "sourceDocumentId": "e8d0dc20-6276-4300-a5d5-5e5629502b24"
+    },
+    {
+      "id": "130541de-13f1-43c4-b602-bff1cdbb7443",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "title": "Generated Document",
+      "fileName": "CC PERSPECTIVE STUDY - 23B01A12B7.pdf",
+      "uploadDate": "2026-04-23T10:15:46.161Z",
+      "fileSize": "138 KB",
+      "status": "completed",
+      "sections": [
+        {
+          "id": "summary",
+          "title": "Document Summary",
+          "content": "CLOUD COMPUTING \nCloud computing is the delivery of computing services like storage, servers, networking, \ndatabases, and software over the internet on a pay-as-you-use basis. \nUsers do not need to manage physical hardware or software infrastructure. \nProblems with Traditional IT Architecture \nTraditional IT systems face several limitations: \n• High cost for data centres and hardware \n• Maintenance, cooling, and power expenses \n• Limited scalability \n• Location dependency \n• Difficult disaster recovery \nWhy Cloud Computing? \nCloud computing solves traditional IT problems by offering: \n• No upfront investment \n• On-demand resource availability \n• Easy scalability \n• Reduced operational cost \n• High availability and disaster recovery \nKey Features of Cloud Computing \n• High Scalability – Resources can be increased or decreased easily \n• Flexibility – Access services anytime, anywhere \n• Cost Reduction – No need to buy infrastructure \n• High Security – Advanced security provided by vendors \n• High Availability – 99.99% uptime \n• Disaster Recovery – Fast recovery from failures \nCloud Deployment Models \nA cloud deployment model defines who owns the cloud, who can access it, and how secure it is. \nTypes of Cloud Deployment Models: \n1. Public Cloud \n2. Private Cloud \n3. Community Cloud \n4. Hybrid Cloud \n\n \n \n1. Public Cloud Model \nPublic Cloud resources are owned and managed by third-party providers and delivered via the \ninternet. \nKey Characteristics: \n• Pay-per-use model \n• Highly scalable \n• No infrastructure management \n• Suitable for large-scale applications \nAdvantages of Public Cloud: \n• No infrastructure management \n• Highly scalable \n• Cost-effective \n• High availability \n• Ideal for startups and testing environments \nExamples: Amazon Web Services (AWS), Microsoft Az",
+          "highlights": [
+            "Cloud",
+            "High",
+            "Computing",
+            "Model",
+            "Public",
+            "Security"
+          ]
+        },
+        {
+          "id": "details",
+          "title": "Detailed Notes",
+          "content": "ure, Google Cloud Platform (GCP), IBM \nCloud, Oracle Cloud \n2. Private Cloud Model \nPrivate Cloud is used by a single organization and offers high security. \nLimitations: Expensive, Requires maintenance, Limited scalability \n3. Community Cloud Model \nShared by organizations with similar requirements (e.g., banks, universities). \nBenefits: \n• Cost sharing \n• Better security than public cloud \n4. Hybrid Cloud Model \nCombination of Public + Private Cloud. \nAdvantages: \n• High flexibility \n• Better security \n• Scalable and reliable",
+          "highlights": [
+            "Infrastructure",
+            "Cost",
+            "Scalability",
+            "Recovery",
+            "Availability",
+            "Private"
+          ]
+        }
+      ],
+      "tags": [
+        "Uploaded Document",
+        "AI Processed",
+        "Cloud",
+        "High",
+        "Computing"
+      ],
+      "lastAccessed": "2026-04-23T10:15:46.161Z",
+      "sourceDocumentId": "a8a95276-4823-42e2-8f28-d68dfda793b4"
+    },
+    {
+      "id": "88585a27-90fc-43b8-9495-60d7ae08ee5a",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "title": "Generated Document",
+      "fileName": "CC PERSPECTIVE STUDY - 23B01A12B7.pdf",
+      "uploadDate": "2026-04-23T09:58:34.701Z",
+      "fileSize": "138 KB",
+      "status": "completed",
+      "sections": [
+        {
+          "id": "summary",
+          "title": "Document Summary",
+          "content": "CLOUD COMPUTING \nCloud computing is the delivery of computing services like storage, servers, networking, \ndatabases, and software over the internet on a pay-as-you-use basis. \nUsers do not need to manage physical hardware or software infrastructure. \nProblems with Traditional IT Architecture \nTraditional IT systems face several limitations: \n• High cost for data centres and hardware \n• Maintenance, cooling, and power expenses \n• Limited scalability \n• Location dependency \n• Difficult disaster recovery \nWhy Cloud Computing? \nCloud computing solves traditional IT problems by offering: \n• No upfront investment \n• On-demand resource availability \n• Easy scalability \n• Reduced operational cost \n• High availability and disaster recovery \nKey Features of Cloud Computing \n• High Scalability – Resources can be increased or decreased easily \n• Flexibility – Access services anytime, anywhere \n• Cost Reduction – No need to buy infrastructure \n• High Security – Advanced security provided by vendors \n• High Availability – 99.99% uptime \n• Disaster Recovery – Fast recovery from failures \nCloud Deployment Models \nA cloud deployment model defines who owns the cloud, who can access it, and how secure it is. \nTypes of Cloud Deployment Models: \n1. Public Cloud \n2. Private Cloud \n3. Community Cloud \n4. Hybrid Cloud \n\n \n \n1. Public Cloud Model \nPublic Cloud resources are owned and managed by third-party providers and delivered via the \ninternet. \nKey Characteristics: \n• Pay-per-use model \n• Highly scalable \n• No infrastructure management \n• Suitable for large-scale applications \nAdvantages of Public Cloud: \n• No infrastructure management \n• Highly scalable \n• Cost-effective \n• High availability \n• Ideal for startups and testing environments \nExamples: Amazon Web Services (AWS), Microsoft Az",
+          "highlights": [
+            "Cloud",
+            "High",
+            "Computing",
+            "Model",
+            "Public",
+            "Security"
+          ]
+        },
+        {
+          "id": "details",
+          "title": "Detailed Notes",
+          "content": "ure, Google Cloud Platform (GCP), IBM \nCloud, Oracle Cloud \n2. Private Cloud Model \nPrivate Cloud is used by a single organization and offers high security. \nLimitations: Expensive, Requires maintenance, Limited scalability \n3. Community Cloud Model \nShared by organizations with similar requirements (e.g., banks, universities). \nBenefits: \n• Cost sharing \n• Better security than public cloud \n4. Hybrid Cloud Model \nCombination of Public + Private Cloud. \nAdvantages: \n• High flexibility \n• Better security \n• Scalable and reliable",
+          "highlights": [
+            "Infrastructure",
+            "Cost",
+            "Scalability",
+            "Recovery",
+            "Availability",
+            "Private"
+          ]
+        }
+      ],
+      "tags": [
+        "Uploaded Document",
+        "AI Processed",
+        "Cloud",
+        "High",
+        "Computing"
+      ],
+      "lastAccessed": "2026-04-23T09:58:34.701Z",
+      "sourceDocumentId": "a31e4378-7648-45cf-b1cf-2b7f7101bef2"
+    },
+    {
+      "id": "da896078-5f7f-4bf8-b923-473d5a3d1af8",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "title": "Generated Document",
+      "fileName": "CC PERSPECTIVE STUDY - 23B01A12B7.pdf",
+      "uploadDate": "2026-04-23T09:31:21.705Z",
+      "fileSize": "138 KB",
+      "status": "completed",
+      "sections": [
+        {
+          "id": "summary",
+          "title": "Document Summary",
+          "content": "CLOUD COMPUTING \nCloud computing is the delivery of computing services like storage, servers, networking, \ndatabases, and software over the internet on a pay-as-you-use basis. \nUsers do not need to manage physical hardware or software infrastructure. \nProblems with Traditional IT Architecture \nTraditional IT systems face several limitations: \n• High cost for data centres and hardware \n• Maintenance, cooling, and power expenses \n• Limited scalability \n• Location dependency \n• Difficult disaster recovery \nWhy Cloud Computing? \nCloud computing solves traditional IT problems by offering: \n• No upfront investment \n• On-demand resource availability \n• Easy scalability \n• Reduced operational cost \n• High availability and disaster recovery \nKey Features of Cloud Computing \n• High Scalability – Resources can be increased or decreased easily \n• Flexibility – Access services anytime, anywhere \n• Cost Reduction – No need to buy infrastructure \n• High Security – Advanced security provided by vendors \n• High Availability – 99.99% uptime \n• Disaster Recovery – Fast recovery from failures \nCloud Deployment Models \nA cloud deployment model defines who owns the cloud, who can access it, and how secure it is. \nTypes of Cloud Deployment Models: \n1. Public Cloud \n2. Private Cloud \n3. Community Cloud \n4. Hybrid Cloud \n\n \n \n1. Public Cloud Model \nPublic Cloud resources are owned and managed by third-party providers and delivered via the \ninternet. \nKey Characteristics: \n• Pay-per-use model \n• Highly scalable \n• No infrastructure management \n• Suitable for large-scale applications \nAdvantages of Public Cloud: \n• No infrastructure management \n• Highly scalable \n• Cost-effective \n• High availability \n• Ideal for startups and testing environments \nExamples: Amazon Web Services (AWS), Microsoft Az",
+          "highlights": [
+            "Cloud",
+            "High",
+            "Computing",
+            "Model",
+            "Public",
+            "Security"
+          ]
+        },
+        {
+          "id": "details",
+          "title": "Detailed Notes",
+          "content": "ure, Google Cloud Platform (GCP), IBM \nCloud, Oracle Cloud \n2. Private Cloud Model \nPrivate Cloud is used by a single organization and offers high security. \nLimitations: Expensive, Requires maintenance, Limited scalability \n3. Community Cloud Model \nShared by organizations with similar requirements (e.g., banks, universities). \nBenefits: \n• Cost sharing \n• Better security than public cloud \n4. Hybrid Cloud Model \nCombination of Public + Private Cloud. \nAdvantages: \n• High flexibility \n• Better security \n• Scalable and reliable",
+          "highlights": [
+            "Infrastructure",
+            "Cost",
+            "Scalability",
+            "Recovery",
+            "Availability",
+            "Private"
+          ]
+        }
+      ],
+      "tags": [
+        "Uploaded Document",
+        "AI Processed",
+        "Cloud",
+        "High",
+        "Computing"
+      ],
+      "lastAccessed": "2026-04-23T09:31:21.705Z",
+      "sourceDocumentId": "0d5a8685-7535-4d96-8702-1b27c913c963"
+    },
+    {
+      "id": "69e8b442-968b-4bd2-9395-bc28624e59e6",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "title": "Generated Document",
+      "fileName": "CC PERSPECTIVE STUDY - 23B01A12B7.pdf",
+      "uploadDate": "2026-04-23T09:18:50.436Z",
+      "fileSize": "138 KB",
+      "status": "completed",
+      "sections": [
+        {
+          "id": "summary",
+          "title": "Document Summary",
+          "content": "CLOUD COMPUTING \nCloud computing is the delivery of computing services like storage, servers, networking, \ndatabases, and software over the internet on a pay-as-you-use basis. \nUsers do not need to manage physical hardware or software infrastructure. \nProblems with Traditional IT Architecture \nTraditional IT systems face several limitations: \n• High cost for data centres and hardware \n• Maintenance, cooling, and power expenses \n• Limited scalability \n• Location dependency \n• Difficult disaster recovery \nWhy Cloud Computing? \nCloud computing solves traditional IT problems by offering: \n• No upfront investment \n• On-demand resource availability \n• Easy scalability \n• Reduced operational cost \n• High availability and disaster recovery \nKey Features of Cloud Computing \n• High Scalability – Resources can be increased or decreased easily \n• Flexibility – Access services anytime, anywhere \n• Cost Reduction – No need to buy infrastructure \n• High Security – Advanced security provided by vendors \n• High Availability – 99.99% uptime \n• Disaster Recovery – Fast recovery from failures \nCloud Deployment Models \nA cloud deployment model defines who owns the cloud, who can access it, and how secure it is. \nTypes of Cloud Deployment Models: \n1. Public Cloud \n2. Private Cloud \n3. Community Cloud \n4. Hybrid Cloud \n\n \n \n1. Public Cloud Model \nPublic Cloud resources are owned and managed by third-party providers and delivered via the \ninternet. \nKey Characteristics: \n• Pay-per-use model \n• Highly scalable \n• No infrastructure management \n• Suitable for large-scale applications \nAdvantages of Public Cloud: \n• No infrastructure management \n• Highly scalable \n• Cost-effective \n• High availability \n• Ideal for startups and testing environments \nExamples: Amazon Web Services (AWS), Microsoft Az",
+          "highlights": [
+            "Cloud",
+            "High",
+            "Computing",
+            "Model",
+            "Public",
+            "Security"
+          ]
+        },
+        {
+          "id": "details",
+          "title": "Detailed Notes",
+          "content": "ure, Google Cloud Platform (GCP), IBM \nCloud, Oracle Cloud \n2. Private Cloud Model \nPrivate Cloud is used by a single organization and offers high security. \nLimitations: Expensive, Requires maintenance, Limited scalability \n3. Community Cloud Model \nShared by organizations with similar requirements (e.g., banks, universities). \nBenefits: \n• Cost sharing \n• Better security than public cloud \n4. Hybrid Cloud Model \nCombination of Public + Private Cloud. \nAdvantages: \n• High flexibility \n• Better security \n• Scalable and reliable",
+          "highlights": [
+            "Infrastructure",
+            "Cost",
+            "Scalability",
+            "Recovery",
+            "Availability",
+            "Private"
+          ]
+        }
+      ],
+      "tags": [
+        "Uploaded Document",
+        "AI Processed",
+        "Cloud",
+        "High",
+        "Computing"
+      ],
+      "lastAccessed": "2026-04-23T09:18:50.437Z",
+      "sourceDocumentId": "4847f2f1-1376-471b-a2df-16ba3f0b7214"
+    }
+  ],
+  "flashcards": [
+    {
+      "id": "1443addc-4eb7-477b-aa28-4a0b1f65575c",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "noteId": "88585a27-90fc-43b8-9495-60d7ae08ee5a",
+      "front": "What does \"Cloud\" refer to in this document?",
+      "back": "\"Cloud\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "easy",
+      "createdAt": "2026-04-23T09:58:34.702Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "85390d46-544d-413f-8743-7a572b39bee8",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "noteId": "88585a27-90fc-43b8-9495-60d7ae08ee5a",
+      "front": "What does \"High\" refer to in this document?",
+      "back": "\"High\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "easy",
+      "createdAt": "2026-04-23T09:58:34.702Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "3bab115e-4995-4544-b359-48b5c080cf1d",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "noteId": "88585a27-90fc-43b8-9495-60d7ae08ee5a",
+      "front": "What does \"Computing\" refer to in this document?",
+      "back": "\"Computing\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "easy",
+      "createdAt": "2026-04-23T09:58:34.702Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "6850631e-279b-413d-8597-e8cea76dd2d9",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "noteId": "88585a27-90fc-43b8-9495-60d7ae08ee5a",
+      "front": "What does \"Model\" refer to in this document?",
+      "back": "\"Model\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "medium",
+      "createdAt": "2026-04-23T09:58:34.702Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "970a1249-144c-495b-beaa-57524bbb2854",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "noteId": "88585a27-90fc-43b8-9495-60d7ae08ee5a",
+      "front": "What does \"Public\" refer to in this document?",
+      "back": "\"Public\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "medium",
+      "createdAt": "2026-04-23T09:58:34.702Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "f4f9c570-88fb-4eb4-ad9e-2d3aed371cc8",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "noteId": "88585a27-90fc-43b8-9495-60d7ae08ee5a",
+      "front": "What does \"Security\" refer to in this document?",
+      "back": "\"Security\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "medium",
+      "createdAt": "2026-04-23T09:58:34.702Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "8b3182c1-e02a-4ced-a23d-2d98c8d6cd1f",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "noteId": "88585a27-90fc-43b8-9495-60d7ae08ee5a",
+      "front": "What does \"Infrastructure\" refer to in this document?",
+      "back": "\"Infrastructure\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "hard",
+      "createdAt": "2026-04-23T09:58:34.702Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "4b5673da-5c21-4d4b-87ca-af4e2e2959a4",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "noteId": "88585a27-90fc-43b8-9495-60d7ae08ee5a",
+      "front": "What does \"Cost\" refer to in this document?",
+      "back": "\"Cost\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "hard",
+      "createdAt": "2026-04-23T09:58:34.702Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "8cd1e1e7-5ac8-455b-b1b0-44ad611f33a4",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "noteId": "130541de-13f1-43c4-b602-bff1cdbb7443",
+      "front": "What does \"Cloud\" refer to in this document?",
+      "back": "\"Cloud\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "easy",
+      "createdAt": "2026-04-23T10:15:46.161Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "83fcb10b-2518-472f-bee6-9f49aa33d553",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "noteId": "130541de-13f1-43c4-b602-bff1cdbb7443",
+      "front": "What does \"High\" refer to in this document?",
+      "back": "\"High\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "easy",
+      "createdAt": "2026-04-23T10:15:46.161Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "8f68633d-02c1-4bb9-b92a-b72007a98cdd",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "noteId": "130541de-13f1-43c4-b602-bff1cdbb7443",
+      "front": "What does \"Computing\" refer to in this document?",
+      "back": "\"Computing\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "easy",
+      "createdAt": "2026-04-23T10:15:46.161Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "2a1f181b-fe16-4261-a424-d963de85cc79",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "noteId": "130541de-13f1-43c4-b602-bff1cdbb7443",
+      "front": "What does \"Model\" refer to in this document?",
+      "back": "\"Model\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "medium",
+      "createdAt": "2026-04-23T10:15:46.161Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "12f9b927-b2b9-4863-934e-ef1557ff2438",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "noteId": "130541de-13f1-43c4-b602-bff1cdbb7443",
+      "front": "What does \"Public\" refer to in this document?",
+      "back": "\"Public\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "medium",
+      "createdAt": "2026-04-23T10:15:46.161Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "f4e920a6-faca-4295-8769-505f81c977fb",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "noteId": "130541de-13f1-43c4-b602-bff1cdbb7443",
+      "front": "What does \"Security\" refer to in this document?",
+      "back": "\"Security\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "medium",
+      "createdAt": "2026-04-23T10:15:46.161Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "6c0dcbfc-fb54-4b11-b317-f82c0da62d98",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "noteId": "130541de-13f1-43c4-b602-bff1cdbb7443",
+      "front": "What does \"Infrastructure\" refer to in this document?",
+      "back": "\"Infrastructure\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "hard",
+      "createdAt": "2026-04-23T10:15:46.161Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "4f9edeac-27a6-475f-b267-937f5a87b976",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "noteId": "130541de-13f1-43c4-b602-bff1cdbb7443",
+      "front": "What does \"Cost\" refer to in this document?",
+      "back": "\"Cost\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "hard",
+      "createdAt": "2026-04-23T10:15:46.161Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "7ed3630f-0656-44e0-a019-a9620625b2d1",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "af74efad-437e-4adf-b8fe-fc9de985e128",
+      "front": "What does \"Github\" refer to in this document?",
+      "back": "\"Github\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "easy",
+      "createdAt": "2026-04-23T10:18:02.860Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "72b01153-245f-42a3-9ce6-979fc72ed0b1",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "af74efad-437e-4adf-b8fe-fc9de985e128",
+      "front": "What does \"Https\" refer to in this document?",
+      "back": "\"Https\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "easy",
+      "createdAt": "2026-04-23T10:18:02.860Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "103b85ec-afb7-40ef-9edb-647223a0a362",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "af74efad-437e-4adf-b8fe-fc9de985e128",
+      "front": "What does \"Moulika-\" refer to in this document?",
+      "back": "\"Moulika-\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "easy",
+      "createdAt": "2026-04-23T10:18:02.860Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "0146aa50-ecc7-4a3b-bb34-0f574cabd641",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "af74efad-437e-4adf-b8fe-fc9de985e128",
+      "front": "What does \"Tech\" refer to in this document?",
+      "back": "\"Tech\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "medium",
+      "createdAt": "2026-04-23T10:18:02.860Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "a8e78537-9ce8-4a6c-a871-55aa8d2bc3ae",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "af74efad-437e-4adf-b8fe-fc9de985e128",
+      "front": "What does \"Java\" refer to in this document?",
+      "back": "\"Java\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "medium",
+      "createdAt": "2026-04-23T10:18:02.860Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "97293ad8-5ca5-446e-a693-239975eb29d3",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "af74efad-437e-4adf-b8fe-fc9de985e128",
+      "front": "What does \"Data\" refer to in this document?",
+      "back": "\"Data\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "medium",
+      "createdAt": "2026-04-23T10:18:02.860Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "19611634-332f-42b1-b951-ebceacfa9701",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "af74efad-437e-4adf-b8fe-fc9de985e128",
+      "front": "What does \"Structures\" refer to in this document?",
+      "back": "\"Structures\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "hard",
+      "createdAt": "2026-04-23T10:18:02.861Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "51eca9b9-9261-468b-97fd-6440446bf19c",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "af74efad-437e-4adf-b8fe-fc9de985e128",
+      "front": "What does \"Algorithms\" refer to in this document?",
+      "back": "\"Algorithms\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "hard",
+      "createdAt": "2026-04-23T10:18:02.861Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "c3d3e47a-08e3-443d-8ddb-37a3b9e1b2cf",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "be7e636a-2f06-4476-b5da-e116fea76e98",
+      "front": "What does \"Volatility\" refer to in this document?",
+      "back": "\"Volatility\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "easy",
+      "createdAt": "2026-04-23T10:18:55.616Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "61ba296f-0fdf-4ae6-90e5-5b954dd713d4",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "be7e636a-2f06-4476-b5da-e116fea76e98",
+      "front": "What does \"Data\" refer to in this document?",
+      "back": "\"Data\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "easy",
+      "createdAt": "2026-04-23T10:18:55.616Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "fb86e317-55a1-494d-8ccf-c87142745fbc",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "be7e636a-2f06-4476-b5da-e116fea76e98",
+      "front": "What does \"Risk\" refer to in this document?",
+      "back": "\"Risk\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "easy",
+      "createdAt": "2026-04-23T10:18:55.616Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "f9ba078f-3138-4594-a09e-8383e212590c",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "be7e636a-2f06-4476-b5da-e116fea76e98",
+      "front": "What does \"Sharpe\" refer to in this document?",
+      "back": "\"Sharpe\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "medium",
+      "createdAt": "2026-04-23T10:18:55.616Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "5e87ab43-1114-4c75-bd72-0d44ecfb48f8",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "be7e636a-2f06-4476-b5da-e116fea76e98",
+      "front": "What does \"Ratio\" refer to in this document?",
+      "back": "\"Ratio\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "medium",
+      "createdAt": "2026-04-23T10:18:55.616Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "ce0a8cb8-ee34-4ea2-961b-978e20787f00",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "be7e636a-2f06-4476-b5da-e116fea76e98",
+      "front": "What does \"Milestone\" refer to in this document?",
+      "back": "\"Milestone\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "medium",
+      "createdAt": "2026-04-23T10:18:55.616Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "c2e90f7a-9c1d-42eb-a324-016586d635c0",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "be7e636a-2f06-4476-b5da-e116fea76e98",
+      "front": "What does \"Week\" refer to in this document?",
+      "back": "\"Week\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "hard",
+      "createdAt": "2026-04-23T10:18:55.616Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "746f38aa-ce4e-4261-81d8-bc92419ed537",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "be7e636a-2f06-4476-b5da-e116fea76e98",
+      "front": "What does \"Cryptocurrencies\" refer to in this document?",
+      "back": "\"Cryptocurrencies\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "hard",
+      "createdAt": "2026-04-23T10:18:55.616Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "a5d3b357-0ad1-4bab-be3b-4e05b01e7ea1",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "11d9e637-0c9c-43be-ae0c-f6fdf9c8e681",
+      "front": "What does \"Data\" refer to in this document?",
+      "back": "\"Data\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "easy",
+      "createdAt": "2026-04-23T10:36:35.485Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "302f7334-ffff-498e-9afd-e87241eccb34",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "11d9e637-0c9c-43be-ae0c-f6fdf9c8e681",
+      "front": "What does \"Attacks\" refer to in this document?",
+      "back": "\"Attacks\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "easy",
+      "createdAt": "2026-04-23T10:36:35.485Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "1967829f-65fb-4791-b9ec-41f48f7698aa",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "11d9e637-0c9c-43be-ae0c-f6fdf9c8e681",
+      "front": "What does \"Security\" refer to in this document?",
+      "back": "\"Security\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "easy",
+      "createdAt": "2026-04-23T10:36:35.485Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "f3876cd4-b09b-44ed-886a-9c24966b3b1a",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "11d9e637-0c9c-43be-ae0c-f6fdf9c8e681",
+      "front": "What does \"Block\" refer to in this document?",
+      "back": "\"Block\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "medium",
+      "createdAt": "2026-04-23T10:36:35.485Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "b68d7f0a-e93e-4477-881e-49ff210a24f3",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "11d9e637-0c9c-43be-ae0c-f6fdf9c8e681",
+      "front": "What does \"Encryption\" refer to in this document?",
+      "back": "\"Encryption\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "medium",
+      "createdAt": "2026-04-23T10:36:35.485Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "6b67ef37-c01a-4e47-a8c1-246d9be4ed9f",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "11d9e637-0c9c-43be-ae0c-f6fdf9c8e681",
+      "front": "What does \"Example\" refer to in this document?",
+      "back": "\"Example\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "medium",
+      "createdAt": "2026-04-23T10:36:35.485Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "13deb98d-9431-4a6e-b3ca-fb35561b02b0",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "11d9e637-0c9c-43be-ae0c-f6fdf9c8e681",
+      "front": "What does \"Integrity\" refer to in this document?",
+      "back": "\"Integrity\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "hard",
+      "createdAt": "2026-04-23T10:36:35.485Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    },
+    {
+      "id": "65434893-28e8-408e-9aee-361d8b76d257",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "11d9e637-0c9c-43be-ae0c-f6fdf9c8e681",
+      "front": "What does \"Attacker\" refer to in this document?",
+      "back": "\"Attacker\" is one of the key concepts extracted from your uploaded content.",
+      "difficulty": "hard",
+      "createdAt": "2026-04-23T10:36:35.485Z",
+      "lastReviewed": null,
+      "correctCount": 0,
+      "totalReviews": 0
+    }
+  ],
+  "quizzes": [
+    {
+      "id": "3b66300a-4fea-4ecd-8510-040c055881d6",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "noteId": "88585a27-90fc-43b8-9495-60d7ae08ee5a",
+      "title": "Quiz: Generated Document",
+      "questions": [
+        {
+          "id": "q-1",
+          "type": "multiple-choice",
+          "question": "Which option best describes \"Cloud\" in this document?",
+          "options": [
+            "Cloud is not related to the document topic.",
+            "Cloud is a key concept from this study material.",
+            "Cloud is a formatting marker.",
+            "Cloud only appears in file metadata."
+          ],
+          "correctAnswer": "Cloud is a key concept from this study material.",
+          "explanation": "This question checks your recall of the concept \"Cloud\" from the extracted content.",
+          "difficulty": "easy"
+        },
+        {
+          "id": "q-2",
+          "type": "multiple-choice",
+          "question": "Which option best describes \"High\" in this document?",
+          "options": [
+            "High only appears in file metadata.",
+            "High is not related to the document topic.",
+            "High is a key concept from this study material.",
+            "High is a formatting marker."
+          ],
+          "correctAnswer": "High is a key concept from this study material.",
+          "explanation": "This question checks your recall of the concept \"High\" from the extracted content.",
+          "difficulty": "easy"
+        },
+        {
+          "id": "q-3",
+          "type": "multiple-choice",
+          "question": "Which option best describes \"Computing\" in this document?",
+          "options": [
+            "Computing is a key concept from this study material.",
+            "Computing is a formatting marker.",
+            "Computing only appears in file metadata.",
+            "Computing is not related to the document topic."
+          ],
+          "correctAnswer": "Computing is a key concept from this study material.",
+          "explanation": "This question checks your recall of the concept \"Computing\" from the extracted content.",
+          "difficulty": "medium"
+        },
+        {
+          "id": "q-4",
+          "type": "multiple-choice",
+          "question": "Which option best describes \"Model\" in this document?",
+          "options": [
+            "Model only appears in file metadata.",
+            "Model is a key concept from this study material.",
+            "Model is a formatting marker.",
+            "Model is not related to the document topic."
+          ],
+          "correctAnswer": "Model is a key concept from this study material.",
+          "explanation": "This question checks your recall of the concept \"Model\" from the extracted content.",
+          "difficulty": "medium"
+        },
+        {
+          "id": "q-5",
+          "type": "multiple-choice",
+          "question": "Which option best describes \"Public\" in this document?",
+          "options": [
+            "Public only appears in file metadata.",
+            "Public is not related to the document topic.",
+            "Public is a key concept from this study material.",
+            "Public is a formatting marker."
+          ],
+          "correctAnswer": "Public is a key concept from this study material.",
+          "explanation": "This question checks your recall of the concept \"Public\" from the extracted content.",
+          "difficulty": "hard"
+        }
+      ],
+      "createdAt": "2026-04-23T09:58:34.703Z",
+      "attempts": []
+    },
+    {
+      "id": "72b73a62-e84f-40ec-9468-7c2b67db142c",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "noteId": "130541de-13f1-43c4-b602-bff1cdbb7443",
+      "title": "Quiz: Generated Document",
+      "questions": [
+        {
+          "id": "q-1",
+          "type": "multiple-choice",
+          "question": "Which option best describes \"Cloud\" in this document?",
+          "options": [
+            "Cloud is a formatting marker.",
+            "Cloud only appears in file metadata.",
+            "Cloud is a key concept from this study material.",
+            "Cloud is not related to the document topic."
+          ],
+          "correctAnswer": "Cloud is a key concept from this study material.",
+          "explanation": "This question checks your recall of the concept \"Cloud\" from the extracted content.",
+          "difficulty": "easy"
+        },
+        {
+          "id": "q-2",
+          "type": "multiple-choice",
+          "question": "Which option best describes \"High\" in this document?",
+          "options": [
+            "High is not related to the document topic.",
+            "High is a key concept from this study material.",
+            "High is a formatting marker.",
+            "High only appears in file metadata."
+          ],
+          "correctAnswer": "High is a key concept from this study material.",
+          "explanation": "This question checks your recall of the concept \"High\" from the extracted content.",
+          "difficulty": "easy"
+        },
+        {
+          "id": "q-3",
+          "type": "multiple-choice",
+          "question": "Which option best describes \"Computing\" in this document?",
+          "options": [
+            "Computing is not related to the document topic.",
+            "Computing is a formatting marker.",
+            "Computing only appears in file metadata.",
+            "Computing is a key concept from this study material."
+          ],
+          "correctAnswer": "Computing is a key concept from this study material.",
+          "explanation": "This question checks your recall of the concept \"Computing\" from the extracted content.",
+          "difficulty": "medium"
+        },
+        {
+          "id": "q-4",
+          "type": "multiple-choice",
+          "question": "Which option best describes \"Model\" in this document?",
+          "options": [
+            "Model is a key concept from this study material.",
+            "Model only appears in file metadata.",
+            "Model is a formatting marker.",
+            "Model is not related to the document topic."
+          ],
+          "correctAnswer": "Model is a key concept from this study material.",
+          "explanation": "This question checks your recall of the concept \"Model\" from the extracted content.",
+          "difficulty": "medium"
+        },
+        {
+          "id": "q-5",
+          "type": "multiple-choice",
+          "question": "Which option best describes \"Public\" in this document?",
+          "options": [
+            "Public is a key concept from this study material.",
+            "Public is not related to the document topic.",
+            "Public is a formatting marker.",
+            "Public only appears in file metadata."
+          ],
+          "correctAnswer": "Public is a key concept from this study material.",
+          "explanation": "This question checks your recall of the concept \"Public\" from the extracted content.",
+          "difficulty": "hard"
+        }
+      ],
+      "createdAt": "2026-04-23T10:15:46.162Z",
+      "attempts": []
+    },
+    {
+      "id": "8f2dc09f-eb53-4800-84ba-f0aca3f977c4",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "af74efad-437e-4adf-b8fe-fc9de985e128",
+      "title": "Quiz: Generated Document",
+      "questions": [
+        {
+          "id": "q-1",
+          "type": "multiple-choice",
+          "question": "Which option best describes \"Github\" in this document?",
+          "options": [
+            "Github only appears in file metadata.",
+            "Github is not related to the document topic.",
+            "Github is a formatting marker.",
+            "Github is a key concept from this study material."
+          ],
+          "correctAnswer": "Github is a key concept from this study material.",
+          "explanation": "This question checks your recall of the concept \"Github\" from the extracted content.",
+          "difficulty": "easy"
+        },
+        {
+          "id": "q-2",
+          "type": "multiple-choice",
+          "question": "Which option best describes \"Https\" in this document?",
+          "options": [
+            "Https only appears in file metadata.",
+            "Https is a formatting marker.",
+            "Https is a key concept from this study material.",
+            "Https is not related to the document topic."
+          ],
+          "correctAnswer": "Https is a key concept from this study material.",
+          "explanation": "This question checks your recall of the concept \"Https\" from the extracted content.",
+          "difficulty": "easy"
+        },
+        {
+          "id": "q-3",
+          "type": "multiple-choice",
+          "question": "Which option best describes \"Moulika-\" in this document?",
+          "options": [
+            "Moulika- is a formatting marker.",
+            "Moulika- is a key concept from this study material.",
+            "Moulika- is not related to the document topic.",
+            "Moulika- only appears in file metadata."
+          ],
+          "correctAnswer": "Moulika- is a key concept from this study material.",
+          "explanation": "This question checks your recall of the concept \"Moulika-\" from the extracted content.",
+          "difficulty": "medium"
+        },
+        {
+          "id": "q-4",
+          "type": "multiple-choice",
+          "question": "Which option best describes \"Tech\" in this document?",
+          "options": [
+            "Tech is a formatting marker.",
+            "Tech only appears in file metadata.",
+            "Tech is a key concept from this study material.",
+            "Tech is not related to the document topic."
+          ],
+          "correctAnswer": "Tech is a key concept from this study material.",
+          "explanation": "This question checks your recall of the concept \"Tech\" from the extracted content.",
+          "difficulty": "medium"
+        },
+        {
+          "id": "q-5",
+          "type": "multiple-choice",
+          "question": "Which option best describes \"Java\" in this document?",
+          "options": [
+            "Java is a key concept from this study material.",
+            "Java is not related to the document topic.",
+            "Java is a formatting marker.",
+            "Java only appears in file metadata."
+          ],
+          "correctAnswer": "Java is a key concept from this study material.",
+          "explanation": "This question checks your recall of the concept \"Java\" from the extracted content.",
+          "difficulty": "hard"
+        }
+      ],
+      "createdAt": "2026-04-23T10:18:02.861Z",
+      "attempts": []
+    },
+    {
+      "id": "d7f664de-8d8a-43d5-8a76-95d904973585",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "be7e636a-2f06-4476-b5da-e116fea76e98",
+      "title": "Quiz: Generated Document",
+      "questions": [
+        {
+          "id": "q-1",
+          "type": "multiple-choice",
+          "question": "Which option best describes \"Volatility\" in this document?",
+          "options": [
+            "Volatility is a formatting marker.",
+            "Volatility is not related to the document topic.",
+            "Volatility only appears in file metadata.",
+            "Volatility is a key concept from this study material."
+          ],
+          "correctAnswer": "Volatility is a key concept from this study material.",
+          "explanation": "This question checks your recall of the concept \"Volatility\" from the extracted content.",
+          "difficulty": "easy"
+        },
+        {
+          "id": "q-2",
+          "type": "multiple-choice",
+          "question": "Which option best describes \"Data\" in this document?",
+          "options": [
+            "Data only appears in file metadata.",
+            "Data is a key concept from this study material.",
+            "Data is not related to the document topic.",
+            "Data is a formatting marker."
+          ],
+          "correctAnswer": "Data is a key concept from this study material.",
+          "explanation": "This question checks your recall of the concept \"Data\" from the extracted content.",
+          "difficulty": "easy"
+        },
+        {
+          "id": "q-3",
+          "type": "multiple-choice",
+          "question": "Which option best describes \"Risk\" in this document?",
+          "options": [
+            "Risk only appears in file metadata.",
+            "Risk is a formatting marker.",
+            "Risk is a key concept from this study material.",
+            "Risk is not related to the document topic."
+          ],
+          "correctAnswer": "Risk is a key concept from this study material.",
+          "explanation": "This question checks your recall of the concept \"Risk\" from the extracted content.",
+          "difficulty": "medium"
+        },
+        {
+          "id": "q-4",
+          "type": "multiple-choice",
+          "question": "Which option best describes \"Sharpe\" in this document?",
+          "options": [
+            "Sharpe is a formatting marker.",
+            "Sharpe only appears in file metadata.",
+            "Sharpe is not related to the document topic.",
+            "Sharpe is a key concept from this study material."
+          ],
+          "correctAnswer": "Sharpe is a key concept from this study material.",
+          "explanation": "This question checks your recall of the concept \"Sharpe\" from the extracted content.",
+          "difficulty": "medium"
+        },
+        {
+          "id": "q-5",
+          "type": "multiple-choice",
+          "question": "Which option best describes \"Ratio\" in this document?",
+          "options": [
+            "Ratio is a key concept from this study material.",
+            "Ratio is not related to the document topic.",
+            "Ratio only appears in file metadata.",
+            "Ratio is a formatting marker."
+          ],
+          "correctAnswer": "Ratio is a key concept from this study material.",
+          "explanation": "This question checks your recall of the concept \"Ratio\" from the extracted content.",
+          "difficulty": "hard"
+        }
+      ],
+      "createdAt": "2026-04-23T10:18:55.616Z",
+      "attempts": [
+        {
+          "id": "46b5e557-b7cf-450c-a716-ad43d76b38fa",
+          "completedAt": "2026-04-23T10:22:22.421Z",
+          "score": 20,
+          "totalQuestions": 5,
+          "timeSpent": 26
+        }
+      ]
+    },
+    {
+      "id": "6dbc1bfd-0485-44b1-b67b-5903f7a1a131",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "noteId": "11d9e637-0c9c-43be-ae0c-f6fdf9c8e681",
+      "title": "Quiz: Generated Document",
+      "questions": [
+        {
+          "id": "q-1",
+          "type": "multiple-choice",
+          "question": "Which option best describes \"Data\" in this document?",
+          "options": [
+            "Data only appears in file metadata.",
+            "Data is a formatting marker.",
+            "Data is a key concept from this study material.",
+            "Data is not related to the document topic."
+          ],
+          "correctAnswer": "Data is a key concept from this study material.",
+          "explanation": "This question checks your recall of the concept \"Data\" from the extracted content.",
+          "difficulty": "easy"
+        },
+        {
+          "id": "q-2",
+          "type": "multiple-choice",
+          "question": "Which option best describes \"Attacks\" in this document?",
+          "options": [
+            "Attacks is a formatting marker.",
+            "Attacks is not related to the document topic.",
+            "Attacks only appears in file metadata.",
+            "Attacks is a key concept from this study material."
+          ],
+          "correctAnswer": "Attacks is a key concept from this study material.",
+          "explanation": "This question checks your recall of the concept \"Attacks\" from the extracted content.",
+          "difficulty": "easy"
+        },
+        {
+          "id": "q-3",
+          "type": "multiple-choice",
+          "question": "Which option best describes \"Security\" in this document?",
+          "options": [
+            "Security is not related to the document topic.",
+            "Security is a formatting marker.",
+            "Security only appears in file metadata.",
+            "Security is a key concept from this study material."
+          ],
+          "correctAnswer": "Security is a key concept from this study material.",
+          "explanation": "This question checks your recall of the concept \"Security\" from the extracted content.",
+          "difficulty": "medium"
+        },
+        {
+          "id": "q-4",
+          "type": "multiple-choice",
+          "question": "Which option best describes \"Block\" in this document?",
+          "options": [
+            "Block is a key concept from this study material.",
+            "Block is not related to the document topic.",
+            "Block only appears in file metadata.",
+            "Block is a formatting marker."
+          ],
+          "correctAnswer": "Block is a key concept from this study material.",
+          "explanation": "This question checks your recall of the concept \"Block\" from the extracted content.",
+          "difficulty": "medium"
+        },
+        {
+          "id": "q-5",
+          "type": "multiple-choice",
+          "question": "Which option best describes \"Encryption\" in this document?",
+          "options": [
+            "Encryption is a formatting marker.",
+            "Encryption is a key concept from this study material.",
+            "Encryption only appears in file metadata.",
+            "Encryption is not related to the document topic."
+          ],
+          "correctAnswer": "Encryption is a key concept from this study material.",
+          "explanation": "This question checks your recall of the concept \"Encryption\" from the extracted content.",
+          "difficulty": "hard"
+        }
+      ],
+      "createdAt": "2026-04-23T10:36:35.488Z",
+      "attempts": [
+        {
+          "id": "9cb1eda8-3165-4f61-a184-fb267a9035eb",
+          "completedAt": "2026-04-23T10:37:30.442Z",
+          "score": 0,
+          "totalQuestions": 5,
+          "timeSpent": 14
+        }
+      ]
+    }
+  ],
+  "documents": [
+    {
+      "id": "e531a15a-66e9-441c-ad95-3e22bc509988",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "fileName": "1776940594533-a5cfcc85-3798-4cfb-a8a1-c1552fb977d3.pdf",
+      "originalName": "CNS MID 1 ANSWERS.pdf",
+      "fileSize": 886958,
+      "mimeType": "application/pdf",
+      "filePath": "C:\\LECTOMATE - AI POWERED STUDY PARTNER\\project\\server\\uploads\\1776940594533-a5cfcc85-3798-4cfb-a8a1-c1552fb977d3.pdf",
+      "uploadedAt": "2026-04-23T10:36:34.553Z",
+      "processed": true,
+      "processingError": null,
+      "processedAt": "2026-04-23T10:36:35.488Z"
+    },
+    {
+      "id": "1e7c898a-e3f8-4391-bbed-6d5e2f000e84",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "fileName": "1776939534643-16c47e45-cd7f-463d-9b84-e55c03caf843.pdf",
+      "originalName": "CV&RA.pdf",
+      "fileSize": 1128586,
+      "mimeType": "application/pdf",
+      "filePath": "C:\\LECTOMATE - AI POWERED STUDY PARTNER\\project\\server\\uploads\\1776939534643-16c47e45-cd7f-463d-9b84-e55c03caf843.pdf",
+      "uploadedAt": "2026-04-23T10:18:54.663Z",
+      "processed": true,
+      "processingError": null,
+      "processedAt": "2026-04-23T10:18:55.616Z"
+    },
+    {
+      "id": "e8d0dc20-6276-4300-a5d5-5e5629502b24",
+      "userId": "cec4a6a7-fb1b-45d1-b287-b6338bd707ea",
+      "fileName": "1776939482104-5fcc4e5e-b786-4fff-9c20-fa3d5195c3fc.pdf",
+      "originalName": "Resume (2) - MOU.pdf",
+      "fileSize": 180134,
+      "mimeType": "application/pdf",
+      "filePath": "C:\\LECTOMATE - AI POWERED STUDY PARTNER\\project\\server\\uploads\\1776939482104-5fcc4e5e-b786-4fff-9c20-fa3d5195c3fc.pdf",
+      "uploadedAt": "2026-04-23T10:18:02.113Z",
+      "processed": true,
+      "processingError": null,
+      "processedAt": "2026-04-23T10:18:02.861Z"
+    },
+    {
+      "id": "a8a95276-4823-42e2-8f28-d68dfda793b4",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "fileName": "1776939345586-5d95dedf-52e2-4b50-a61a-07fe8ef44d0b.pdf",
+      "originalName": "CC PERSPECTIVE STUDY - 23B01A12B7.pdf",
+      "fileSize": 141013,
+      "mimeType": "application/pdf",
+      "filePath": "C:\\LECTOMATE - AI POWERED STUDY PARTNER\\project\\server\\uploads\\1776939345586-5d95dedf-52e2-4b50-a61a-07fe8ef44d0b.pdf",
+      "uploadedAt": "2026-04-23T10:15:45.593Z",
+      "processed": true,
+      "processingError": null,
+      "processedAt": "2026-04-23T10:15:46.162Z"
+    },
+    {
+      "id": "a31e4378-7648-45cf-b1cf-2b7f7101bef2",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "fileName": "1776938312909-de7a9ba1-23db-4d08-8d24-cdd55cee3fbd.pdf",
+      "originalName": "CC PERSPECTIVE STUDY - 23B01A12B7.pdf",
+      "fileSize": 141013,
+      "mimeType": "application/pdf",
+      "filePath": "C:\\LECTOMATE - AI POWERED STUDY PARTNER\\project\\server\\uploads\\1776938312909-de7a9ba1-23db-4d08-8d24-cdd55cee3fbd.pdf",
+      "uploadedAt": "2026-04-23T09:58:32.922Z",
+      "processed": true,
+      "processingError": null,
+      "processedAt": "2026-04-23T09:58:34.703Z"
+    },
+    {
+      "id": "0d5a8685-7535-4d96-8702-1b27c913c963",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "fileName": "1776936680938-50bb0261-9d16-4d0d-8e0a-5073b7f783dc.pdf",
+      "originalName": "CC PERSPECTIVE STUDY - 23B01A12B7.pdf",
+      "fileSize": 141013,
+      "mimeType": "application/pdf",
+      "filePath": "C:\\LECTOMATE - AI POWERED STUDY PARTNER\\project\\server\\uploads\\1776936680938-50bb0261-9d16-4d0d-8e0a-5073b7f783dc.pdf",
+      "uploadedAt": "2026-04-23T09:31:20.948Z",
+      "processed": true,
+      "processingError": null,
+      "processedAt": "2026-04-23T09:31:21.705Z"
+    },
+    {
+      "id": "4847f2f1-1376-471b-a2df-16ba3f0b7214",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "fileName": "1776935929368-064b0de3-c519-4e18-885f-73bf6f409346.pdf",
+      "originalName": "CC PERSPECTIVE STUDY - 23B01A12B7.pdf",
+      "fileSize": 141013,
+      "mimeType": "application/pdf",
+      "filePath": "C:\\LECTOMATE - AI POWERED STUDY PARTNER\\project\\server\\uploads\\1776935929368-064b0de3-c519-4e18-885f-73bf6f409346.pdf",
+      "uploadedAt": "2026-04-23T09:18:49.381Z",
+      "processed": true,
+      "processingError": null,
+      "processedAt": "2026-04-23T09:18:50.437Z"
+    },
+    {
+      "id": "7610e4d8-d3fe-4f6e-8e86-be293a7a77db",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "fileName": "1776935471504-c111347e-d1cb-4e9f-b908-f617c0763e07.pdf",
+      "originalName": "CC PERSPECTIVE STUDY - 23B01A12B7.pdf",
+      "fileSize": 141013,
+      "mimeType": "application/pdf",
+      "filePath": "C:\\LECTOMATE - AI POWERED STUDY PARTNER\\project\\server\\uploads\\1776935471504-c111347e-d1cb-4e9f-b908-f617c0763e07.pdf",
+      "uploadedAt": "2026-04-23T09:11:11.518Z",
+      "processed": false,
+      "processingError": "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent: [404 Not Found] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.",
+      "processedAt": null
+    },
+    {
+      "id": "c749b807-6488-4ad8-b699-c21827a946ce",
+      "userId": "83ef9f9f-6f1e-42fb-b8a4-2b72bc7b0816",
+      "fileName": "1776867524482-261a63a4-f706-4a58-bfad-e1e4c5c37358.pdf",
+      "originalName": "CC PERSPECTIVE STUDY - 23B01A12B7.pdf",
+      "fileSize": 141013,
+      "mimeType": "application/pdf",
+      "filePath": "C:\\LECTOMATE - AI POWERED STUDY PARTNER\\project\\server\\uploads\\1776867524482-261a63a4-f706-4a58-bfad-e1e4c5c37358.pdf",
+      "uploadedAt": "2026-04-22T14:18:44.495Z",
+      "processed": false,
+      "processingError": null,
+      "processedAt": null
+    }
+  ]
+}
