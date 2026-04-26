@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import { Upload, File, CheckCircle, Loader, X } from 'lucide-react';
+import { API } from '../config/api';
 
 export const DocumentUpload: React.FC = () => {
   const { loadUserData } = useUser();
@@ -108,7 +109,7 @@ export const DocumentUpload: React.FC = () => {
             // Poll for processing completion
             const checkProcessingStatus = async () => {
               try {
-                const response = await fetch(`http://localhost:3001/api/documents/${documentId}/status`, {
+                const response = await fetch(`${API}/documents/${documentId}/status`, {
                   headers: {
                     'Authorization': `Bearer ${token}`,
                   },
@@ -195,7 +196,7 @@ export const DocumentUpload: React.FC = () => {
         });
 
         // Send request
-        xhr.open('POST', 'http://localhost:3001/api/documents/upload');
+        xhr.open('POST', `${API}/documents/upload`);
         xhr.setRequestHeader('Authorization', `Bearer ${token}`);
         xhr.send(formData);
 
@@ -330,11 +331,11 @@ export const DocumentUpload: React.FC = () => {
       <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
         <h4 className="font-semibold text-blue-900 mb-2">What happens after upload?</h4>
         <ul className="space-y-2 text-blue-800">
-          <li>• AI analyzes your document structure and content</li>
-          <li>• Key concepts are extracted and highlighted</li>
-          <li>• Structured notes are generated with summaries</li>
-          <li>• Flashcards are automatically created for important terms</li>
-          <li>• Quiz questions are generated to test comprehension</li>
+          <li>â€¢ AI analyzes your document structure and content</li>
+          <li>â€¢ Key concepts are extracted and highlighted</li>
+          <li>â€¢ Structured notes are generated with summaries</li>
+          <li>â€¢ Flashcards are automatically created for important terms</li>
+          <li>â€¢ Quiz questions are generated to test comprehension</li>
         </ul>
       </div>
     </div>

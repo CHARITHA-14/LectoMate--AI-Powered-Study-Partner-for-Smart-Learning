@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: lectomate-api
+    env: node
+    rootDir: server
+    buildCommand: npm install --production
+    startCommand: node simple-server.js
+    healthCheckPath: /health
+    # Render sets PORT automatically — do NOT add PORT here
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: MAX_FILE_SIZE
+        value: "10485760"
+      - key: UPLOAD_DIR
+        value: uploads
+      # Set these manually in the Render dashboard:
+      - key: MONGODB_URI
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: FRONTEND_URL
+        sync: false

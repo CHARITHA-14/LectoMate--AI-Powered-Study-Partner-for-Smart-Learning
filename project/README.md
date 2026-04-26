@@ -1,270 +1,196 @@
-# 🎓 Lectomate - AI-Powered Study Assistant
+# Lectomate — AI-Powered Study Assistant
 
-A comprehensive learning platform that transforms your study materials into interactive learning experiences using AI technology.
+Upload documents → get AI-generated notes, flashcards, quizzes, and a personal AI tutor chatbot.
 
-## ✨ **Features**
+## Tech Stack
 
-### 📚 **Document Processing**
-- Upload PDF, DOCX, TXT, PPT files
-- AI-powered content extraction
-- Automatic note generation
-- Smart summarization
-
-### 🎯 **Study Tools**
-- **Interactive Notes**: Organized, searchable, editable
-- **Smart Flashcards**: Spaced repetition system
-- **Auto-generated Quizzes**: Test your knowledge
-- **AI Chatbot**: Get instant help with your materials
-
-### 👤 **User Experience**
-- Modern, responsive interface
-- Progress tracking and analytics
-- Personalized study recommendations
-- Study streak gamification
-
-## 🚀 **Quick Start**
-
-### **Option 1: Automatic Startup (Windows)**
-```bash
-# Double-click this file or run:
-start.bat
-```
-
-### **Option 2: Manual Startup**
-
-**Backend:**
-```bash
-cd server
-node simple-server.js
-```
-
-**Frontend:**
-```bash
-npm run dev
-```
-
-**Then visit:** `http://localhost:5173`
-
-## 📋 **System Requirements**
-
-- **Node.js** 18+ 
-- **npm** or yarn
-- **Modern web browser**
-- **4GB+ RAM recommended**
-
-## 🛠️ **Technology Stack**
-
-### **Frontend**
-- **React 18** with TypeScript
-- **Tailwind CSS** for styling
-- **Lucide React** for icons
-- **Vite** for development
-
-### **Backend**
-- **Node.js** with Express
-- **JWT** for authentication
-- **bcryptjs** for password hashing
-- **Multer** for file uploads
-- **In-memory database** (easily upgradeable to Supabase)
-
-### **AI Integration**
-- **OpenAI API** ready (optional)
-- **Fallback AI responses** included
-- **Document processing pipeline**
-
-## 📁 **Project Structure**
-
-```
-lectomate/
-├── 📁 src/                    # Frontend source
-│   ├── 📁 components/         # React components
-│   ├── 📁 context/           # User context & state
-│   └── 📁 types/             # TypeScript definitions
-├── 📁 server/                 # Backend source
-│   ├── 📁 src/
-│   │   ├── 📁 config/         # Database configuration
-│   │   ├── 📁 middleware/     # Express middleware
-│   │   ├── 📁 routes/         # API endpoints
-│   │   └── 📁 services/       # Business logic
-│   └── 📄 simple-server.js    # Main server file
-├── 📄 start.bat              # Windows startup script
-└── 📄 README.md              # This file
-```
-
-## 🔧 **Configuration**
-
-### **Environment Variables**
-Create `server/.env`:
-```env
-JWT_SECRET=your_jwt_secret_here
-PORT=3001
-```
-
-### **Database Options**
-1. **In-memory** (default) - Perfect for development
-2. **Supabase** - For production (instructions in docs)
-3. **Any SQL database** - Easy to adapt
-
-## 📚 **Usage Guide**
-
-### **1. Create Account**
-- Click "Get Started"
-- Fill in your details
-- Verify email (optional)
-
-### **2. Upload Documents**
-- Navigate to "Upload Documents"
-- Drag & drop files or click to browse
-- Wait for AI processing
-
-### **3. Study with Generated Content**
-- **Notes**: Review AI-generated summaries
-- **Flashcards**: Test your recall
-- **Quizzes**: Assess your understanding
-- **Chat**: Ask questions about your materials
-
-### **4. Track Progress**
-- Visit "Profile" to see statistics
-- Monitor study streak
-- View performance analytics
-
-## 🎯 **API Endpoints**
-
-### **Authentication**
-```
-POST /api/auth/register    - Create new user
-POST /api/auth/login      - User login
-GET  /api/auth/me         - Get current user
-```
-
-### **Documents**
-```
-POST /api/documents/upload - Upload file
-GET  /api/documents       - List documents
-DELETE /api/documents/:id  - Delete document
-```
-
-### **Study Content**
-```
-GET    /api/notes         - Get user notes
-POST   /api/notes         - Create note
-PUT    /api/notes/:id     - Update note
-DELETE /api/notes/:id     - Delete note
-
-GET    /api/flashcards    - Get flashcards
-POST   /api/flashcards    - Create flashcard
-PUT    /api/flashcards/:id - Update flashcard
-
-GET    /api/quizzes       - Get quizzes
-POST   /api/quizzes       - Create quiz
-POST   /api/quizzes/:id/attempt - Submit quiz attempt
-```
-
-## 🔒 **Security Features**
-
-- **JWT Authentication** with secure tokens
-- **Password Hashing** with bcrypt
-- **CORS Protection** for API security
-- **Input Validation** on all endpoints
-- **Rate Limiting** for abuse prevention
-
-## 🎨 **UI/UX Features**
-
-- **Responsive Design** - Works on all devices
-- **Dark Mode Ready** - Easy to implement
-- **Loading States** - Smooth user experience
-- **Error Handling** - User-friendly messages
-- **Progress Tracking** - Visual feedback
-
-## 🚀 **Deployment**
-
-### **Development**
-```bash
-npm run dev  # Frontend
-node simple-server.js  # Backend
-```
-
-### **Production**
-```bash
-# Build frontend
-npm run build
-
-# Start backend
-NODE_ENV=production node simple-server.js
-
-# Serve with nginx or similar
-```
-
-## 🤝 **Contributing**
-
-1. Fork the repository
-2. Create feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit pull request
-
-## 📄 **License**
-
-MIT License - feel free to use for personal or commercial projects
-
-## 🆘 **Troubleshooting**
-
-### **Common Issues**
-
-**Backend not starting:**
-```bash
-# Check Node.js version
-node --version  # Should be 18+
-
-# Install dependencies
-cd server && npm install
-
-# Check port availability
-netstat -an | findstr :3001
-```
-
-**Frontend blank page:**
-```bash
-# Clear cache
-npm run dev -- --force
-
-# Check for errors in browser console
-```
-
-**Registration failing:**
-- Ensure backend is running
-- Check network tab in browser
-- Verify CORS settings
-
-### **Getting Help**
-
-1. Check browser console for errors
-2. Verify both servers are running
-3. Review this README
-4. Check `FINAL_SETUP_GUIDE.md`
-
-## 🎉 **What's Next?**
-
-### **Planned Features**
-- [ ] Real Supabase integration
-- [ ] OpenAI GPT-4 integration
-- [ ] Advanced analytics dashboard
-- [ ] Study groups collaboration
-- [ ] Mobile app version
-- [ ] Offline mode support
-
-### **Customization**
-- Easy to add new features
-- Modular component architecture
-- Scalable backend design
-- Customizable AI responses
+| Layer | Technology |
+|---|---|
+| Frontend | React 18, TypeScript, Vite, Tailwind CSS, React Router v6 |
+| Backend | Node.js, Express.js |
+| Database | MongoDB (Mongoose) |
+| AI | Google Gemini 1.5 Flash |
+| Auth | JWT (bcryptjs) |
 
 ---
 
-## 📞 **Support**
+## Local Development
 
-🎉 **Your AI-powered study assistant is ready!**
+### Prerequisites
+- Node.js 18+
+- MongoDB running locally (`mongod`)
+- A Google Gemini API key ([get one free](https://aistudio.google.com/app/apikey))
 
-Start by running `start.bat` and visit `http://localhost:5173`
+### 1. Clone and install
 
-Happy studying! 📚✨
+```bash
+git clone https://github.com/YOUR_USERNAME/lectomate.git
+cd lectomate
+
+# Install frontend dependencies
+npm install
+
+# Install backend dependencies
+cd server && npm install && cd ..
+```
+
+### 2. Configure environment
+
+```bash
+# Backend
+cp server/.env.example server/.env
+# Edit server/.env — set MONGODB_URI and OPENAI_API_KEY
+
+# Frontend (optional for local dev)
+cp .env.example .env
+# VITE_API_URL is not needed locally — defaults to http://localhost:3001
+```
+
+### 3. Run
+
+```bash
+# Terminal 1 — backend
+cd server && npm run dev
+
+# Terminal 2 — frontend
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173)
+
+---
+
+## Deployment
+
+### Architecture
+
+```
+┌─────────────────────┐     HTTPS      ┌──────────────────────┐
+│   Vercel / Netlify  │ ─────────────► │  Railway / Render    │
+│   (React frontend)  │                │  (Express backend)   │
+└─────────────────────┘                └──────────┬───────────┘
+                                                   │
+                                        ┌──────────▼───────────┐
+                                        │   MongoDB Atlas      │
+                                        │   (free M0 cluster)  │
+                                        └──────────────────────┘
+```
+
+---
+
+### Step 1 — MongoDB Atlas (free database)
+
+1. Go to [mongodb.com/atlas](https://www.mongodb.com/atlas) → **Create free account**
+2. Create a **free M0 cluster** (any region)
+3. Under **Database Access** → Add a user with password
+4. Under **Network Access** → Add IP `0.0.0.0/0` (allow all — needed for Railway/Render)
+5. Click **Connect** → **Drivers** → copy the connection string:
+   ```
+   mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/lectomate?retryWrites=true&w=majority
+   ```
+   Save this — you'll need it in Step 2.
+
+---
+
+### Step 2 — Deploy Backend on Railway (free)
+
+1. Go to [railway.app](https://railway.app) → **Login with GitHub**
+2. Click **New Project** → **Deploy from GitHub repo**
+3. Select your repository → set **Root Directory** to `server`
+4. Railway auto-detects Node.js and runs `npm start`
+5. Go to **Variables** tab → add these environment variables:
+
+   | Variable | Value |
+   |---|---|
+   | `NODE_ENV` | `production` |
+   | `PORT` | `3001` |
+   | `MONGODB_URI` | your Atlas connection string from Step 1 |
+   | `OPENAI_API_KEY` | your Gemini API key |
+   | `JWT_SECRET` | any long random string (e.g. `openssl rand -hex 32`) |
+   | `JWT_EXPIRES_IN` | `7d` |
+   | `MAX_FILE_SIZE` | `10485760` |
+   | `UPLOAD_DIR` | `uploads` |
+   | `FRONTEND_URL` | *(leave blank for now — fill in after Step 3)* |
+
+6. Go to **Settings** → **Networking** → **Generate Domain**
+7. Copy your Railway URL (e.g. `https://lectomate-api.up.railway.app`)
+8. Come back and set `FRONTEND_URL` to your Vercel URL (after Step 3)
+
+---
+
+### Step 3 — Deploy Frontend on Vercel (free)
+
+1. Go to [vercel.com](https://vercel.com) → **Login with GitHub**
+2. Click **Add New Project** → import your repository
+3. Vercel auto-detects Vite. Settings should be:
+   - **Framework**: Vite
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `dist`
+   - **Root Directory**: `.` (project root)
+4. Under **Environment Variables** → add:
+
+   | Variable | Value |
+   |---|---|
+   | `VITE_API_URL` | your Railway URL from Step 2 (e.g. `https://lectomate-api.up.railway.app`) |
+
+5. Click **Deploy**
+6. Copy your Vercel URL (e.g. `https://lectomate.vercel.app`)
+7. Go back to Railway → update `FRONTEND_URL` to this Vercel URL
+
+---
+
+### Step 4 — Push your code to GitHub
+
+```bash
+# In your project root
+git init
+git add .
+git commit -m "Initial commit — Lectomate AI Study Assistant"
+
+# Create a repo on github.com, then:
+git remote add origin https://github.com/YOUR_USERNAME/lectomate.git
+git branch -M main
+git push -u origin main
+```
+
+Both Vercel and Railway will auto-redeploy on every push to `main`.
+
+---
+
+## Environment Variables Reference
+
+### Frontend (`.env`)
+
+| Variable | Required | Description |
+|---|---|---|
+| `VITE_API_URL` | Production only | Full URL of your backend (no trailing slash) |
+
+### Backend (`server/.env`)
+
+| Variable | Required | Description |
+|---|---|---|
+| `PORT` | Yes | Server port (Railway sets this automatically) |
+| `NODE_ENV` | Yes | `development` or `production` |
+| `MONGODB_URI` | Yes | MongoDB connection string |
+| `OPENAI_API_KEY` | Yes | Google Gemini API key |
+| `JWT_SECRET` | Yes | Long random secret for signing tokens |
+| `JWT_EXPIRES_IN` | Yes | Token expiry (e.g. `7d`) |
+| `FRONTEND_URL` | Yes | Frontend URL for CORS |
+| `MAX_FILE_SIZE` | No | Max upload size in bytes (default 10MB) |
+| `UPLOAD_DIR` | No | Upload directory name (default `uploads`) |
+
+---
+
+## Features
+
+- **Document Upload** — PDF, DOCX, TXT support
+- **AI Notes** — Structured summaries with key terms highlighted
+- **Flashcards** — AI-generated with spaced repetition tracking
+- **Quizzes** — Multiple-choice and true/false with explanations
+- **AI Chatbot** — Per-document context, embedded PDF viewer
+- **Student Profile** — Avatar upload, account settings, progress tracking
+- **Client-side routing** — Every page has a unique URL
+
+## License
+
+MIT

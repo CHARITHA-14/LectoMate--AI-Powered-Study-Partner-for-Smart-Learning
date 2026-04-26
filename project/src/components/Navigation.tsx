@@ -1,10 +1,8 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
-import {
-  Home, Upload, BookOpen, Brain,
-  ClipboardCheck, MessageCircle, LogOut, User,
-} from 'lucide-react';
+import { Home, Upload, BookOpen, Brain, ClipboardCheck, MessageCircle, LogOut, User } from 'lucide-react';
+import { API_BASE_URL } from '../config/api';
 
 interface NavigationProps {
   onLogout: () => void;
@@ -71,7 +69,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onLogout }) => {
             >
               {user?.avatar ? (
                 <img
-                  src={`http://localhost:3001${user.avatar}`}
+                  src={`${API_BASE_URL}${user.avatar}`}
                   alt={user.name}
                   className="w-6 h-6 rounded-full object-cover mr-1.5"
                 />

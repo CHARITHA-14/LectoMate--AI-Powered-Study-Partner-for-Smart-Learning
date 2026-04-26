@@ -7,8 +7,6 @@ import {
   X, Loader2, MessageCircle, GripVertical,
 } from 'lucide-react';
 
-interface ChatbotInterfaceProps {}
-
 interface Message {
   id: string;
   text: string;
@@ -51,7 +49,7 @@ const BotText: React.FC<{ text: string }> = ({ text }) => (
   </div>
 );
 
-const API = 'http://localhost:3001';
+import { API } from '../config/api';
 
 export const ChatbotInterface: React.FC = () => {
   const { notes } = useUser();

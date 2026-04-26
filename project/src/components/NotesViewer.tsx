@@ -1,12 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
-import {
-  BookOpen, Highlighter as Highlight, ChevronDown, ChevronRight,
-  Send, Bot, User, Brain, ClipboardCheck, Upload, Search,
-  PanelLeftOpen, PanelLeftClose, PanelRightOpen, PanelRightClose,
-  FileText, Loader2, GripVertical,
-} from 'lucide-react';
+import { BookOpen, Highlighter as Highlight, ChevronDown, ChevronRight, Send, Bot, User, Brain, ClipboardCheck, Upload, Search, PanelLeftOpen, PanelLeftClose, PanelRightOpen, PanelRightClose, FileText, Loader2, GripVertical } from 'lucide-react';
+import { API } from '../config/api';
 
 
 
@@ -226,7 +222,7 @@ export const NotesViewer: React.FC = () => {
       botText = 'Please log in to use the AI chat assistant.';
     } else {
       try {
-        const res = await fetch('http://localhost:3001/api/chat/message', {
+        const res = await fetch(`${API}/chat/message`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
           body: JSON.stringify({ message: msg, noteId: selectedNoteId }),

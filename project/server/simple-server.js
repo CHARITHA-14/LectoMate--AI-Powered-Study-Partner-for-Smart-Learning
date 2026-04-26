@@ -6,21 +6,29 @@ const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
-const pdfParse = require('pdf-parse');
 const mammoth = require('mammoth');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
+// pdf-parse has a known issue where it reads a test file on require() in some
+// environments. Suppress that by setting the test-file env var before importing.
+process.env.PDF_PARSE_NO_TEST = '1';
+const pdfParse = require('pdf-parse');
+
 // ── Config ────────────────────────────────────────────────────────
 const genAI = new GoogleGenerativeAI(process.env.OPENAI_API_KEY || '');
 const app = express();
+// Render injects PORT automatically — never hardcode it
 const PORT = Number(process.env.PORT || 3001);
 const JWT_SECRET = process.env.JWT_SECRET || 'lectomate_local_dev_secret';
 const MAX_FILE_SIZE = Number(process.env.MAX_FILE_SIZE || 10 * 1024 * 1024);
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/lectomate';
-const FRONTEND_URLS = (process.env.FRONTEND_URL || 'http://localhost:5173')
+
+// Accept comma-separated origins OR wildcard for CORS
+const rawOrigins = (process.env.FRONTEND_URL || 'http://localhost:5173')
   .split(',').map(o => o.trim()).filter(Boolean);
+const FRONTEND_URLS = rawOrigins;
 
 const resolveRuntimePath = (p, fallback) => {
   const t = (p || '').trim() || fallback;
@@ -41,7 +49,8 @@ const ALLOWED_EXTENSIONS = new Set(['.pdf','.doc','.docx','.txt','.ppt','.pptx']
 const userSchema = new mongoose.Schema({
   name:           { type: String, required: true, trim: true },
   email:          { type: String, required: true, unique: true, lowercase: true, trim: true },
-  password:       { type: String, required: true },
+  // select:false means password is never returned unless explicitly requested with .select('+password')
+  password:       { type: String, required: true, select: false },
   avatar:         { type: String, default: '' },
   joinDate:       { type: Date, default: Date.now },
   studyStreak:    { type: Number, default: 0 },
@@ -405,7 +414,21 @@ const processDocument = async (docRecord) => {
 };
 
 // ── Express setup ─────────────────────────────────────────────────
-app.use(cors({ origin: FRONTEND_URLS, credentials: true }));
+// CORS: allow listed origins OR all origins if FRONTEND_URL contains '*'
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, Render health checks)
+    if (!origin) return callback(null, true);
+    if (FRONTEND_URLS.includes('*') || FRONTEND_URLS.includes(origin)) {
+      return callback(null, true);
+    }
+    // In development, allow all
+    if (process.env.NODE_ENV !== 'production') return callback(null, true);
+    callback(new Error(`CORS: origin ${origin} not allowed`));
+  },
+  credentials: true,
+};
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(UPLOAD_DIR));
@@ -683,16 +706,21 @@ app.use((_req, res) => res.status(404).json({ success:false, error:'Route not fo
 // ── Start server ──────────────────────────────────────────────────
 (async () => {
   try {
-    await mongoose.connect(MONGODB_URI);
-    console.log(`✅ MongoDB connected: ${MONGODB_URI}`);
+    console.log('🔌 Connecting to MongoDB...');
+    await mongoose.connect(MONGODB_URI, {
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
+    });
+    console.log('✅ MongoDB connected');
     ensureDir(UPLOAD_DIR);
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
-      console.log(`📊 Health check: http://localhost:${PORT}/health`);
-      console.log('🗄️ Database: MongoDB');
+    // Must listen on 0.0.0.0 for Render (not just localhost)
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+      console.log(`📊 Health: http://0.0.0.0:${PORT}/health`);
+      console.log(`🌍 NODE_ENV: ${process.env.NODE_ENV || 'development'}`);
     });
   } catch (err) {
-    console.error('❌ Failed to start server:', err);
+    console.error('❌ Failed to start server:', err.message);
     process.exit(1);
   }
 })();

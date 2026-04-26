@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { User, Note, Flashcard, Quiz } from '../types';
+import { API } from '../config/api';
 
 interface UserContextType {
   user: User | null;
@@ -128,7 +129,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
 
   // API base URL
-  const API_BASE = 'http://localhost:3001/api';
+  const API_BASE = API;
 
   // Check for existing token on mount
   useEffect(() => {

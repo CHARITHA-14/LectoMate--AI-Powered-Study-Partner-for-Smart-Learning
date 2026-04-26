@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import { NoteSelector } from './NoteSelector';
-import { 
-  Brain, RotateCcw, CheckCircle, X, ArrowLeft, ArrowRight, Shuffle, Settings
-} from 'lucide-react';
+import { Brain, RotateCcw, CheckCircle, X, ArrowLeft, ArrowRight, Shuffle } from 'lucide-react';
+import { API } from '../config/api';
 
 interface Flashcard {
   id: string;
@@ -22,7 +21,6 @@ export const FlashcardSystem: React.FC = () => {
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
-  const [studyMode, setStudyMode] = useState<'review' | 'learn' | 'test'>('review');
   const [reviewingCard, setReviewingCard] = useState(false);
 
   if (!selectedNoteId) {
@@ -97,7 +95,7 @@ export const FlashcardSystem: React.FC = () => {
     const token = localStorage.getItem('lectomate_token');
     if (token) {
       try {
-        await fetch(`http://localhost:3001/api/flashcards/${currentCard.id}/review`, {
+        await fetch(`${API}/flashcards/${currentCard.id}/review`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

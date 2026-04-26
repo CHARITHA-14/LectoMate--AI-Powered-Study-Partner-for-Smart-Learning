@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import { NoteSelector } from './NoteSelector';
-import { 
-  ClipboardCheck, Clock, CheckCircle, X, Award, BarChart3, RefreshCw, ArrowLeft
-} from 'lucide-react';
+import { ClipboardCheck, Clock, CheckCircle, X, Award, BarChart3, RefreshCw, ArrowLeft } from 'lucide-react';
+import { API } from '../config/api';
 
 export const QuizSystem: React.FC = () => {
   const { getQuizzesByNoteId, notes, loadUserData } = useUser();
@@ -116,14 +115,14 @@ export const QuizSystem: React.FC = () => {
     }));
   };
 
-  const submitQuizAttempt = async (score: { correct: number; total: number; percentage: number }) => {
+  const submitQuizAttempt = async (_score: { correct: number; total: number; percentage: number }) => {
     const token = localStorage.getItem('lectomate_token');
     if (!token) return;
     try {
       const timeSpent = Math.round((Date.now() - quizStartTime) / 1000);
       // Convert answers object to ordered array matching question order
       const answersArray = quiz.map(q => selectedAnswers[q.id] || '');
-      await fetch(`http://localhost:3001/api/quizzes/${currentQuiz.id}/attempt`, {
+      await fetch(`${API}/quizzes/${currentQuiz.id}/attempt`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
