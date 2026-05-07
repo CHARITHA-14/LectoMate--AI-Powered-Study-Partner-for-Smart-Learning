@@ -191,10 +191,15 @@ export const ChatbotInterface: React.FC = () => {
       botText = 'Please log in to use the AI chat assistant.';
     } else {
       try {
-        const res = await fetch(`${API}/api/chat/message`, {
+        // Pass last 12 messages as conversation history for multi-turn context
+        const conversationHistory = history.slice(-12).map(m => ({
+          role: m.sender === 'user' ? 'user' : 'assistant',
+          content: m.text,
+        }));
+        const res = await fetch(`${API}/chat/message`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ message: msg, noteId: selectedNoteId ?? undefined }),
+          body: JSON.stringify({ message: msg, noteId: selectedNoteId ?? undefined, history: conversationHistory }),
         });
         const data = await res.json();
         botText = (res.ok && data.success && data.data?.reply) ? data.data.reply : localFallback(msg);

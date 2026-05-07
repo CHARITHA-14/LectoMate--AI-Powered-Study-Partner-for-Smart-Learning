@@ -71,6 +71,8 @@ const normalizeNote = (raw: any): Note => ({
   uploadDate: toDate(raw.uploadDate || raw.upload_date),
   fileSize: raw.fileSize || raw.file_size || '0 B',
   status: raw.status === 'processing' ? 'processing' : 'completed',
+  summary: raw.summary || '',
+  readingTime: raw.readingTime || raw.reading_time || 0,
   sections: (raw.sections || []).map((section: any, index: number) => ({
     id: section.id || `section-${index + 1}`,
     title: section.title || `Section ${index + 1}`,

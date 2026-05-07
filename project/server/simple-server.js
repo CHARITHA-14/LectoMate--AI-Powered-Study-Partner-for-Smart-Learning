@@ -83,6 +83,8 @@ const noteSchema = new mongoose.Schema({
   uploadDate:       { type: Date, default: Date.now },
   fileSize:         { type: String, default: '0 B' },
   status:           { type: String, enum: ['processing','completed'], default: 'completed' },
+  summary:          { type: String, default: '' },   // AI executive summary
+  readingTime:      { type: Number, default: 0 },    // estimated minutes
   sections:         [sectionSchema],
   tags:             [String],
   rawContent:       { type: String, default: '' },
@@ -199,146 +201,266 @@ const extractTextFromFile = async (filePath, mimeType) => {
 };
 
 // ── AI helpers ────────────────────────────────────────────────────
+
+// Retry helper with exponential backoff
+const withRetry = async (fn, maxAttempts = 3, baseDelayMs = 1000) => {
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      const isLast = attempt === maxAttempts;
+      const isRetryable = err.message && (
+        err.message.includes('503') ||
+        err.message.includes('429') ||
+        err.message.includes('overloaded') ||
+        err.message.includes('timeout')
+      );
+      if (isLast || !isRetryable) throw err;
+      const delay = baseDelayMs * Math.pow(2, attempt - 1);
+      console.warn(`AI attempt ${attempt} failed, retrying in ${delay}ms: ${err.message}`);
+      await new Promise(r => setTimeout(r, delay));
+    }
+  }
+};
+
+// Strip markdown code fences from AI response
+const stripCodeFences = (text) =>
+  text.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim();
+
+// Shuffle array in-place (Fisher-Yates)
+const shuffle = (arr) => {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+};
+
+// Estimate reading time in minutes
+const estimateReadingTime = (text) => Math.max(1, Math.ceil(text.split(/\s+/).length / 200));
+
 const generateAIContent = async (cleanText, originalName) => {
   if (!process.env.OPENAI_API_KEY) return buildFallbackContent(cleanText, originalName);
+
+  const baseName = (originalName || 'Document').replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+
+  // Use gemini-1.5-pro for higher quality document analysis
+  // Split into two calls: (1) summary + sections, (2) flashcards + quiz
+  // This avoids token limits and improves quality of each output
+  const proModel   = genAI.getGenerativeModel({
+    model: 'gemini-1.5-pro',
+    systemInstruction: `You are an expert educational content creator and academic tutor. 
+You produce precise, accurate, and pedagogically sound study materials.
+You ONLY use information from the provided document — never invent facts.
+You always return valid JSON with no markdown, no code blocks, no extra text.`,
+  });
+
+  const flashModel = genAI.getGenerativeModel({
+    model: 'gemini-1.5-flash',
+    systemInstruction: `You are an expert at creating educational flashcards and quiz questions.
+You produce varied, challenging questions that test deep understanding, not just recall.
+You ONLY use information from the provided document.
+You always return valid JSON with no markdown, no code blocks, no extra text.`,
+  });
+
+  // Truncate to fit within token limits (pro handles more context)
+  const truncated = cleanText.length > 28000 ? cleanText.slice(0, 28000) + '\n[Document truncated for length]' : cleanText;
+
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-    const baseName = (originalName || 'Document').replace(/\.[^/.]+$/, '').replace(/[-_]/g,' ');
-    const truncated = cleanText.length > 14000 ? cleanText.slice(0,14000)+'...' : cleanText;
-
-    const prompt = `You are an expert educational content creator. Deeply analyze the following document and produce rich, accurate study materials based ONLY on the actual content.
-
-Return ONLY valid JSON (no markdown, no code blocks, no extra text).
+    // ── Call 1: Title, summary, sections, tags ──────────────────
+    const notesPrompt = `Analyze this document and return ONLY valid JSON:
 
 {
-  "title": "Precise, descriptive title reflecting the actual document topic (3-10 words)",
+  "title": "Precise descriptive title (4-10 words, reflects actual topic)",
+  "summary": "Executive summary: 3-5 sentences covering the main purpose, key arguments, and conclusions of the document. Be specific — use actual names, numbers, and terms from the document.",
+  "tags": ["specific topic", "subject area", "key concept", "domain"],
   "sections": [
     {
       "id": "section-1",
-      "title": "Section heading that reflects actual content",
-      "content": "Detailed 3-6 sentence explanation using actual facts, concepts, and terminology from the document. Do NOT be generic.",
-      "highlights": ["exact term from doc", "another key term", "important concept"]
+      "title": "Descriptive section heading",
+      "content": "4-7 sentences of detailed explanation using actual facts, data, and terminology from the document. Include specific examples, numbers, or quotes where relevant. Do NOT be vague or generic.",
+      "highlights": ["key term 1", "key term 2", "key term 3", "key term 4"]
     }
-  ],
-  "tags": ["specific topic tag", "subject area", "key concept"],
+  ]
+}
+
+Requirements:
+- 5-7 sections covering ALL major topics in the document
+- Each section content must be substantive (4-7 sentences minimum)
+- Highlights must be exact terms/phrases from the document
+- Tags must reflect the actual subject matter
+
+DOCUMENT:
+${truncated}`;
+
+    const notesResult = await withRetry(() => proModel.generateContent(notesPrompt));
+    const notesText   = stripCodeFences(notesResult.response.text().trim());
+    const notesParsed = JSON.parse(notesText);
+
+    // ── Call 2: Flashcards + Quiz ───────────────────────────────
+    // Use a condensed version of the document for flashcard/quiz generation
+    const condensed = cleanText.length > 14000 ? cleanText.slice(0, 14000) : cleanText;
+
+    const studyPrompt = `Based on this document, create study materials. Return ONLY valid JSON:
+
+{
   "flashcards": [
     {
-      "front": "Specific question about a concept, definition, or fact from the document",
-      "back": "Precise answer drawn directly from the document content",
+      "front": "Question testing a specific concept, definition, fact, or relationship",
+      "back": "Precise answer with enough detail to be educational (1-3 sentences)",
       "difficulty": "easy|medium|hard"
     }
   ],
   "quiz": {
-    "title": "Quiz title based on actual document topic",
+    "title": "Quiz: [document topic]",
     "questions": [
       {
         "id": "q1",
         "type": "multiple-choice",
-        "question": "Specific question about actual content in the document",
-        "options": ["Correct answer from document", "Plausible wrong answer", "Another wrong answer", "Another wrong answer"],
-        "correctAnswer": "Correct answer from document",
-        "explanation": "Why this is correct, referencing the document",
+        "question": "Question testing understanding (not just recall)",
+        "options": ["Correct answer", "Plausible distractor 1", "Plausible distractor 2", "Plausible distractor 3"],
+        "correctAnswer": "Correct answer",
+        "explanation": "2-3 sentence explanation of why this is correct, referencing the document",
         "difficulty": "easy|medium|hard"
       }
     ]
   }
 }
 
-STRICT REQUIREMENTS:
-- Generate 4-6 sections covering the main topics of the document
-- Generate 10-15 flashcards covering key definitions, concepts, facts, and relationships
-- Generate 8-10 quiz questions: mix of multiple-choice (6-7) and true-false (2-3)
-- For true-false: options must be exactly ["True", "False"]
-- For multiple-choice: always 4 options, first option is the correct answer (shuffle will happen server-side)
-- ALL content must be specific to this document — no generic filler
-- Flashcard fronts should be varied: definitions, "what is", "how does", "why", "what are the steps"
-- Quiz questions should test understanding, not just recall
+FLASHCARD REQUIREMENTS (generate 12-15):
+- Mix question types: definitions (30%), application (30%), comparison (20%), recall (20%)
+- Easy: basic definitions and facts
+- Medium: relationships between concepts, how/why questions
+- Hard: analysis, application, edge cases
+- Back answers must be complete and educational
 
-Document text:
-${truncated}`;
+QUIZ REQUIREMENTS (generate 10-12 questions):
+- 7-8 multiple-choice with 4 plausible options each
+- 3-4 true-false (options must be exactly ["True", "False"])
+- Questions test UNDERSTANDING not just memorization
+- Distractors must be plausible (common misconceptions, related but wrong answers)
+- Explanations must reference specific document content
 
-    const result = await model.generateContent(prompt);
-    let text = result.response.text().trim();
-    text = text.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/\s*```$/i,'').trim();
-    const parsed = JSON.parse(text);
+DOCUMENT:
+${condensed}`;
 
-    // Shuffle multiple-choice options so correct answer isn't always first
-    const shuffleOptions = (options, correctAnswer) => {
-      if (!Array.isArray(options)) return options;
-      const shuffled = [...options];
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-      }
-      return shuffled;
-    };
+    const studyResult = await withRetry(() => flashModel.generateContent(studyPrompt));
+    const studyText   = stripCodeFences(studyResult.response.text().trim());
+    const studyParsed = JSON.parse(studyText);
 
+    // ── Merge and validate ──────────────────────────────────────
     return {
-      title: parsed.title || baseName,
-      sections: (parsed.sections||[]).map((s,i) => ({
-        id: s.id||`section-${i+1}`,
-        title: s.title||`Section ${i+1}`,
-        content: s.content||'',
-        highlights: Array.isArray(s.highlights)?s.highlights:[]
+      title:       notesParsed.title   || baseName,
+      summary:     notesParsed.summary || '',
+      readingTime: estimateReadingTime(cleanText),
+      sections: (notesParsed.sections || []).map((s, i) => ({
+        id:         s.id         || `section-${i + 1}`,
+        title:      s.title      || `Section ${i + 1}`,
+        content:    s.content    || '',
+        highlights: Array.isArray(s.highlights) ? s.highlights.filter(Boolean) : [],
       })),
-      tags: Array.isArray(parsed.tags) ? parsed.tags : extractKeywords(cleanText).slice(0,5),
-      flashcards: (parsed.flashcards||[]).map(f => ({
-        front: f.front||'',
-        back: f.back||'',
-        difficulty: ['easy','medium','hard'].includes(f.difficulty)?f.difficulty:'medium'
-      })),
-      quiz: parsed.quiz ? {
-        title: parsed.quiz.title||`${parsed.title||baseName} Quiz`,
-        questions: (parsed.quiz.questions||[]).map((q,i) => {
-          const type = ['multiple-choice','true-false','short-answer'].includes(q.type)?q.type:'multiple-choice';
-          const options = type === 'multiple-choice'
-            ? shuffleOptions(q.options, q.correctAnswer)
-            : (type === 'true-false' ? ['True','False'] : undefined);
-          return {
-            id: q.id||`q${i+1}`,
-            type,
-            question: q.question||'',
-            options,
-            correctAnswer: q.correctAnswer||'',
-            explanation: q.explanation||'',
-            difficulty: ['easy','medium','hard'].includes(q.difficulty)?q.difficulty:'medium'
-          };
-        })
-      } : null
+      tags: Array.isArray(notesParsed.tags) && notesParsed.tags.length > 0
+        ? notesParsed.tags
+        : extractKeywords(cleanText).slice(0, 6),
+      flashcards: (studyParsed.flashcards || [])
+        .filter(f => f.front && f.back)
+        .map(f => ({
+          front:      f.front,
+          back:       f.back,
+          difficulty: ['easy', 'medium', 'hard'].includes(f.difficulty) ? f.difficulty : 'medium',
+        })),
+      quiz: studyParsed.quiz ? {
+        title: studyParsed.quiz.title || `${notesParsed.title || baseName} Quiz`,
+        questions: (studyParsed.quiz.questions || [])
+          .filter(q => q.question && q.correctAnswer)
+          .map((q, i) => {
+            const type = ['multiple-choice', 'true-false', 'short-answer'].includes(q.type)
+              ? q.type : 'multiple-choice';
+            const options = type === 'multiple-choice'
+              ? shuffle(Array.isArray(q.options) ? q.options : [q.correctAnswer])
+              : ['True', 'False'];
+            return {
+              id:            q.id || `q${i + 1}`,
+              type,
+              question:      q.question,
+              options,
+              correctAnswer: q.correctAnswer,
+              explanation:   q.explanation || '',
+              difficulty:    ['easy', 'medium', 'hard'].includes(q.difficulty) ? q.difficulty : 'medium',
+            };
+          }),
+      } : null,
     };
+
   } catch (err) {
     console.error('AI content generation failed:', err.message);
-    return buildFallbackContent(cleanText, originalName);
+    // Try flash model as fallback before giving up entirely
+    try {
+      console.log('Retrying with gemini-1.5-flash fallback...');
+      const fallbackModel = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const truncated2 = cleanText.length > 12000 ? cleanText.slice(0, 12000) + '...' : cleanText;
+      const fallbackPrompt = `Analyze this document and return ONLY valid JSON with no markdown:
+{"title":"document title","summary":"3 sentence summary","tags":["tag1","tag2"],"sections":[{"id":"section-1","title":"heading","content":"detailed content","highlights":["term1","term2"]}],"flashcards":[{"front":"question","back":"answer","difficulty":"medium"}],"quiz":{"title":"Quiz","questions":[{"id":"q1","type":"multiple-choice","question":"?","options":["A","B","C","D"],"correctAnswer":"A","explanation":"why","difficulty":"medium"}]}}
+
+Requirements: 4-6 sections, 10 flashcards, 8 quiz questions.
+
+DOCUMENT: ${truncated2}`;
+      const r = await fallbackModel.generateContent(fallbackPrompt);
+      const t = stripCodeFences(r.response.text().trim());
+      const p = JSON.parse(t);
+      return {
+        title: p.title || baseName,
+        summary: p.summary || '',
+        readingTime: estimateReadingTime(cleanText),
+        sections: (p.sections || []).map((s, i) => ({ id: s.id || `section-${i+1}`, title: s.title || `Section ${i+1}`, content: s.content || '', highlights: Array.isArray(s.highlights) ? s.highlights : [] })),
+        tags: Array.isArray(p.tags) ? p.tags : extractKeywords(cleanText).slice(0, 5),
+        flashcards: (p.flashcards || []).map(f => ({ front: f.front || '', back: f.back || '', difficulty: ['easy','medium','hard'].includes(f.difficulty) ? f.difficulty : 'medium' })),
+        quiz: p.quiz ? { title: p.quiz.title || `${p.title} Quiz`, questions: (p.quiz.questions || []).map((q, i) => ({ id: q.id || `q${i+1}`, type: q.type || 'multiple-choice', question: q.question || '', options: Array.isArray(q.options) ? shuffle(q.options) : ['True','False'], correctAnswer: q.correctAnswer || '', explanation: q.explanation || '', difficulty: q.difficulty || 'medium' })) } : null,
+      };
+    } catch (fallbackErr) {
+      console.error('Flash fallback also failed:', fallbackErr.message);
+      return buildFallbackContent(cleanText, originalName);
+    }
   }
 };
 
-const generateChatReply = async (userMessage, notesContext, noteId) => {
+// Chat with full conversation history support
+const generateChatReply = async (userMessage, notesContext, conversationHistory = []) => {
   if (!process.env.OPENAI_API_KEY) return generateFallbackReply(userMessage);
+
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({
+      model: 'gemini-1.5-flash',
+      systemInstruction: `You are an expert AI tutor embedded in Lectomate, an AI-powered study assistant.
+Your role is to help students deeply understand their uploaded documents.
+
+CORE RULES:
+- Always base answers on the provided document context when relevant
+- Be educational: explain WHY, not just WHAT
+- Use clear structure: short paragraphs, bullet points for lists
+- Be encouraging and supportive
+- Never say "I cannot answer" — always provide value
+- If asked to quiz the student, generate 3-5 questions from the document
+- If asked to summarize, provide a structured summary with key points
+- Format responses with **bold** for key terms and - for bullet points`,
+    });
 
     const hasContext = notesContext && notesContext.length > 0;
     const ctxBlock = hasContext
-      ? `=== STUDENT DOCUMENTS ===\n${notesContext.join('\n\n')}\n=== END DOCUMENTS ===`
-      : '(No documents uploaded yet — answer from general knowledge.)';
+      ? `=== STUDENT'S STUDY DOCUMENTS ===\n${notesContext.join('\n\n---\n\n')}\n=== END DOCUMENTS ===\n\n`
+      : '';
 
-    const prompt = `You are an expert AI tutor embedded in Lectomate, a study assistant app. Your job is to help the student understand their uploaded documents.
+    // Build conversation history for multi-turn context
+    const historyBlock = conversationHistory.length > 0
+      ? `=== PREVIOUS CONVERSATION ===\n${conversationHistory.slice(-6).map(m => `${m.role === 'user' ? 'Student' : 'Tutor'}: ${m.content}`).join('\n')}\n=== END HISTORY ===\n\n`
+      : '';
 
-${ctxBlock}
+    const prompt = `${ctxBlock}${historyBlock}Student: ${userMessage}
 
-INSTRUCTIONS:
-- Answer the student's question directly and clearly.
-- If the question relates to the documents above, base your answer on that content.
-- If the question is general, answer from your knowledge.
-- Be concise: 1-3 short paragraphs. Use bullet points when listing items.
-- Never say "I cannot answer" — always provide a helpful response.
-- Do NOT repeat the document text verbatim; explain and teach instead.
+Tutor:`;
 
-Student question: ${userMessage}
-
-Your answer:`;
-
-    const result = await model.generateContent(prompt);
+    const result = await withRetry(() => model.generateContent(prompt));
     const text = result.response.text().trim();
     return text || generateFallbackReply(userMessage);
   } catch (err) {
@@ -349,11 +471,17 @@ Your answer:`;
 
 const generateFallbackReply = (msg) => {
   const m = msg.toLowerCase();
-  if (m.includes('summarize')||m.includes('summarise')||m.includes('summary')) return "I can help summarize your documents! When you upload a document, I automatically generate structured notes with key sections. Check the Notes page to see the full summary.";
-  if (m.includes('flashcard')) return "Flashcards for your documents are automatically generated when you upload. Head to the Flashcards section to study them with spaced repetition!";
-  if (m.includes('quiz')||m.includes('test')) return "Quizzes are automatically created from your uploaded documents. Go to the Quiz section to test your knowledge!";
-  if (m.includes('help')) return "I'm your AI tutor! I can explain concepts, summarize documents, help with flashcards, and answer questions about your study materials. What would you like to know?";
-  return "That's a great question! I'm here to help you understand your study materials. Ask me to explain a concept, summarize a document, or quiz you on any topic from your notes.";
+  if (m.includes('summarize') || m.includes('summarise') || m.includes('summary'))
+    return "I can help summarize your documents! When you upload a document, I automatically generate structured notes with an executive summary and key sections. Check the Notes page to see the full breakdown.";
+  if (m.includes('flashcard'))
+    return "Flashcards are automatically generated when you upload a document — covering key definitions, concepts, and relationships. Head to the Flashcards section to study them with spaced repetition!";
+  if (m.includes('quiz') || m.includes('test'))
+    return "Quizzes with multiple-choice and true/false questions are automatically created from your uploaded documents. Go to the Quiz section to test your knowledge!";
+  if (m.includes('explain') || m.includes('what is') || m.includes('how does'))
+    return "Great question! To give you the most accurate explanation, please select a specific document from the sidebar so I can answer based on your actual study materials.";
+  if (m.includes('help'))
+    return "I'm your AI tutor! I can:\n- Explain concepts from your documents\n- Summarize sections\n- Quiz you on the content\n- Answer questions about your study materials\n\nSelect a document from the sidebar to get started!";
+  return "I'm here to help you understand your study materials! Select a document from the sidebar and ask me anything — I can explain concepts, summarize sections, quiz you, or answer specific questions about the content.";
 };
 
 // ── Document processing ───────────────────────────────────────────
@@ -372,6 +500,8 @@ const processDocument = async (docRecord) => {
       uploadDate:       new Date(),
       fileSize:         formatFileSize(docRecord.fileSize),
       status:           'completed',
+      summary:          aiContent.summary || '',
+      readingTime:      aiContent.readingTime || 0,
       sections:         aiContent.sections,
       tags:             aiContent.tags,
       rawContent:       cleanText,
@@ -668,22 +798,24 @@ app.post('/api/chat/message', authenticate, async (req, res) => {
   const msg = String(req.body.message || '').trim();
   if (!msg) return res.status(400).json({ success:false, error:'Message is required' });
   const noteId = req.body.noteId;
+  const conversationHistory = Array.isArray(req.body.history) ? req.body.history.slice(-10) : [];
 
   // Fetch full note content for rich context
   const allNotes = await NoteModel.find({ userId: req.user.id }).lean();
   const targetNotes = noteId
     ? allNotes.filter(n => n._id.toString() === noteId)
-    : allNotes.slice(0, 3);
+    : allNotes.slice(0, 2); // limit to 2 most recent for general chat
 
-  // Build rich context: title + all section content
+  // Build rich context: title + summary + all section content
   const ctx = targetNotes.map(n => {
+    const summaryBlock = n.summary ? `Summary: ${n.summary}\n` : '';
     const sectionsText = (n.sections || [])
-      .map(s => `  [${s.title}]: ${(s.content || '').slice(0, 600)}`)
-      .join('\n');
-    return `Document: "${n.title}"\n${sectionsText}`;
+      .map(s => `[${s.title}]:\n${(s.content || '').slice(0, 800)}`)
+      .join('\n\n');
+    return `Document: "${n.title}"\n${summaryBlock}${sectionsText}`;
   });
 
-  const reply = await generateChatReply(msg, ctx, noteId);
+  const reply = await generateChatReply(msg, ctx, conversationHistory);
   res.json({ success:true, data:{ reply } });
 });
 

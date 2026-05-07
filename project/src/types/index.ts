@@ -17,6 +17,8 @@ export interface Note {
   uploadDate: Date;
   fileSize: string;
   status: 'processing' | 'completed';
+  summary?: string;
+  readingTime?: number;
   sections: NoteSection[];
   tags: string[];
   rawContent?: string;
