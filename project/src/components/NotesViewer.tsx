@@ -1,7 +1,14 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
-import { BookOpen, Highlighter as Highlight, ChevronDown, ChevronRight, Send, Bot, User, Brain, ClipboardCheck, Upload, Search, PanelLeftOpen, PanelLeftClose, PanelRightOpen, PanelRightClose, FileText, Loader2, GripVertical } from 'lucide-react';import { API } from '../config/api';
+import {
+  BookOpen, Highlighter as Highlight, ChevronDown, ChevronRight,
+  Send, Bot, User, Brain, ClipboardCheck, Upload, Search,
+  PanelLeftOpen, PanelLeftClose, PanelRightOpen, PanelRightClose,
+  FileText, Loader2, GripVertical, Sparkles, Clock, Tag,
+  Hash, ChevronUp, LayoutList, AlignLeft, Eye,
+} from 'lucide-react';
+import { API } from '../config/api';
 
 
 
@@ -109,6 +116,7 @@ export const NotesViewer: React.FC = () => {
     new Set(['summary', 'overview', 'section-1'])
   );
   const [searchTerm, setSearchTerm] = useState('');
+  const [activeTab, setActiveTab] = useState<'overview' | 'detailed'>('overview');
 
   // Chat state
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
@@ -183,6 +191,7 @@ export const NotesViewer: React.FC = () => {
   const selectNote = (noteId: string) => {
     setSelectedNoteId(noteId);
     setExpandedSections(new Set(['summary', 'overview', 'section-1']));
+    setActiveTab('overview');
   };
 
   // ── Chat ──────────────────────────────────────────────────────
@@ -335,13 +344,13 @@ export const NotesViewer: React.FC = () => {
       </div>
 
       {/* ════════════════════════════════════════════════════════
-          CENTER — Notes content
+          CENTER — Interactive Document Summary
       ════════════════════════════════════════════════════════ */}
-      <div className="flex-1 overflow-y-auto min-w-0">
+      <div className="flex-1 overflow-y-auto min-w-0 bg-gray-50">
         <div className="max-w-3xl mx-auto px-6 py-6">
 
           {/* ── Document header ─────────────────────────────── */}
-          <div className="mb-5">
+          <div className="mb-6">
             <div className="flex items-center gap-2 text-xs text-gray-400 mb-2 flex-wrap">
               <FileText size={13} />
               <span className="truncate max-w-xs">{currentDoc.fileName}</span>
@@ -349,120 +358,292 @@ export const NotesViewer: React.FC = () => {
               <span>{currentDoc.uploadDate.toLocaleDateString()}</span>
               {currentDoc.fileSize && <><span>•</span><span>{currentDoc.fileSize}</span></>}
               {currentDoc.readingTime && currentDoc.readingTime > 0 && (
-                <><span>•</span><span>~{currentDoc.readingTime} min read</span></>
+                <><span>•</span><Clock size={11} /><span>{currentDoc.readingTime} min read</span></>
               )}
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 leading-tight">{currentDoc.title}</h1>
+            <h1 className="text-2xl font-bold text-gray-900 leading-tight mb-3">{currentDoc.title}</h1>
 
             {/* Tags */}
             {currentDoc.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mt-3">
+              <div className="flex flex-wrap gap-1.5">
                 {currentDoc.tags.map((tag, i) => (
-                  <span key={i} className="px-2.5 py-0.5 text-xs font-medium text-blue-700 bg-blue-50 border border-blue-100 rounded-full">
-                    {tag}
+                  <span key={i} className="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-medium text-blue-700 bg-blue-50 border border-blue-100 rounded-full">
+                    <Tag size={9} />{tag}
                   </span>
                 ))}
               </div>
             )}
           </div>
 
-          {/* ── AI Summary Card ──────────────────────────────── */}
-          {currentDoc.summary && (
-            <div className="mb-6 bg-gradient-to-br from-teal-50 to-blue-50 border border-teal-200 rounded-xl p-5 shadow-sm">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-7 h-7 bg-teal-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Bot size={15} className="text-white" />
+          {/* ── Stats row ────────────────────────────────────── */}
+          <div className="grid grid-cols-3 gap-3 mb-6">
+            {[
+              { label: 'Sections', value: currentDoc.sections.length, color: 'blue', icon: <LayoutList size={16} className="text-blue-500" /> },
+              { label: 'Key Terms', value: currentDoc.sections.flatMap(s => s.highlights).length, color: 'purple', icon: <Hash size={16} className="text-purple-500" /> },
+              { label: 'Min Read', value: currentDoc.readingTime || Math.max(1, Math.ceil(currentDoc.sections.reduce((a, s) => a + s.content.split(' ').length, 0) / 200)), color: 'teal', icon: <Clock size={16} className="text-teal-500" /> },
+            ].map((stat, i) => (
+              <div key={i} className="bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-3 shadow-sm">
+                <div className={`w-9 h-9 rounded-lg bg-${stat.color}-50 flex items-center justify-center flex-shrink-0`}>
+                  {stat.icon}
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-teal-900">AI Summary</p>
-                  <p className="text-xs text-teal-600">Generated by Gemini AI</p>
+                  <p className="text-xl font-bold text-gray-900">{stat.value}</p>
+                  <p className="text-xs text-gray-500">{stat.label}</p>
                 </div>
-              </div>
-              <p className="text-sm text-gray-700 leading-relaxed">{currentDoc.summary}</p>
-
-              {/* Quick stats */}
-              <div className="flex gap-4 mt-4 pt-3 border-t border-teal-200">
-                <div className="text-center">
-                  <p className="text-lg font-bold text-teal-700">{currentDoc.sections.length}</p>
-                  <p className="text-xs text-teal-600">Sections</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-lg font-bold text-purple-700">{currentDoc.tags.length}</p>
-                  <p className="text-xs text-purple-600">Topics</p>
-                </div>
-                {currentDoc.readingTime && currentDoc.readingTime > 0 && (
-                  <div className="text-center">
-                    <p className="text-lg font-bold text-blue-700">{currentDoc.readingTime}</p>
-                    <p className="text-xs text-blue-600">Min read</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* ── Sections ─────────────────────────────────────── */}
-          <div className="space-y-3">
-            {currentDoc.sections.map((section, idx) => (
-              <div key={section.id} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-                <button
-                  onClick={() => toggleSection(section.id)}
-                  className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-gray-50 transition-colors"
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-700 text-xs font-bold flex items-center justify-center flex-shrink-0">
-                      {idx + 1}
-                    </span>
-                    <h3 className="text-sm font-semibold text-gray-900 truncate">{section.title}</h3>
-                  </div>
-                  {expandedSections.has(section.id)
-                    ? <ChevronDown size={16} className="text-gray-400 flex-shrink-0 ml-2" />
-                    : <ChevronRight size={16} className="text-gray-400 flex-shrink-0 ml-2" />}
-                </button>
-
-                {expandedSections.has(section.id) && (
-                  <div className="px-5 pb-5 border-t border-gray-100">
-                    <div
-                      className="text-gray-700 leading-relaxed mt-4 text-sm"
-                      dangerouslySetInnerHTML={{ __html: highlightText(section.content, section.highlights) }}
-                    />
-                    {section.highlights.length > 0 && (
-                      <div className="mt-4 pt-3 border-t border-gray-50">
-                        <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2 flex items-center gap-1">
-                          <Highlight size={12} /> Key Terms
-                        </h4>
-                        <div className="flex flex-wrap gap-1.5">
-                          {section.highlights.map((term, i) => (
-                            <span key={i} className="px-2.5 py-1 text-xs font-medium text-blue-800 bg-blue-50 border border-blue-100 rounded-full cursor-default hover:bg-blue-100 transition-colors">
-                              {term}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
             ))}
           </div>
 
+          {/* ── Tab switcher ─────────────────────────────────── */}
+          <div className="flex gap-1 p-1 bg-gray-100 rounded-xl mb-6">
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
+                activeTab === 'overview'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <Eye size={15} />
+              Overview
+            </button>
+            <button
+              onClick={() => setActiveTab('detailed')}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
+                activeTab === 'detailed'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <AlignLeft size={15} />
+              Detailed Notes
+            </button>
+          </div>
+
+          {/* ══════════════════════════════════════════════════
+              OVERVIEW TAB — Summary + section previews merged
+          ══════════════════════════════════════════════════ */}
+          {activeTab === 'overview' && (
+            <div className="space-y-5">
+
+              {/* AI Summary hero card */}
+              <div className="relative overflow-hidden bg-gradient-to-br from-teal-600 via-teal-700 to-blue-700 rounded-2xl p-6 text-white shadow-lg">
+                {/* Decorative circles */}
+                <div className="absolute -top-8 -right-8 w-32 h-32 bg-white opacity-5 rounded-full" />
+                <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-white opacity-5 rounded-full" />
+
+                <div className="relative">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-8 h-8 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                      <Sparkles size={16} className="text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-white">AI-Generated Summary</p>
+                      <p className="text-xs text-teal-200">Powered by Gemini AI</p>
+                    </div>
+                  </div>
+                  <p className="text-sm leading-relaxed text-teal-50">
+                    {currentDoc.summary || currentDoc.sections[0]?.content?.slice(0, 400) || 'No summary available.'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Section overview cards — summary + first 150 chars of content */}
+              <div className="space-y-3">
+                <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide flex items-center gap-2">
+                  <LayoutList size={14} /> Document Sections
+                </h2>
+                {currentDoc.sections.map((section, idx) => (
+                  <div
+                    key={section.id}
+                    className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:border-blue-200 hover:shadow-md transition-all duration-200 cursor-pointer group"
+                    onClick={() => {
+                      setActiveTab('detailed');
+                      setTimeout(() => {
+                        setExpandedSections(prev => new Set([...prev, section.id]));
+                        document.getElementById(`section-${section.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }, 50);
+                    }}
+                  >
+                    <div className="p-4">
+                      <div className="flex items-start gap-3">
+                        {/* Section number badge */}
+                        <span className="w-7 h-7 rounded-lg bg-blue-600 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                          {idx + 1}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-2">
+                            <h3 className="text-sm font-semibold text-gray-900 group-hover:text-blue-700 transition-colors">{section.title}</h3>
+                            <ChevronRight size={14} className="text-gray-300 group-hover:text-blue-400 flex-shrink-0 transition-colors" />
+                          </div>
+                          {/* Content preview */}
+                          <p className="text-xs text-gray-500 mt-1 leading-relaxed line-clamp-2">
+                            {section.content.slice(0, 150)}{section.content.length > 150 ? '…' : ''}
+                          </p>
+                          {/* Key terms preview */}
+                          {section.highlights.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-2">
+                              {section.highlights.slice(0, 4).map((term, i) => (
+                                <span key={i} className="px-2 py-0.5 text-xs bg-yellow-50 text-yellow-800 border border-yellow-200 rounded-full">
+                                  {term}
+                                </span>
+                              ))}
+                              {section.highlights.length > 4 && (
+                                <span className="px-2 py-0.5 text-xs text-gray-400">+{section.highlights.length - 4} more</span>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* All key terms cloud */}
+              {(() => {
+                const allTerms = [...new Set(currentDoc.sections.flatMap(s => s.highlights))];
+                return allTerms.length > 0 ? (
+                  <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
+                    <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide flex items-center gap-2 mb-3">
+                      <Highlight size={14} /> All Key Terms
+                    </h2>
+                    <div className="flex flex-wrap gap-2">
+                      {allTerms.map((term, i) => (
+                        <span
+                          key={i}
+                          className="px-3 py-1.5 text-xs font-medium text-blue-800 bg-blue-50 border border-blue-100 rounded-full hover:bg-blue-100 hover:border-blue-300 transition-colors cursor-default"
+                        >
+                          {term}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ) : null;
+              })()}
+            </div>
+          )}
+
+          {/* ══════════════════════════════════════════════════
+              DETAILED NOTES TAB — Full content with highlights
+          ══════════════════════════════════════════════════ */}
+          {activeTab === 'detailed' && (
+            <div className="space-y-4">
+
+              {/* Inline summary banner */}
+              {currentDoc.summary && (
+                <div className="bg-gradient-to-r from-teal-50 to-blue-50 border border-teal-200 rounded-xl p-4 flex gap-3">
+                  <div className="w-6 h-6 bg-teal-600 rounded-md flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Sparkles size={13} className="text-white" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-teal-800 mb-1">Quick Summary</p>
+                    <p className="text-xs text-gray-600 leading-relaxed">{currentDoc.summary}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Expand/Collapse all */}
+              <div className="flex items-center justify-between">
+                <p className="text-xs text-gray-400">{currentDoc.sections.length} sections</p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setExpandedSections(new Set(currentDoc.sections.map(s => s.id)))}
+                    className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1 transition-colors"
+                  >
+                    <ChevronDown size={12} /> Expand all
+                  </button>
+                  <span className="text-gray-300">|</span>
+                  <button
+                    onClick={() => setExpandedSections(new Set())}
+                    className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1 transition-colors"
+                  >
+                    <ChevronUp size={12} /> Collapse all
+                  </button>
+                </div>
+              </div>
+
+              {/* Full sections */}
+              {currentDoc.sections.map((section, idx) => (
+                <div
+                  key={section.id}
+                  id={`section-${section.id}`}
+                  className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+                >
+                  <button
+                    onClick={() => toggleSection(section.id)}
+                    className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className="w-7 h-7 rounded-lg bg-blue-600 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">
+                        {idx + 1}
+                      </span>
+                      <h3 className="text-sm font-semibold text-gray-900">{section.title}</h3>
+                    </div>
+                    <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                      {section.highlights.length > 0 && (
+                        <span className="text-xs text-gray-400 hidden sm:block">{section.highlights.length} terms</span>
+                      )}
+                      {expandedSections.has(section.id)
+                        ? <ChevronDown size={16} className="text-gray-400" />
+                        : <ChevronRight size={16} className="text-gray-400" />}
+                    </div>
+                  </button>
+
+                  {expandedSections.has(section.id) && (
+                    <div className="border-t border-gray-100">
+                      {/* Content */}
+                      <div className="px-5 pt-4 pb-2">
+                        <div
+                          className="text-sm text-gray-700 leading-relaxed"
+                          dangerouslySetInnerHTML={{ __html: highlightText(section.content, section.highlights) }}
+                        />
+                      </div>
+
+                      {/* Key terms */}
+                      {section.highlights.length > 0 && (
+                        <div className="px-5 pb-4 pt-3 border-t border-gray-50 bg-gray-50">
+                          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2 flex items-center gap-1">
+                            <Highlight size={11} /> Key Terms
+                          </p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {section.highlights.map((term, i) => (
+                              <span
+                                key={i}
+                                className="px-2.5 py-1 text-xs font-medium text-blue-800 bg-white border border-blue-200 rounded-full hover:bg-blue-50 transition-colors cursor-default"
+                              >
+                                {term}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* ── Study tools ──────────────────────────────────── */}
-          <div className="mt-8 p-5 bg-white rounded-xl border border-gray-200 shadow-sm">
+          <div className="mt-8 bg-white rounded-xl border border-gray-200 shadow-sm p-5">
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Study Tools</p>
             <div className="flex flex-wrap gap-3">
               <button
                 onClick={() => navigate('/flashcards')}
-                className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white text-sm rounded-lg hover:bg-purple-700 transition-colors"
+                className="flex items-center gap-2 px-4 py-2.5 bg-purple-600 text-white text-sm rounded-lg hover:bg-purple-700 active:bg-purple-800 transition-colors shadow-sm"
               >
-                <Brain size={15} /> Flashcards
+                <Brain size={15} /> Study Flashcards
               </button>
               <button
                 onClick={() => navigate('/quiz')}
-                className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white text-sm rounded-lg hover:bg-orange-700 transition-colors"
+                className="flex items-center gap-2 px-4 py-2.5 bg-orange-600 text-white text-sm rounded-lg hover:bg-orange-700 active:bg-orange-800 transition-colors shadow-sm"
               >
                 <ClipboardCheck size={15} /> Take Quiz
               </button>
             </div>
           </div>
+
         </div>
       </div>
 
