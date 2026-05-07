@@ -2,11 +2,10 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import {
-  BookOpen, Highlighter as Highlight, ChevronDown, ChevronRight,
+  BookOpen, Highlighter as Highlight,
   Send, Bot, User, Brain, ClipboardCheck, Upload, Search,
   PanelLeftOpen, PanelLeftClose, PanelRightOpen, PanelRightClose,
   FileText, Loader2, GripVertical, Sparkles, Clock, Tag,
-  ChevronUp, AlignLeft,
 } from 'lucide-react';
 import { API } from '../config/api';
 
@@ -112,9 +111,6 @@ export const NotesViewer: React.FC = () => {
 
   // Notes state
   const [selectedNoteId, setSelectedNoteId] = useState<string>('');
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(
-    new Set(['summary', 'overview', 'section-1'])
-  );
   const [searchTerm, setSearchTerm] = useState('');
 
   // Chat state
@@ -168,13 +164,6 @@ export const NotesViewer: React.FC = () => {
   );
 
   // ── Helpers ───────────────────────────────────────────────────
-  const toggleSection = (id: string) => {
-    setExpandedSections(prev => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      return next;
-    });
-  };
 
   const highlightText = (text: string, highlights: string[]) => {
     if (!highlights.length) return text;
@@ -189,7 +178,6 @@ export const NotesViewer: React.FC = () => {
 
   const selectNote = (noteId: string) => {
     setSelectedNoteId(noteId);
-    setExpandedSections(new Set(['summary', 'overview', 'section-1']));
   };
 
   // ── Chat ──────────────────────────────────────────────────────
@@ -371,139 +359,61 @@ export const NotesViewer: React.FC = () => {
             )}
           </div>
 
-          {/* ── AI Summary hero ──────────────────────────────── */}
-          <div className="relative overflow-hidden bg-gradient-to-br from-teal-600 via-teal-700 to-blue-700 rounded-2xl p-6 text-white shadow-lg mb-6">
-            <div className="absolute -top-8 -right-8 w-32 h-32 bg-white opacity-5 rounded-full" />
-            <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-white opacity-5 rounded-full" />
-            <div className="relative">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-8 h-8 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
-                  <Sparkles size={16} className="text-white" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-white">AI-Generated Summary</p>
-                  <p className="text-xs text-teal-200">Powered by Gemini AI</p>
-                </div>
+          {/* ── Single unified Document Summary ─────────────── */}
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden mb-5">
+            {/* Card header */}
+            <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-100 bg-gray-50">
+              <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Sparkles size={16} className="text-white" />
               </div>
-              <p className="text-sm leading-relaxed text-teal-50">
-                {currentDoc.summary || currentDoc.sections[0]?.content?.slice(0, 400) || 'No summary available.'}
-              </p>
-              {/* Inline stats */}
-              <div className="flex gap-5 mt-4 pt-3 border-t border-white border-opacity-20">
-                <div>
-                  <p className="text-lg font-bold text-white">{currentDoc.sections.length}</p>
-                  <p className="text-xs text-teal-200">Sections</p>
-                </div>
-                <div>
-                  <p className="text-lg font-bold text-white">{[...new Set(currentDoc.sections.flatMap(s => s.highlights))].length}</p>
-                  <p className="text-xs text-teal-200">Key Terms</p>
-                </div>
-                {currentDoc.readingTime && currentDoc.readingTime > 0 && (
-                  <div>
-                    <p className="text-lg font-bold text-white">{currentDoc.readingTime}</p>
-                    <p className="text-xs text-teal-200">Min Read</p>
-                  </div>
-                )}
+              <div>
+                <p className="text-sm font-semibold text-gray-900">Document Summary</p>
+                <p className="text-xs text-gray-400">AI-generated · Gemini</p>
               </div>
             </div>
-          </div>
 
-          {/* ── Expand / Collapse all ────────────────────────── */}
-          <div className="flex items-center justify-between mb-3">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide flex items-center gap-1.5">
-              <AlignLeft size={13} /> Detailed Notes
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setExpandedSections(new Set(currentDoc.sections.map(s => s.id)))}
-                className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1 transition-colors"
-              >
-                <ChevronDown size={12} /> Expand all
-              </button>
-              <span className="text-gray-300">|</span>
-              <button
-                onClick={() => setExpandedSections(new Set())}
-                className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1 transition-colors"
-              >
-                <ChevronUp size={12} /> Collapse all
-              </button>
-            </div>
-          </div>
-
-          {/* ── Sections ─────────────────────────────────────── */}
-          <div className="space-y-3">
-            {currentDoc.sections.map((section, idx) => (
-              <div
-                key={section.id}
-                id={`section-${section.id}`}
-                className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
-              >
-                <button
-                  onClick={() => toggleSection(section.id)}
-                  className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-gray-50 transition-colors"
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <span className="w-7 h-7 rounded-lg bg-blue-600 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">
-                      {idx + 1}
-                    </span>
-                    <h3 className="text-sm font-semibold text-gray-900">{section.title}</h3>
-                  </div>
-                  <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-                    {section.highlights.length > 0 && (
-                      <span className="text-xs text-gray-400 hidden sm:block">{section.highlights.length} terms</span>
-                    )}
-                    {expandedSections.has(section.id)
-                      ? <ChevronDown size={16} className="text-gray-400" />
-                      : <ChevronRight size={16} className="text-gray-400" />}
-                  </div>
-                </button>
-
-                {expandedSections.has(section.id) && (
-                  <div className="border-t border-gray-100">
-                    <div className="px-5 pt-4 pb-3">
-                      <div
-                        className="text-sm text-gray-700 leading-relaxed"
-                        dangerouslySetInnerHTML={{ __html: highlightText(section.content, section.highlights) }}
-                      />
-                    </div>
-                    {section.highlights.length > 0 && (
-                      <div className="px-5 pb-4 pt-3 border-t border-gray-50 bg-gray-50">
-                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2 flex items-center gap-1">
-                          <Highlight size={11} /> Key Terms
-                        </p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {section.highlights.map((term, i) => (
-                            <span key={i} className="px-2.5 py-1 text-xs font-medium text-blue-800 bg-white border border-blue-200 rounded-full hover:bg-blue-50 transition-colors cursor-default">
-                              {term}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* ── All key terms cloud ──────────────────────────── */}
-          {(() => {
-            const allTerms = [...new Set(currentDoc.sections.flatMap(s => s.highlights))];
-            return allTerms.length > 0 ? (
-              <div className="mt-5 bg-white rounded-xl border border-gray-200 shadow-sm p-5">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide flex items-center gap-2 mb-3">
-                  <Highlight size={13} /> All Key Terms
+            {/* Content */}
+            <div className="px-5 py-5 space-y-5">
+              {/* AI executive summary paragraph */}
+              {(currentDoc.summary || currentDoc.sections[0]?.content) && (
+                <p className="text-sm text-gray-700 leading-relaxed">
+                  {currentDoc.summary || currentDoc.sections[0]?.content?.slice(0, 500)}
                 </p>
-                <div className="flex flex-wrap gap-2">
-                  {allTerms.map((term, i) => (
-                    <span key={i} className="px-3 py-1.5 text-xs font-medium text-blue-800 bg-blue-50 border border-blue-100 rounded-full hover:bg-blue-100 transition-colors cursor-default">
-                      {term}
-                    </span>
-                  ))}
+              )}
+
+              {/* All section content merged as flowing paragraphs */}
+              {currentDoc.sections.map((section, idx) => (
+                <div key={section.id}>
+                  {/* Skip first section content if it was already shown as summary */}
+                  {(idx > 0 || currentDoc.summary) && (
+                    <div
+                      className="text-sm text-gray-700 leading-relaxed"
+                      dangerouslySetInnerHTML={{ __html: highlightText(section.content, section.highlights) }}
+                    />
+                  )}
                 </div>
-              </div>
-            ) : null;
-          })()}
+              ))}
+            </div>
+
+            {/* Key terms footer */}
+            {(() => {
+              const allTerms = [...new Set(currentDoc.sections.flatMap(s => s.highlights))];
+              return allTerms.length > 0 ? (
+                <div className="px-5 pb-5 pt-3 border-t border-gray-100 bg-gray-50">
+                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2.5 flex items-center gap-1.5">
+                    <Highlight size={12} /> Key Terms
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {allTerms.map((term, i) => (
+                      <span key={i} className="px-2.5 py-1 text-xs font-medium text-blue-800 bg-white border border-blue-200 rounded-full hover:bg-blue-50 transition-colors cursor-default">
+                        {term}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ) : null;
+            })()}
+          </div>
 
           {/* ── Study tools ──────────────────────────────────── */}
           <div className="mt-5 bg-white rounded-xl border border-gray-200 shadow-sm p-5">
