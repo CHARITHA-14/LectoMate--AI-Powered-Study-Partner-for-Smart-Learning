@@ -121,14 +121,14 @@ export const ChatbotInterface: React.FC = () => {
     setDocFileUrl(null);
     setMessages([...getHistory(noteId, note.title)]);
 
-    // Try to load the actual file via the document file endpoint
-    // The note has sourceDocumentId which maps to the DocModel _id
     const token = localStorage.getItem('lectomate_token');
-    if (token && (note as any).sourceDocumentId) {
-      const docId = (note as any).sourceDocumentId;
-      // Build authenticated URL — we'll use a blob URL approach
+    // Use sourceDocumentId (now properly typed) to fetch the original file
+    const docId = note.sourceDocumentId;
+
+    if (token && docId) {
       try {
-        const res = await fetch(`${API}/api/documents/${docId}/file`, {
+        // API = http://host/api  →  /api/documents/:id/file  (no double /api)
+        const res = await fetch(`${API}/documents/${docId}/file`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (res.ok) {
@@ -290,57 +290,67 @@ export const ChatbotInterface: React.FC = () => {
           <div className="flex flex-col bg-white border-r border-gray-200 flex-shrink-0 overflow-hidden" style={{ width: docPanelWidth }}>
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-blue-50 flex-shrink-0">
-              <div className="min-w-0">
-                <p className="text-xs font-semibold text-blue-900 truncate">{selectedNote.title}</p>
-                <p className="text-xs text-blue-500 truncate mt-0.5">{selectedNote.fileName} • {selectedNote.fileSize}</p>
+              <div className="min-w-0 flex items-center gap-2">
+                <FileText size={15} className="text-blue-500 flex-shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold text-blue-900 truncate">{selectedNote.title}</p>
+                  <p className="text-xs text-blue-400 truncate mt-0.5">{selectedNote.fileName} · {selectedNote.fileSize}</p>
+                </div>
               </div>
-              <button onClick={handleCloseDoc} className="p-1.5 rounded-lg hover:bg-blue-100 text-blue-400 transition-colors flex-shrink-0 ml-2"><X size={15} /></button>
+              <button
+                onClick={handleCloseDoc}
+                className="p-1.5 rounded-lg hover:bg-blue-100 text-blue-400 hover:text-blue-600 transition-colors flex-shrink-0 ml-2"
+                title="Close document"
+              >
+                <X size={15} />
+              </button>
             </div>
 
-            {/* Tags */}
-            {selectedNote.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 px-4 py-2 border-b border-gray-100 flex-shrink-0">
-                {selectedNote.tags.map((tag, i) => (
-                  <span key={i} className="px-2 py-0.5 text-xs font-medium text-blue-700 bg-blue-50 border border-blue-100 rounded-full">{tag}</span>
-                ))}
-              </div>
-            )}
-
-            {/* File viewer */}
+            {/* File viewer — fills all remaining height */}
             <div className="flex-1 overflow-hidden flex flex-col min-h-0">
-              {docFileUrl && isPdf ? (
-                /* PDF — render directly in iframe */
+              {/* Loading state */}
+              {!docFileUrl && !docLoadError && (
+                <div className="flex-1 flex flex-col items-center justify-center gap-3 bg-gray-50">
+                  <Loader2 size={28} className="text-blue-400 animate-spin" />
+                  <p className="text-xs text-gray-500">Loading document…</p>
+                </div>
+              )}
+
+              {/* PDF — native browser viewer in iframe */}
+              {docFileUrl && isPdf && (
                 <iframe
-                  src={docFileUrl}
+                  src={`${docFileUrl}#toolbar=1&navpanes=1&scrollbar=1`}
                   className="flex-1 w-full border-0"
                   title={selectedNote.fileName}
+                  style={{ minHeight: 0 }}
                 />
-              ) : docFileUrl && !isPdf ? (
-                /* Non-PDF file — show raw text */
+              )}
+
+              {/* Non-PDF with blob URL — show raw extracted text */}
+              {docFileUrl && !isPdf && (
                 <div className="flex-1 overflow-y-auto px-4 py-4">
-                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3 flex items-center gap-1.5">
-                    <FileText size={12} /> Document Content
-                  </p>
-                  <div className="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap break-words bg-gray-50 rounded-lg p-4 border border-gray-100 font-mono">
-                    {(selectedNote as any).rawContent || selectedNote.sections.map(s => `${s.title}\n\n${s.content}`).join('\n\n---\n\n') || 'No content available.'}
+                  <div className="flex items-center gap-2 mb-3 pb-2 border-b border-gray-100">
+                    <FileText size={13} className="text-gray-400" />
+                    <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Document Content</span>
+                  </div>
+                  <div className="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap break-words font-mono bg-gray-50 rounded-lg p-4 border border-gray-100">
+                    {selectedNote.rawContent || selectedNote.sections.map(s => `${s.title}\n\n${s.content}`).join('\n\n---\n\n') || 'No content available.'}
                   </div>
                 </div>
-              ) : docLoadError ? (
-                /* File not accessible — show extracted text */
+              )}
+
+              {/* Error fallback — file not on disk, show extracted text */}
+              {docLoadError && (
                 <div className="flex-1 overflow-y-auto px-4 py-4">
-                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3 flex items-center gap-1.5">
-                    <FileText size={12} /> Extracted Content
-                  </p>
+                  <div className="flex items-center gap-2 mb-3 pb-2 border-b border-gray-100">
+                    <FileText size={13} className="text-gray-400" />
+                    <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Extracted Content</span>
+                    <span className="ml-auto text-xs text-amber-500 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
+                      Original file unavailable
+                    </span>
+                  </div>
                   <div className="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap break-words bg-gray-50 rounded-lg p-4 border border-gray-100">
-                    {(selectedNote as any).rawContent || selectedNote.sections.map(s => `${s.title}\n\n${s.content}`).join('\n\n---\n\n') || 'No content available.'}
-                  </div>
-                </div>
-              ) : (
-                /* Loading */
-                <div className="flex-1 flex items-center justify-center">
-                  <div className="text-center">
-                    <Loader2 size={28} className="mx-auto text-blue-400 animate-spin mb-3" />
-                    <p className="text-xs text-gray-500">Loading document…</p>
+                    {selectedNote.rawContent || selectedNote.sections.map(s => `${s.title}\n\n${s.content}`).join('\n\n---\n\n') || 'No content available.'}
                   </div>
                 </div>
               )}

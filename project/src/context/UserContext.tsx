@@ -81,6 +81,7 @@ const normalizeNote = (raw: any): Note => ({
   })),
   tags: Array.isArray(raw.tags) ? raw.tags : [],
   rawContent: raw.rawContent || raw.raw_content || '',
+  sourceDocumentId: raw.sourceDocumentId || raw.source_document_id || '',
   lastAccessed: raw.lastAccessed || raw.last_accessed
     ? toDate(raw.lastAccessed || raw.last_accessed)
     : undefined

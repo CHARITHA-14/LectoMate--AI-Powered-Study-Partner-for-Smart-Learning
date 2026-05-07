@@ -22,6 +22,7 @@ export interface Note {
   sections: NoteSection[];
   tags: string[];
   rawContent?: string;
+  sourceDocumentId?: string;
   lastAccessed?: Date;
 }
 
