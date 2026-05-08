@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+﻿import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import {
@@ -23,7 +23,7 @@ const chatHistories: Record<string, ChatMessage[]> = {};
 
 const makeWelcome = (noteTitle: string): ChatMessage => ({
   id: 'welcome',
-  text: `Hi! I'm your AI tutor for **${noteTitle}**. Ask me anything — I can explain concepts, summarise sections, or quiz you on the content.`,
+  text: `Hi! I'm your AI tutor for **${noteTitle}**. Ask me anything â€” I can explain concepts, summarise sections, or quiz you on the content.`,
   sender: 'bot',
   timestamp: new Date(),
 });
@@ -35,7 +35,7 @@ const getHistory = (noteId: string, noteTitle: string): ChatMessage[] => {
   return chatHistories[noteId];
 };
 
-// ── Simple markdown-like renderer for bot messages ────────────────
+// â”€â”€ Simple markdown-like renderer for bot messages â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const BotText: React.FC<{ text: string }> = ({ text }) => {
   const lines = text.split('\n');
   return (
@@ -44,10 +44,10 @@ const BotText: React.FC<{ text: string }> = ({ text }) => {
         if (line.startsWith('**') && line.endsWith('**')) {
           return <p key={i} className="font-semibold">{line.slice(2, -2)}</p>;
         }
-        if (line.startsWith('- ') || line.startsWith('• ')) {
+        if (line.startsWith('- ') || line.startsWith('â€¢ ')) {
           return (
             <div key={i} className="flex gap-1.5">
-              <span className="mt-0.5 text-teal-500 flex-shrink-0">•</span>
+              <span className="mt-0.5 text-teal-500 flex-shrink-0">â€¢</span>
               <span>{line.slice(2)}</span>
             </div>
           );
@@ -117,6 +117,7 @@ export const NotesViewer: React.FC = () => {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput]       = useState('');
   const [isTyping, setIsTyping]         = useState(false);
+  const abortRef = useRef<AbortController | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Pick first note on load
@@ -138,7 +139,7 @@ export const NotesViewer: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatMessages, isTyping]);
 
-  // ── Empty state ───────────────────────────────────────────────
+  // â”€â”€ Empty state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   if (notes.length === 0) {
     return (
       <div className="flex items-center justify-center h-[calc(100vh-64px)] bg-gray-50">
@@ -163,7 +164,7 @@ export const NotesViewer: React.FC = () => {
     n.fileName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // ── Helpers ───────────────────────────────────────────────────
+  // â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   const highlightText = (text: string, highlights: string[]) => {
     if (!highlights.length) return text;
@@ -180,24 +181,7 @@ export const NotesViewer: React.FC = () => {
     setSelectedNoteId(noteId);
   };
 
-  // ── Chat ──────────────────────────────────────────────────────
-  const localFallback = useCallback((input: string): string => {
-    const l = input.toLowerCase();
-    if (l.includes('summarise') || l.includes('summarize') || l.includes('summary'))
-      return `Here's a quick summary of "${currentDoc.title}":\n\n${currentDoc.sections[0]?.content?.slice(0, 400) || 'No content available.'}`;
-    if (l.includes('flashcard'))
-      return `Flashcards for "${currentDoc.title}" are ready in the Flashcards section. Head there to study with spaced repetition!`;
-    if (l.includes('quiz') || l.includes('test'))
-      return `A quiz for "${currentDoc.title}" is waiting in the Quiz section. Give it a try!`;
-    if (l.includes('key') || l.includes('concept') || l.includes('topic')) {
-      const terms = currentDoc.sections.flatMap(s => s.highlights).slice(0, 6);
-      return terms.length
-        ? `Key concepts in "${currentDoc.title}":\n\n${terms.map(t => `• ${t}`).join('\n')}`
-        : `The key concepts are covered in the sections of "${currentDoc.title}". Expand them to read more.`;
-    }
-    return `I'm your AI tutor for "${currentDoc.title}". Ask me to explain a concept, summarise a section, or quiz you on the content!`;
-  }, [currentDoc]);
-
+  // â”€â”€ Chat â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const sendMessage = useCallback(async (text?: string) => {
     const msg = (text ?? chatInput).trim();
     if (!msg || isTyping) return;
@@ -210,45 +194,85 @@ export const NotesViewer: React.FC = () => {
     setIsTyping(true);
 
     const token = localStorage.getItem('lectomate_token');
-    let botText = '';
-
     if (!token) {
-      botText = 'Please log in to use the AI chat assistant.';
-    } else {
-      try {
-        // Build conversation history for multi-turn context (last 6 exchanges)
-        const conversationHistory = history.slice(-12).map(m => ({
-          role: m.sender === 'user' ? 'user' : 'assistant',
-          content: m.text,
-        }));
-        const res = await fetch(`${API}/chat/message`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ message: msg, noteId: selectedNoteId, history: conversationHistory }),
-        });
-        const data = await res.json();
-        botText = (res.ok && data.success && data.data?.reply) ? data.data.reply : localFallback(msg);
-      } catch {
-        botText = localFallback(msg);
-      }
+      const e: ChatMessage = { id: (Date.now()+1).toString(), text: 'Please log in to use the AI chat assistant.', sender: 'bot', timestamp: new Date() };
+      chatHistories[selectedNoteId] = [...history, e];
+      setChatMessages([...history, e]);
+      setIsTyping(false);
+      return;
     }
 
-    const botMsg: ChatMessage = { id: (Date.now() + 1).toString(), text: botText, sender: 'bot', timestamp: new Date() };
-    const updated = [...history, botMsg];
-    chatHistories[selectedNoteId] = updated;
-    setChatMessages([...updated]);
-    setIsTyping(false);
-  }, [chatInput, isTyping, selectedNoteId, localFallback]);
+    const convHistory = history.filter(m => m.id !== 'welcome').slice(-10).map(m => ({
+      role: m.sender === 'user' ? 'user' : 'assistant', content: m.text,
+    }));
+
+    const botId = (Date.now() + 1).toString();
+    const botMsg: ChatMessage = { id: botId, text: '', sender: 'bot', timestamp: new Date() };
+    const withBot = [...history, botMsg];
+    chatHistories[selectedNoteId] = withBot;
+    setChatMessages([...withBot]);
+
+    const controller = new AbortController();
+    abortRef.current = controller;
+    let accumulated = '';
+
+    try {
+      const res = await fetch(`${API}/chat/stream`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ message: msg, noteId: selectedNoteId, history: convHistory }),
+        signal: controller.signal,
+      });
+
+      if (!res.ok || !res.body) throw new Error(`HTTP ${res.status}`);
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() ?? '';
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          try {
+            const parsed = JSON.parse(line.slice(6));
+            if (parsed.token) {
+              accumulated += parsed.token;
+              setChatMessages(prev => prev.map(m => m.id === botId ? { ...m, text: accumulated } : m));
+              messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+            }
+            if (parsed.done || parsed.error) {
+              const final: ChatMessage = { id: botId, text: accumulated || parsed.error || '', sender: 'bot', timestamp: new Date() };
+              chatHistories[selectedNoteId] = [...history, final];
+              setChatMessages(prev => prev.map(m => m.id === botId ? final : m));
+            }
+          } catch { /* skip */ }
+        }
+      }
+    } catch (err: any) {
+      const errText = err.name === 'AbortError' ? (accumulated || '(Stopped)') : 'Sorry, something went wrong. Please try again.';
+      const final: ChatMessage = { id: botId, text: errText, sender: 'bot', timestamp: new Date() };
+      chatHistories[selectedNoteId] = [...history, final];
+      setChatMessages(prev => prev.map(m => m.id === botId ? final : m));
+    } finally {
+      setIsTyping(false);
+      abortRef.current = null;
+    }
+  }, [chatInput, isTyping, selectedNoteId]);
 
   const quickPrompts = ['Summarise this document', 'What are the key concepts?', 'Quiz me on this', 'Explain the main ideas'];
 
-  // ── Render ────────────────────────────────────────────────────
+  // â”€â”€ Render â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   return (
     <div className="flex h-[calc(100vh-64px)] overflow-hidden bg-gray-50">
 
-      {/* ════════════════════════════════════════════════════════
-          LEFT PANEL — Search Documents (collapsible)
-      ════════════════════════════════════════════════════════ */}
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          LEFT PANEL â€” Search Documents (collapsible)
+      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
       <div className={`flex flex-col bg-white border-r border-gray-200 transition-all duration-300 flex-shrink-0 ${docsOpen ? 'w-[260px]' : 'w-12'}`}>
 
         {/* Header */}
@@ -275,7 +299,7 @@ export const NotesViewer: React.FC = () => {
                   type="text"
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
-                  placeholder="Search documents…"
+                  placeholder="Search documentsâ€¦"
                   className="w-full pl-8 pr-3 py-2 text-xs border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none bg-gray-50"
                 />
               </div>
@@ -329,22 +353,22 @@ export const NotesViewer: React.FC = () => {
         )}
       </div>
 
-      {/* ════════════════════════════════════════════════════════
-          CENTER — Unified Document Summary & Notes
-      ════════════════════════════════════════════════════════ */}
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          CENTER â€” Unified Document Summary & Notes
+      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
       <div className="flex-1 overflow-y-auto min-w-0 bg-gray-50">
         <div className="max-w-3xl mx-auto px-6 py-6">
 
-          {/* ── Document header ─────────────────────────────── */}
+          {/* â”€â”€ Document header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
           <div className="mb-6">
             <div className="flex items-center gap-2 text-xs text-gray-400 mb-2 flex-wrap">
               <FileText size={13} />
               <span className="truncate max-w-xs">{currentDoc.fileName}</span>
-              <span>•</span>
+              <span>â€¢</span>
               <span>{currentDoc.uploadDate.toLocaleDateString()}</span>
-              {currentDoc.fileSize && <><span>•</span><span>{currentDoc.fileSize}</span></>}
+              {currentDoc.fileSize && <><span>â€¢</span><span>{currentDoc.fileSize}</span></>}
               {currentDoc.readingTime && currentDoc.readingTime > 0 && (
-                <><span>•</span><Clock size={11} /><span>{currentDoc.readingTime} min read</span></>
+                <><span>â€¢</span><Clock size={11} /><span>{currentDoc.readingTime} min read</span></>
               )}
             </div>
             <h1 className="text-2xl font-bold text-gray-900 leading-tight mb-3">{currentDoc.title}</h1>
@@ -359,7 +383,7 @@ export const NotesViewer: React.FC = () => {
             )}
           </div>
 
-          {/* ── Single unified Document Summary ─────────────── */}
+          {/* â”€â”€ Single unified Document Summary â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden mb-5">
             {/* Card header */}
             <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-100 bg-gray-50">
@@ -368,7 +392,7 @@ export const NotesViewer: React.FC = () => {
               </div>
               <div>
                 <p className="text-sm font-semibold text-gray-900">Document Summary</p>
-                <p className="text-xs text-gray-400">AI-generated · Gemini</p>
+                <p className="text-xs text-gray-400">AI-generated Â· Gemini</p>
               </div>
             </div>
 
@@ -415,7 +439,7 @@ export const NotesViewer: React.FC = () => {
             })()}
           </div>
 
-          {/* ── Study tools ──────────────────────────────────── */}
+          {/* â”€â”€ Study tools â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
           <div className="mt-5 bg-white rounded-xl border border-gray-200 shadow-sm p-5">
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Study Tools</p>
             <div className="flex flex-wrap gap-3">
@@ -431,11 +455,11 @@ export const NotesViewer: React.FC = () => {
         </div>
       </div>
 
-      {/* ════════════════════════════════════════════════════════
-          RIGHT PANEL — AI Chat (collapsible + resizable)
-      ════════════════════════════════════════════════════════ */}
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          RIGHT PANEL â€” AI Chat (collapsible + resizable)
+      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
 
-      {/* Drag handle — only visible when chat is open */}
+      {/* Drag handle â€” only visible when chat is open */}
       {chatOpen && (
         <div
           onMouseDown={onChatDragStart}
@@ -505,7 +529,7 @@ export const NotesViewer: React.FC = () => {
                     </div>
                     <div className="bg-gray-100 rounded-2xl rounded-bl-sm px-3 py-2.5 flex items-center gap-1">
                       <Loader2 size={12} className="text-teal-500 animate-spin" />
-                      <span className="text-xs text-gray-500">Thinking…</span>
+                      <span className="text-xs text-gray-500">Thinkingâ€¦</span>
                     </div>
                   </div>
                 </div>
@@ -537,7 +561,7 @@ export const NotesViewer: React.FC = () => {
                   value={chatInput}
                   onChange={e => setChatInput(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && !e.shiftKey && sendMessage()}
-                  placeholder="Ask about this document…"
+                  placeholder="Ask about this documentâ€¦"
                   disabled={isTyping}
                   className="flex-1 text-xs px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-400 focus:border-transparent outline-none disabled:opacity-50 bg-gray-50"
                 />
@@ -564,3 +588,4 @@ export const NotesViewer: React.FC = () => {
     </div>
   );
 };
+

@@ -822,6 +822,105 @@ app.post('/api/chat/message', authenticate, async (req, res) => {
   res.json({ success:true, data:{ reply } });
 });
 
+// ── Streaming chat endpoint (SSE) ─────────────────────────────────
+app.post('/api/chat/stream', authenticate, async (req, res) => {
+  const msg = String(req.body.message || '').trim();
+  if (!msg) return res.status(400).json({ success:false, error:'Message is required' });
+
+  const noteId = req.body.noteId;
+  const conversationHistory = Array.isArray(req.body.history) ? req.body.history.slice(-10) : [];
+
+  // Set SSE headers
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('X-Accel-Buffering', 'no'); // disable nginx buffering
+  res.flushHeaders();
+
+  const send = (data) => {
+    res.write(`data: ${JSON.stringify(data)}\n\n`);
+  };
+
+  try {
+    if (!process.env.OPENAI_API_KEY) {
+      // No API key — send a helpful non-static response
+      const fallback = generateFallbackReply(msg);
+      // Stream it word by word for consistent UX
+      const words = fallback.split(' ');
+      for (const word of words) {
+        send({ token: word + ' ' });
+        await new Promise(r => setTimeout(r, 30));
+      }
+      send({ done: true });
+      return res.end();
+    }
+
+    const allNotes = await NoteModel.find({ userId: req.user.id }).lean();
+    const targetNotes = noteId
+      ? allNotes.filter(n => n._id.toString() === noteId)
+      : allNotes.slice(0, 2);
+
+    const ctx = targetNotes.map(n => {
+      const docText = n.rawContent && n.rawContent.trim()
+        ? n.rawContent.slice(0, 12000)
+        : (n.sections || []).map(s => `[${s.title}]\n${s.content}`).join('\n\n');
+      return `Document: "${n.title}" (${n.fileName})\n${'─'.repeat(50)}\n${docText}`;
+    });
+
+    const model = genAI.getGenerativeModel({
+      model: 'gemini-1.5-flash',
+      systemInstruction:
+        'You are an expert AI tutor embedded in Lectomate, an AI-powered study assistant. ' +
+        'Your job is to help students understand their uploaded documents deeply and accurately. ' +
+        '\n\nCORE RULES:\n' +
+        '- Base all answers on the provided document context. Quote or cite specific parts when relevant.\n' +
+        '- Be educational: explain WHY and HOW, not just WHAT.\n' +
+        '- Use clear formatting: short paragraphs, **bold** for key terms, bullet points (- item) for lists.\n' +
+        '- If asked to quiz the student, generate 3-5 specific questions from the document.\n' +
+        '- If asked to summarize, give a structured summary with the main points.\n' +
+        '- Never say "I cannot answer" or "I don\'t have access" — always provide value.\n' +
+        '- Keep responses focused and concise (2-4 paragraphs max unless a detailed explanation is needed).\n' +
+        '- You can answer ANY general question, not just document-related ones.',
+      generationConfig: { temperature: 0.7, topP: 0.9 },
+    });
+
+    const ctxBlock = ctx.length > 0
+      ? `STUDENT DOCUMENTS:\n${'─'.repeat(40)}\n${ctx.join('\n\n' + '─'.repeat(40) + '\n\n')}\n${'─'.repeat(40)}\n\n`
+      : '';
+
+    // Build proper Gemini chat history
+    const geminiHistory = conversationHistory.slice(-8).map(m => ({
+      role: m.role === 'user' ? 'user' : 'model',
+      parts: [{ text: m.content }],
+    }));
+
+    const chat = model.startChat({ history: geminiHistory });
+
+    const fullMessage = conversationHistory.length === 0
+      ? `${ctxBlock}${msg}`
+      : msg;
+
+    // Stream the response token by token
+    const streamResult = await chat.sendMessageStream(fullMessage);
+
+    for await (const chunk of streamResult.stream) {
+      const chunkText = chunk.text();
+      if (chunkText) {
+        send({ token: chunkText });
+      }
+    }
+
+    send({ done: true });
+    res.end();
+
+  } catch (err) {
+    console.error('Stream chat error:', err.message);
+    send({ error: 'AI response failed. Please try again.' });
+    send({ done: true });
+    res.end();
+  }
+});
+
 app.get('/api/chat/suggestions', authenticate, (_req, res) => {
   res.json({ success:true, data:{ suggestions:['Summarize my latest document','Generate flashcards','Create a quiz','Explain this topic'] } });
 });
