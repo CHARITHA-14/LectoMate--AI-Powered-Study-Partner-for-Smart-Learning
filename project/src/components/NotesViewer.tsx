@@ -163,16 +163,20 @@ export const NotesViewer: React.FC = () => {
   // â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   const highlightText = (text: string, highlights: string[]) => {
-    if (!highlights.length) return text;
-    let result = text;
+    // Strip any existing HTML tags to prevent double-encoding from stored data
+    const clean = text.replace(/<[^>]*>/g, '');
+    if (!highlights.length) return clean;
+    let result = clean;
     highlights.forEach(h => {
+      if (!h || !h.trim()) return;
       const escaped = h.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      const regex = new RegExp(`(${escaped})`, 'gi');
-      result = result.replace(regex, '<mark class="bg-yellow-200 px-0.5 rounded">$1</mark>');
+      try {
+        const regex = new RegExp(`(${escaped})`, 'gi');
+        result = result.replace(regex, '<mark class="bg-yellow-200 px-0.5 rounded font-medium">$1</mark>');
+      } catch { /* skip invalid regex */ }
     });
     return result;
   };
-
   const selectNote = (noteId: string) => {
     setSelectedNoteId(noteId);
   };
@@ -254,12 +258,15 @@ export const NotesViewer: React.FC = () => {
             const payload = JSON.parse(line.slice(6));
             if (payload.token) {
               accumulated += payload.token;
-              // Use a local copy to avoid stale closure
               const currentText = accumulated;
               setChatMessages(prev => prev.map(m => m.id === botId ? { ...m, text: currentText } : m));
+              messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
             }
-            if (payload.done || payload.error) {
-              const finalText = payload.error ? (accumulated || payload.error) : accumulated;
+            if (payload.error) {
+              accumulated += payload.error;
+            }
+            if (payload.done) {
+              const finalText = accumulated || 'No response received. Please try again.';
               const final: ChatMessage = { id: botId, text: finalText, sender: 'bot', timestamp: new Date() };
               chatHistories[noteKey] = [...history, final];
               setChatMessages(prev => prev.map(m => m.id === botId ? final : m));

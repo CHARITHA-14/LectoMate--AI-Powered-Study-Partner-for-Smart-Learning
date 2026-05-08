@@ -254,17 +254,21 @@ export const ChatbotInterface: React.FC = () => {
         for (const line of lines) {
           if (!line.startsWith('data: ')) continue;
           try {
-            const parsed = JSON.parse(line.slice(6));
-            if (parsed.token) {
-              accumulated += parsed.token;
+            const payload = JSON.parse(line.slice(6));
+            if (payload.token) {
+              accumulated += payload.token;
               const currentText = accumulated;
               setMessages(prev => prev.map(m =>
                 m.id === botId ? { ...m, text: currentText, streaming: true } : m
               ));
               messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
             }
-            if (parsed.done || parsed.error) {
-              const finalText = parsed.error ? (accumulated || parsed.error) : accumulated;
+            if (payload.error) {
+              // Treat error as a token so it's visible
+              accumulated += payload.error;
+            }
+            if (payload.done) {
+              const finalText = accumulated || 'No response received. Please try again.';
               const finalMsg: Message = { id: botId, text: finalText, sender: 'bot', timestamp: new Date(), streaming: false };
               chatHistories[chatKey] = [...history, finalMsg];
               setMessages(prev => prev.map(m => m.id === botId ? finalMsg : m));

@@ -888,26 +888,43 @@ app.post('/api/chat/stream', authenticate, async (req, res) => {
       ? `STUDENT DOCUMENTS:\n${'─'.repeat(40)}\n${ctx.join('\n\n' + '─'.repeat(40) + '\n\n')}\n${'─'.repeat(40)}\n\n`
       : '';
 
-    // Build proper Gemini chat history
+    // Build proper Gemini chat history — role must be 'user' or 'model' (not 'assistant')
     const geminiHistory = conversationHistory.slice(-8).map(m => ({
       role: m.role === 'user' ? 'user' : 'model',
       parts: [{ text: m.content }],
     }));
 
-    const chat = model.startChat({ history: geminiHistory });
-
-    const fullMessage = conversationHistory.length === 0
-      ? `${ctxBlock}${msg}`
+    // Always include document context in every message, not just the first
+    const fullMessage = ctxBlock
+      ? `${ctxBlock}Student question: ${msg}`
       : msg;
+
+    let chat;
+    try {
+      // Only use history if it's valid (non-empty and properly formatted)
+      chat = model.startChat({
+        history: geminiHistory.length > 0 ? geminiHistory : [],
+      });
+    } catch (histErr) {
+      console.warn('Chat history error, starting fresh:', histErr.message);
+      chat = model.startChat({ history: [] });
+    }
 
     // Stream the response token by token
     const streamResult = await chat.sendMessageStream(fullMessage);
+    let hasContent = false;
 
     for await (const chunk of streamResult.stream) {
       const chunkText = chunk.text();
       if (chunkText) {
+        hasContent = true;
         send({ token: chunkText });
       }
+    }
+
+    // If no content was streamed, send a fallback
+    if (!hasContent) {
+      send({ token: generateFallbackReply(msg) });
     }
 
     send({ done: true });
@@ -915,7 +932,11 @@ app.post('/api/chat/stream', authenticate, async (req, res) => {
 
   } catch (err) {
     console.error('Stream chat error:', err.message);
-    send({ error: 'AI response failed. Please try again.' });
+    // Always send a readable error token so the bubble shows text
+    const errMsg = err.message && err.message.includes('API key')
+      ? 'API key error. Please check your Gemini API key configuration.'
+      : `Sorry, I encountered an error: ${err.message || 'Unknown error'}. Please try again.`;
+    send({ token: errMsg });
     send({ done: true });
     res.end();
   }
