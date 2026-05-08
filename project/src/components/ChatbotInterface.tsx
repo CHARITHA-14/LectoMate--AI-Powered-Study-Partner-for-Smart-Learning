@@ -257,8 +257,9 @@ export const ChatbotInterface: React.FC = () => {
             const parsed = JSON.parse(line.slice(6));
             if (parsed.token) {
               accumulated += parsed.token;
+              const currentText = accumulated;
               setMessages(prev => prev.map(m =>
-                m.id === botId ? { ...m, text: accumulated, streaming: true } : m
+                m.id === botId ? { ...m, text: currentText, streaming: true } : m
               ));
               messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
             }
@@ -271,6 +272,14 @@ export const ChatbotInterface: React.FC = () => {
           } catch { /* skip malformed SSE line */ }
         }
       }
+
+      // Ensure final state even if 'done' event was missed
+      if (accumulated) {
+        const finalMsg: Message = { id: botId, text: accumulated, sender: 'bot', timestamp: new Date(), streaming: false };
+        chatHistories[chatKey] = [...history, finalMsg];
+        setMessages(prev => prev.map(m => m.id === botId ? finalMsg : m));
+      }
+
     } catch (err: any) {
       if (err.name === 'AbortError') {
         // User stopped — keep what was accumulated

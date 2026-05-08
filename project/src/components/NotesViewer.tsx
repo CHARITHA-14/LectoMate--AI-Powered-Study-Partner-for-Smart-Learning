@@ -36,39 +36,35 @@ const getHistory = (noteId: string, noteTitle: string): ChatMessage[] => {
 };
 
 // â”€â”€ Simple markdown-like renderer for bot messages â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Markdown renderer for bot messages ───────────────────────────
 const BotText: React.FC<{ text: string }> = ({ text }) => {
+  if (!text || text.trim() === '') {
+    return (
+      <div className="flex items-center gap-1 py-1">
+        <span className="w-1.5 h-1.5 bg-teal-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+        <span className="w-1.5 h-1.5 bg-teal-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+        <span className="w-1.5 h-1.5 bg-teal-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+      </div>
+    );
+  }
   const lines = text.split('\n');
   return (
     <div className="space-y-1">
       {lines.map((line, i) => {
-        if (line.startsWith('**') && line.endsWith('**')) {
-          return <p key={i} className="font-semibold">{line.slice(2, -2)}</p>;
-        }
-        if (line.startsWith('- ') || line.startsWith('â€¢ ')) {
-          return (
-            <div key={i} className="flex gap-1.5">
-              <span className="mt-0.5 text-teal-500 flex-shrink-0">â€¢</span>
-              <span>{line.slice(2)}</span>
-            </div>
-          );
-        }
-        if (line.trim() === '') return <div key={i} className="h-1" />;
-        // inline bold: **word**
+        if (line.startsWith('- ') || line.startsWith('* '))
+          return <div key={i} className="flex gap-1.5"><span className="mt-0.5 text-teal-500 flex-shrink-0">•</span><span>{line.slice(2)}</span></div>;
+        if (/^\d+\.\s/.test(line))
+          return <div key={i} className="flex gap-1.5"><span className="text-teal-600 flex-shrink-0 font-semibold text-xs mt-0.5">{line.match(/^\d+/)?.[0]}.</span><span>{line.replace(/^\d+\.\s/, '')}</span></div>;
+        if (line.startsWith('## ')) return <p key={i} className="font-bold text-gray-900 mt-1">{line.slice(3)}</p>;
+        if (line.startsWith('# '))  return <p key={i} className="font-bold text-gray-900 text-base mt-1">{line.slice(2)}</p>;
+        if (line.trim() === '---')  return <hr key={i} className="border-gray-200 my-1" />;
+        if (line.trim() === '')     return <div key={i} className="h-1" />;
         const parts = line.split(/(\*\*[^*]+\*\*)/g);
-        return (
-          <p key={i}>
-            {parts.map((part, j) =>
-              part.startsWith('**') && part.endsWith('**')
-                ? <strong key={j}>{part.slice(2, -2)}</strong>
-                : part
-            )}
-          </p>
-        );
+        return <p key={i}>{parts.map((part, j) => part.startsWith('**') && part.endsWith('**') ? <strong key={j}>{part.slice(2,-2)}</strong> : part)}</p>;
       })}
     </div>
   );
 };
-
 export const NotesViewer: React.FC = () => {
   const { notes } = useUser();
   const navigate = useNavigate();
@@ -186,9 +182,12 @@ export const NotesViewer: React.FC = () => {
     const msg = (text ?? chatInput).trim();
     if (!msg || isTyping) return;
 
+    // Capture noteId at call time to avoid stale closure
+    const noteKey = selectedNoteId;
+
     const userMsg: ChatMessage = { id: Date.now().toString(), text: msg, sender: 'user', timestamp: new Date() };
-    const history = [...(chatHistories[selectedNoteId] || []), userMsg];
-    chatHistories[selectedNoteId] = history;
+    const history = [...(chatHistories[noteKey] || []), userMsg];
+    chatHistories[noteKey] = history;
     setChatMessages([...history]);
     setChatInput('');
     setIsTyping(true);
@@ -196,7 +195,7 @@ export const NotesViewer: React.FC = () => {
     const token = localStorage.getItem('lectomate_token');
     if (!token) {
       const e: ChatMessage = { id: (Date.now()+1).toString(), text: 'Please log in to use the AI chat assistant.', sender: 'bot', timestamp: new Date() };
-      chatHistories[selectedNoteId] = [...history, e];
+      chatHistories[noteKey] = [...history, e];
       setChatMessages([...history, e]);
       setIsTyping(false);
       return;
@@ -206,10 +205,10 @@ export const NotesViewer: React.FC = () => {
       role: m.sender === 'user' ? 'user' : 'assistant', content: m.text,
     }));
 
-    const botId = (Date.now() + 1).toString();
+    const botId = `bot-${Date.now()}`;
     const botMsg: ChatMessage = { id: botId, text: '', sender: 'bot', timestamp: new Date() };
     const withBot = [...history, botMsg];
-    chatHistories[selectedNoteId] = withBot;
+    chatHistories[noteKey] = withBot;
     setChatMessages([...withBot]);
 
     const controller = new AbortController();
@@ -220,11 +219,24 @@ export const NotesViewer: React.FC = () => {
       const res = await fetch(`${API}/chat/stream`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ message: msg, noteId: selectedNoteId, history: convHistory }),
+        body: JSON.stringify({ message: msg, noteId: noteKey || undefined, history: convHistory }),
         signal: controller.signal,
       });
 
-      if (!res.ok || !res.body) throw new Error(`HTTP ${res.status}`);
+      if (!res.ok || !res.body) {
+        // Fallback to non-streaming endpoint
+        const fallbackRes = await fetch(`${API}/chat/message`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ message: msg, noteId: noteKey || undefined, history: convHistory }),
+        });
+        const fallbackData = await fallbackRes.json();
+        const replyText = fallbackData?.data?.reply || 'Sorry, I could not get a response. Please try again.';
+        const final: ChatMessage = { id: botId, text: replyText, sender: 'bot', timestamp: new Date() };
+        chatHistories[noteKey] = [...history, final];
+        setChatMessages(prev => prev.map(m => m.id === botId ? final : m));
+        return;
+      }
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
@@ -239,24 +251,36 @@ export const NotesViewer: React.FC = () => {
         for (const line of lines) {
           if (!line.startsWith('data: ')) continue;
           try {
-            const parsed = JSON.parse(line.slice(6));
-            if (parsed.token) {
-              accumulated += parsed.token;
-              setChatMessages(prev => prev.map(m => m.id === botId ? { ...m, text: accumulated } : m));
-              messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+            const payload = JSON.parse(line.slice(6));
+            if (payload.token) {
+              accumulated += payload.token;
+              // Use a local copy to avoid stale closure
+              const currentText = accumulated;
+              setChatMessages(prev => prev.map(m => m.id === botId ? { ...m, text: currentText } : m));
             }
-            if (parsed.done || parsed.error) {
-              const final: ChatMessage = { id: botId, text: accumulated || parsed.error || '', sender: 'bot', timestamp: new Date() };
-              chatHistories[selectedNoteId] = [...history, final];
+            if (payload.done || payload.error) {
+              const finalText = payload.error ? (accumulated || payload.error) : accumulated;
+              const final: ChatMessage = { id: botId, text: finalText, sender: 'bot', timestamp: new Date() };
+              chatHistories[noteKey] = [...history, final];
               setChatMessages(prev => prev.map(m => m.id === botId ? final : m));
             }
-          } catch { /* skip */ }
+          } catch { /* skip malformed line */ }
         }
       }
+
+      // Ensure final state is set even if 'done' event was missed
+      if (accumulated) {
+        const final: ChatMessage = { id: botId, text: accumulated, sender: 'bot', timestamp: new Date() };
+        chatHistories[noteKey] = [...history, final];
+        setChatMessages(prev => prev.map(m => m.id === botId ? final : m));
+      }
+
     } catch (err: any) {
-      const errText = err.name === 'AbortError' ? (accumulated || '(Stopped)') : 'Sorry, something went wrong. Please try again.';
+      const errText = err.name === 'AbortError'
+        ? (accumulated || '(Response stopped)')
+        : 'Sorry, something went wrong. Please try again.';
       const final: ChatMessage = { id: botId, text: errText, sender: 'bot', timestamp: new Date() };
-      chatHistories[selectedNoteId] = [...history, final];
+      chatHistories[noteKey] = [...history, final];
       setChatMessages(prev => prev.map(m => m.id === botId ? final : m));
     } finally {
       setIsTyping(false);
