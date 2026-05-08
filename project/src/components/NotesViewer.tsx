@@ -299,18 +299,18 @@ export const NotesViewer: React.FC = () => {
 
   // â”€â”€ Render â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   return (
-    <div className="flex h-[calc(100vh-64px)] overflow-hidden bg-gray-50">
+    <div className="flex h-[calc(100vh-64px)] overflow-hidden bg-gray-50 dark:bg-gray-950 transition-colors duration-200">
 
       {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
           LEFT PANEL â€” Search Documents (collapsible)
       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
-      <div className={`flex flex-col bg-white border-r border-gray-200 transition-all duration-300 flex-shrink-0 ${docsOpen ? 'w-[260px]' : 'w-12'}`}>
+      <div className={`flex flex-col bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 flex-shrink-0 ${docsOpen ? 'w-[260px]' : 'w-12'}`}>
 
         {/* Header */}
-        <div className={`flex items-center border-b border-gray-100 px-3 py-3 gap-2 ${docsOpen ? 'justify-between' : 'justify-center'}`}>
+        <div className={`flex items-center border-b border-gray-100 dark:border-gray-700 px-3 py-3 gap-2 ${docsOpen ? 'justify-between' : 'justify-center'}`}>
           <button
             onClick={() => setDocsOpen(v => !v)}
-            className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors flex-shrink-0"
+            className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 transition-colors flex-shrink-0"
             title={docsOpen ? 'Collapse documents' : 'Open documents'}
           >
             {docsOpen ? <PanelLeftClose size={17} /> : <PanelLeftOpen size={17} />}
@@ -331,7 +331,7 @@ export const NotesViewer: React.FC = () => {
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
                   placeholder="Search documentsâ€¦"
-                  className="w-full pl-8 pr-3 py-2 text-xs border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none bg-gray-50"
+                  className="w-full pl-8 pr-3 py-2 text-xs border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none bg-gray-50 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-500"
                 />
               </div>
             </div>
@@ -347,8 +347,8 @@ export const NotesViewer: React.FC = () => {
                     onClick={() => selectNote(note.id)}
                     className={`w-full text-left px-3 py-2.5 rounded-lg transition-all ${
                       selectedNoteId === note.id
-                        ? 'bg-blue-50 border border-blue-200'
-                        : 'hover:bg-gray-50 border border-transparent'
+                        ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700'
+                        : 'hover:bg-gray-50 dark:hover:bg-gray-800 border border-transparent'
                     }`}
                   >
                     <div className={`text-xs font-medium truncate ${selectedNoteId === note.id ? 'text-blue-900' : 'text-gray-800'}`}>
@@ -365,7 +365,7 @@ export const NotesViewer: React.FC = () => {
             <div className="px-3 pb-3 border-t border-gray-100 pt-3">
               <button
                 onClick={() => navigate('/upload')}
-                className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
               >
                 <Upload size={13} /> Upload New Document
               </button>
@@ -374,10 +374,10 @@ export const NotesViewer: React.FC = () => {
         ) : (
           /* Collapsed icons */
           <div className="flex flex-col items-center gap-3 pt-4">
-            <button onClick={() => setDocsOpen(true)} className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 transition-colors" title="Search documents">
+            <button onClick={() => setDocsOpen(true)} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 dark:text-gray-500 transition-colors" title="Search documents">
               <Search size={17} />
             </button>
-            <button onClick={() => setDocsOpen(true)} className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 transition-colors" title="Documents">
+            <button onClick={() => setDocsOpen(true)} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 dark:text-gray-500 transition-colors" title="Documents">
               <BookOpen size={17} />
             </button>
           </div>
@@ -387,12 +387,12 @@ export const NotesViewer: React.FC = () => {
       {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
           CENTER â€” Unified Document Summary & Notes
       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
-      <div className="flex-1 overflow-y-auto min-w-0 bg-gray-50">
+      <div className="flex-1 overflow-y-auto min-w-0 bg-gray-50 dark:bg-gray-950">
         <div className="max-w-3xl mx-auto px-6 py-6">
 
           {/* â”€â”€ Document header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
           <div className="mb-6">
-            <div className="flex items-center gap-2 text-xs text-gray-400 mb-2 flex-wrap">
+            <div className="flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500 mb-2 flex-wrap">
               <FileText size={13} />
               <span className="truncate max-w-xs">{currentDoc.fileName}</span>
               <span>â€¢</span>
@@ -402,11 +402,11 @@ export const NotesViewer: React.FC = () => {
                 <><span>â€¢</span><Clock size={11} /><span>{currentDoc.readingTime} min read</span></>
               )}
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 leading-tight mb-3">{currentDoc.title}</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white leading-tight mb-3">{currentDoc.title}</h1>
             {currentDoc.tags.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {currentDoc.tags.map((tag, i) => (
-                  <span key={i} className="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-medium text-blue-700 bg-blue-50 border border-blue-100 rounded-full">
+                  <span key={i} className="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-medium text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-full">
                     <Tag size={9} />{tag}
                   </span>
                 ))}
@@ -415,15 +415,15 @@ export const NotesViewer: React.FC = () => {
           </div>
 
           {/* â”€â”€ Single unified Document Summary â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden mb-5">
+          <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md dark:hover:shadow-gray-800 overflow-hidden mb-5 transition-all duration-200">
             {/* Card header */}
-            <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-100 bg-gray-50">
+            <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
               <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center flex-shrink-0">
                 <Sparkles size={16} className="text-white" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-gray-900">Document Summary</p>
-                <p className="text-xs text-gray-400">AI-generated Â· Gemini</p>
+                <p className="text-sm font-semibold text-gray-900 dark:text-white">Document Summary</p>
+
               </div>
             </div>
 
@@ -431,7 +431,7 @@ export const NotesViewer: React.FC = () => {
             <div className="px-5 py-5 space-y-5">
               {/* AI executive summary paragraph */}
               {(currentDoc.summary || currentDoc.sections[0]?.content) && (
-                <p className="text-sm text-gray-700 leading-relaxed">
+                <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                   {currentDoc.summary || currentDoc.sections[0]?.content?.slice(0, 500)}
                 </p>
               )}
@@ -454,13 +454,13 @@ export const NotesViewer: React.FC = () => {
             {(() => {
               const allTerms = [...new Set(currentDoc.sections.flatMap(s => s.highlights))];
               return allTerms.length > 0 ? (
-                <div className="px-5 pb-5 pt-3 border-t border-gray-100 bg-gray-50">
-                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2.5 flex items-center gap-1.5">
+                <div className="px-5 pb-5 pt-3 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                  <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-2.5 flex items-center gap-1.5">
                     <Highlight size={12} /> Key Terms
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {allTerms.map((term, i) => (
-                      <span key={i} className="px-2.5 py-1 text-xs font-medium text-blue-800 bg-white border border-blue-200 rounded-full hover:bg-blue-50 transition-colors cursor-default">
+                      <span key={i} className="px-2.5 py-1 text-xs font-medium text-blue-700 dark:text-blue-300 bg-white dark:bg-gray-800 border border-blue-200 dark:border-blue-700 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors cursor-default">
                         {term}
                       </span>
                     ))}
@@ -471,8 +471,8 @@ export const NotesViewer: React.FC = () => {
           </div>
 
           {/* â”€â”€ Study tools â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
-          <div className="mt-5 bg-white rounded-xl border border-gray-200 shadow-sm p-5">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Study Tools</p>
+          <div className="mt-5 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-5">
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3">Study Tools</p>
             <div className="flex flex-wrap gap-3">
               <button onClick={() => navigate('/flashcards')} className="flex items-center gap-2 px-4 py-2.5 bg-purple-600 text-white text-sm rounded-lg hover:bg-purple-700 transition-colors shadow-sm">
                 <Brain size={15} /> Study Flashcards
@@ -494,7 +494,7 @@ export const NotesViewer: React.FC = () => {
       {chatOpen && (
         <div
           onMouseDown={onChatDragStart}
-          className="w-1.5 flex-shrink-0 bg-gray-200 hover:bg-teal-400 active:bg-teal-500 cursor-col-resize transition-colors flex items-center justify-center group"
+          className="w-1.5 flex-shrink-0 bg-gray-200 dark:bg-gray-700 hover:bg-teal-400 active:bg-teal-500 cursor-col-resize transition-colors flex items-center justify-center group"
           title="Drag to resize chat"
         >
           <GripVertical size={14} className="text-gray-400 group-hover:text-white opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -502,15 +502,15 @@ export const NotesViewer: React.FC = () => {
       )}
 
       <div
-        className={`flex flex-col bg-white border-l border-gray-200 transition-all duration-300 flex-shrink-0 ${chatOpen ? '' : 'w-12'}`}
+        className={`flex flex-col bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 transition-all duration-300 flex-shrink-0 ${chatOpen ? '' : 'w-12'}`}
         style={chatOpen ? { width: chatWidth } : undefined}
       >
 
         {/* Header */}
-        <div className={`flex items-center border-b border-gray-100 px-3 py-3 gap-2 ${chatOpen ? 'justify-between' : 'justify-center'}`}>
+        <div className={`flex items-center border-b border-gray-100 dark:border-gray-700 px-3 py-3 gap-2 ${chatOpen ? 'justify-between' : 'justify-center'}`}>
           <button
             onClick={() => setChatOpen(v => !v)}
-            className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors flex-shrink-0"
+            className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 transition-colors flex-shrink-0"
             title={chatOpen ? 'Collapse chat' : 'Open AI chat'}
           >
             {chatOpen ? <PanelRightClose size={17} /> : <PanelRightOpen size={17} />}
@@ -521,7 +521,7 @@ export const NotesViewer: React.FC = () => {
                 <Bot size={15} className="text-teal-600" />
               </div>
               <div className="min-w-0">
-                <p className="text-xs font-semibold text-gray-800 leading-none">AI Tutor</p>
+                <p className="text-xs font-semibold text-gray-800 dark:text-gray-200 leading-none">AI Tutor</p>
                 <p className="text-xs text-teal-600 truncate max-w-[160px] mt-0.5">{currentDoc.title}</p>
               </div>
               <div className="ml-auto w-2 h-2 bg-green-400 rounded-full flex-shrink-0" />
@@ -532,7 +532,7 @@ export const NotesViewer: React.FC = () => {
         {chatOpen ? (
           <>
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-3 space-y-3 min-h-0">
+            <div className="flex-1 overflow-y-auto p-3 space-y-3 min-h-0 dark:bg-gray-900">
               {chatMessages.map(msg => (
                 <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`flex items-end gap-1.5 max-w-[92%] ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}>
@@ -544,7 +544,7 @@ export const NotesViewer: React.FC = () => {
                     <div className={`rounded-2xl px-3 py-2 text-xs leading-relaxed ${
                       msg.sender === 'user'
                         ? 'bg-blue-600 text-white rounded-br-sm'
-                        : 'bg-gray-100 text-gray-800 rounded-bl-sm'
+                        : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-bl-sm'
                     }`}>
                       {msg.sender === 'bot' ? <BotText text={msg.text} /> : <span>{msg.text}</span>}
                     </div>
@@ -569,14 +569,14 @@ export const NotesViewer: React.FC = () => {
             </div>
 
             {/* Quick prompts */}
-            <div className="px-3 pt-2 pb-1 border-t border-gray-100">
+            <div className="px-3 pt-2 pb-1 border-t border-gray-100 dark:border-gray-700 dark:bg-gray-900">
               <div className="flex flex-wrap gap-1">
                 {quickPrompts.map((p, i) => (
                   <button
                     key={i}
                     onClick={() => sendMessage(p)}
                     disabled={isTyping}
-                    className="text-xs px-2.5 py-1 bg-gray-100 hover:bg-teal-50 hover:text-teal-700 text-gray-600 rounded-full transition-colors disabled:opacity-40"
+                    className="text-xs px-2.5 py-1 bg-gray-100 dark:bg-gray-800 hover:bg-teal-50 dark:hover:bg-teal-900/30 hover:text-teal-700 dark:hover:text-teal-400 text-gray-600 dark:text-gray-300 rounded-full transition-colors disabled:opacity-40"
                   >
                     {p}
                   </button>
@@ -585,7 +585,7 @@ export const NotesViewer: React.FC = () => {
             </div>
 
             {/* Input */}
-            <div className="px-3 pb-3 pt-2">
+            <div className="px-3 pb-3 pt-2 dark:bg-gray-900">
               <div className="flex items-center gap-2">
                 <input
                   type="text"
@@ -594,7 +594,7 @@ export const NotesViewer: React.FC = () => {
                   onKeyDown={e => e.key === 'Enter' && !e.shiftKey && sendMessage()}
                   placeholder="Ask about this documentâ€¦"
                   disabled={isTyping}
-                  className="flex-1 text-xs px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-400 focus:border-transparent outline-none disabled:opacity-50 bg-gray-50"
+                  className="flex-1 text-xs px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-teal-400 focus:border-transparent outline-none disabled:opacity-50 bg-gray-50 dark:bg-gray-800 dark:text-gray-200"
                 />
                 <button
                   onClick={() => sendMessage()}
@@ -609,7 +609,7 @@ export const NotesViewer: React.FC = () => {
         ) : (
           /* Collapsed icon */
           <div className="flex flex-col items-center gap-3 pt-4">
-            <button onClick={() => setChatOpen(true)} className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 transition-colors" title="Open AI chat">
+            <button onClick={() => setChatOpen(true)} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 dark:text-gray-500 transition-colors" title="Open AI chat">
               <Bot size={17} />
             </button>
           </div>
