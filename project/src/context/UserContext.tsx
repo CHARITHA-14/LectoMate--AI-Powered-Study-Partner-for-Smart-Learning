@@ -200,52 +200,54 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         return;
       }
 
-      // Load user profile
-      const userResponse = await fetch(`${API_BASE}/auth/me`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      // Load user profile — if this fails, clear token and redirect to login
+      let userResponse: Response;
+      try {
+        userResponse = await fetch(`${API_BASE}/auth/me`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+      } catch {
+        // Network error — backend unreachable
+        console.error('Backend unreachable');
+        setLoading(false);
+        return;
+      }
 
-      if (userResponse.ok) {
-        const userData = await userResponse.json();
+      if (!userResponse.ok) {
+        // Token invalid or expired — clear it
+        if (userResponse.status === 401) {
+          localStorage.removeItem('lectomate_token');
+          setUser(null);
+        }
+        setLoading(false);
+        return;
+      }
+
+      const userData = await userResponse.json();
+      if (userData.data?.user) {
         setUser(normalizeUser(userData.data.user));
       }
 
-      // Load notes
-      const notesResponse = await fetch(`${API_BASE}/notes`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      // Load notes, flashcards, quizzes in parallel — failures are non-fatal
+      const [notesRes, flashcardsRes, quizzesRes] = await Promise.allSettled([
+        fetch(`${API_BASE}/notes`, { headers: { 'Authorization': `Bearer ${token}` } }),
+        fetch(`${API_BASE}/flashcards`, { headers: { 'Authorization': `Bearer ${token}` } }),
+        fetch(`${API_BASE}/quizzes`, { headers: { 'Authorization': `Bearer ${token}` } }),
+      ]);
 
-      if (notesResponse.ok) {
-        const notesData = await notesResponse.json();
-        setNotes((notesData.data.notes || []).map(normalizeNote));
+      if (notesRes.status === 'fulfilled' && notesRes.value.ok) {
+        const notesData = await notesRes.value.json();
+        setNotes((notesData.data?.notes || []).map(normalizeNote));
       }
 
-      // Load flashcards
-      const flashcardsResponse = await fetch(`${API_BASE}/flashcards`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (flashcardsResponse.ok) {
-        const flashcardsData = await flashcardsResponse.json();
-        setFlashcards((flashcardsData.data.flashcards || []).map(normalizeFlashcard));
+      if (flashcardsRes.status === 'fulfilled' && flashcardsRes.value.ok) {
+        const flashcardsData = await flashcardsRes.value.json();
+        setFlashcards((flashcardsData.data?.flashcards || []).map(normalizeFlashcard));
       }
 
-      // Load quizzes
-      const quizzesResponse = await fetch(`${API_BASE}/quizzes`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (quizzesResponse.ok) {
-        const quizzesData = await quizzesResponse.json();
-        setQuizzes((quizzesData.data.quizzes || []).map(normalizeQuiz));
+      if (quizzesRes.status === 'fulfilled' && quizzesRes.value.ok) {
+        const quizzesData = await quizzesRes.value.json();
+        setQuizzes((quizzesData.data?.quizzes || []).map(normalizeQuiz));
       }
     } catch (error) {
       console.error('Error loading user data:', error);

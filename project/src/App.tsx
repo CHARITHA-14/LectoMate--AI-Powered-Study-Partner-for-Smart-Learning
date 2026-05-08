@@ -49,14 +49,12 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
 function AppContent() {
   const { user, loading, logout } = useUser();
   const navigate = useNavigate();
-  const location = useLocation();
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   const handleLogin = () => {
     setShowAuthModal(false);
-    // Go to the page they were trying to reach, or dashboard
-    const from = (location.state as any)?.from?.pathname || ROUTES.home;
-    navigate(from, { replace: true });
+    // Always go to dashboard after login
+    navigate('/dashboard', { replace: true });
   };
 
   const handleLogout = () => {
@@ -86,7 +84,7 @@ function AppContent() {
           path="/home"
           element={
             user ? (
-              <Navigate to={ROUTES.home} replace />
+              <Navigate to="/dashboard" replace />
             ) : (
               <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 flex items-center justify-center">
                 <div className="text-center max-w-2xl mx-auto px-6">

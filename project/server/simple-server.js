@@ -549,19 +549,26 @@ const processDocument = async (docRecord) => {
 };
 
 // â”€â”€ Express setup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// CORS: allow listed origins OR all origins if FRONTEND_URL contains '*'
+// CORS: allow listed origins OR wildcard
 const corsOptions = {
   origin: (origin, callback) => {
-    // Allow requests with no origin (mobile apps, curl, Render health checks)
+    // Allow requests with no origin (Render health checks, curl, mobile)
     if (!origin) return callback(null, true);
-    if (FRONTEND_URLS.includes('*') || FRONTEND_URLS.includes(origin)) {
-      return callback(null, true);
-    }
-    // In development, allow all
+    // Allow all in development
     if (process.env.NODE_ENV !== 'production') return callback(null, true);
+    // Allow wildcard
+    if (FRONTEND_URLS.includes('*')) return callback(null, true);
+    // Allow exact match
+    if (FRONTEND_URLS.includes(origin)) return callback(null, true);
+    // Allow any Vercel preview deployment (*.vercel.app)
+    if (origin.endsWith('.vercel.app')) return callback(null, true);
+    // Allow localhost for testing
+    if (origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1')) return callback(null, true);
     callback(new Error(`CORS: origin ${origin} not allowed`));
   },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
 };
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
