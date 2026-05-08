@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import { NoteSelector } from './NoteSelector';
@@ -43,15 +43,15 @@ export const FlashcardSystem: React.FC = () => {
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center py-12">
-          <Brain size={64} className="mx-auto text-gray-400 mb-4" />
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">No Flashcards Yet</h3>
-          <p className="text-gray-600 mb-6">
+          <Brain size={64} className="mx-auto text-gray-400 dark:text-gray-500 mb-4" />
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No Flashcards Yet</h3>
+          <p className="text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-6">
             Flashcards for "{selectedNote?.title}" haven't been generated yet.
           </p>
           <div className="space-x-4">
             <button
               onClick={() => setSelectedNoteId(null)}
-              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-950 transition-colors"
             >
               Choose Different Document
             </button>
@@ -121,7 +121,7 @@ export const FlashcardSystem: React.FC = () => {
       case 'easy': return 'text-green-600 bg-green-100';
       case 'medium': return 'text-yellow-600 bg-yellow-100';
       case 'hard': return 'text-red-600 bg-red-100';
-      default: return 'text-gray-600 bg-gray-100';
+      default: return 'text-gray-600 dark:text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800';
     }
   };
 
@@ -142,23 +142,23 @@ export const FlashcardSystem: React.FC = () => {
       </div>
 
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
           {selectedNote?.title} - Flashcards
         </h1>
-        <p className="text-gray-600">
+        <p className="text-gray-600 dark:text-gray-400 dark:text-gray-500">
           Study flashcards generated from your document with spaced repetition.
         </p>
       </div>
 
       {/* Study Controls */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center space-x-4 mb-4 sm:mb-0">
             <div className="flex items-center space-x-2">
               <Brain size={20} className="text-purple-600" />
-              <span className="font-semibold text-gray-900">{selectedNote?.title}</span>
+              <span className="font-semibold text-gray-900 dark:text-white">{selectedNote?.title}</span>
             </div>
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
               Card {currentCardIndex + 1} of {flashcards.length}
             </div>
           </div>
@@ -168,7 +168,7 @@ export const FlashcardSystem: React.FC = () => {
             
             <button
               onClick={handleShuffle}
-              className="p-2 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+              className="p-2 text-gray-600 dark:text-gray-400 dark:text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
             >
               <Shuffle size={20} />
             </button>
@@ -181,7 +181,7 @@ export const FlashcardSystem: React.FC = () => {
       <div className="mb-6">
         <div className="relative">
           <div 
-            className="bg-white rounded-xl shadow-lg border border-gray-200 min-h-[400px] flex flex-col cursor-pointer transform transition-transform duration-200 hover:scale-105"
+            className="bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 min-h-[400px] flex flex-col cursor-pointer transform transition-transform duration-200 hover:scale-105"
             onClick={handleFlip}
           >
             <div className="p-8 flex-1 flex flex-col justify-center">
@@ -190,22 +190,22 @@ export const FlashcardSystem: React.FC = () => {
                   <span className={`px-3 py-1 rounded-full text-xs font-medium ${getDifficultyColor(currentCard.difficulty)}`}>
                     {currentCard.difficulty.toUpperCase()}
                   </span>
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">
                     Accuracy: {getAccuracyPercentage(currentCard)}%
                   </div>
                 </div>
                 
                 {!isFlipped ? (
                   <div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-4">Question</h3>
-                    <p className="text-lg text-gray-700 leading-relaxed">{currentCard.front}</p>
-                    <div className="mt-8 text-sm text-gray-500">Click to reveal answer</div>
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Question</h3>
+                    <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">{currentCard.front}</p>
+                    <div className="mt-8 text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">Click to reveal answer</div>
                   </div>
                 ) : (
                   <div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-4">Answer</h3>
-                    <p className="text-lg text-gray-700 leading-relaxed">{currentCard.back}</p>
-                    <div className="mt-8 text-sm text-gray-500">Click to flip back</div>
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Answer</h3>
+                    <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">{currentCard.back}</p>
+                    <div className="mt-8 text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">Click to flip back</div>
                   </div>
                 )}
               </div>
@@ -214,19 +214,19 @@ export const FlashcardSystem: React.FC = () => {
           
           {/* Flip indicator */}
           <div className="absolute top-4 right-4">
-            <RotateCcw size={20} className="text-gray-400" />
+            <RotateCcw size={20} className="text-gray-400 dark:text-gray-500" />
           </div>
         </div>
       </div>
 
       {/* Navigation and Response Buttons */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
           {/* Navigation */}
           <div className="flex items-center space-x-2">
             <button
               onClick={handlePrevious}
-              className="flex items-center px-4 py-2 text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex items-center px-4 py-2 text-gray-600 dark:text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:bg-gray-950 transition-colors"
             >
               <ArrowLeft size={16} className="mr-1" />
               Previous
@@ -234,7 +234,7 @@ export const FlashcardSystem: React.FC = () => {
             
             <button
               onClick={handleNext}
-              className="flex items-center px-4 py-2 text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex items-center px-4 py-2 text-gray-600 dark:text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:bg-gray-950 transition-colors"
             >
               Next
               <ArrowRight size={16} className="ml-1" />
@@ -244,7 +244,7 @@ export const FlashcardSystem: React.FC = () => {
           {/* Response Buttons (shown after flip) */}
           {isFlipped && (
             <div className="flex items-center space-x-3">
-              <span className="text-sm text-gray-600 mr-2">How well did you know this?</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 mr-2">How well did you know this?</span>
               <button 
                 onClick={() => handleReview('hard')}
                 disabled={reviewingCard}
@@ -276,22 +276,22 @@ export const FlashcardSystem: React.FC = () => {
 
       {/* Study Statistics */}
       <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h4 className="font-semibold text-gray-900 mb-2">Cards Reviewed</h4>
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Cards Reviewed</h4>
           <p className="text-2xl font-bold text-purple-600">24</p>
-          <p className="text-sm text-gray-600">Today</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Today</p>
         </div>
         
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h4 className="font-semibold text-gray-900 mb-2">Average Accuracy</h4>
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Average Accuracy</h4>
           <p className="text-2xl font-bold text-green-600">87%</p>
-          <p className="text-sm text-gray-600">This week</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">This week</p>
         </div>
         
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h4 className="font-semibold text-gray-900 mb-2">Study Streak</h4>
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Study Streak</h4>
           <p className="text-2xl font-bold text-blue-600">7</p>
-          <p className="text-sm text-gray-600">Days</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Days</p>
         </div>
       </div>
     </div>

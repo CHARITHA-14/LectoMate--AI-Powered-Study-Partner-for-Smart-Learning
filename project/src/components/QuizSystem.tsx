@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import { NoteSelector } from './NoteSelector';
@@ -46,21 +46,21 @@ export const QuizSystem: React.FC = () => {
         </div>
         
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Select Quiz</h1>
-          <p className="text-gray-600">Choose a quiz for "{selectedNote?.title}"</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Select Quiz</h1>
+          <p className="text-gray-600 dark:text-gray-400 dark:text-gray-500">Choose a quiz for "{selectedNote?.title}"</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {quizzes.map((quiz) => (
             <div
               key={quiz.id}
-              className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all cursor-pointer"
+              className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-all cursor-pointer"
               onClick={() => setSelectedQuizId(quiz.id)}
             >
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">{quiz.title}</h3>
-              <p className="text-gray-600 mb-4">{quiz.questions.length} questions</p>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{quiz.title}</h3>
+              <p className="text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-4">{quiz.questions.length} questions</p>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">
                   {quiz.attempts.length} attempts
                 </span>
                 <button className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors">
@@ -79,15 +79,15 @@ export const QuizSystem: React.FC = () => {
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center py-12">
-          <ClipboardCheck size={64} className="mx-auto text-gray-400 mb-4" />
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">No Quizzes Yet</h3>
-          <p className="text-gray-600 mb-6">
+          <ClipboardCheck size={64} className="mx-auto text-gray-400 dark:text-gray-500 mb-4" />
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No Quizzes Yet</h3>
+          <p className="text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-6">
             Quizzes for "{selectedNote?.title}" haven't been generated yet.
           </p>
           <div className="space-x-4">
             <button
               onClick={() => setSelectedNoteId(null)}
-              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-950 transition-colors"
             >
               Choose Different Document
             </button>
@@ -180,7 +180,7 @@ export const QuizSystem: React.FC = () => {
       case 'easy': return 'text-green-600 bg-green-100';
       case 'medium': return 'text-yellow-600 bg-yellow-100';
       case 'hard': return 'text-red-600 bg-red-100';
-      default: return 'text-gray-600 bg-gray-100';
+      default: return 'text-gray-600 dark:text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800';
     }
   };
 
@@ -198,17 +198,17 @@ export const QuizSystem: React.FC = () => {
           <div className="mb-4">
             <Award size={64} className={`mx-auto ${getScoreColor(score.percentage)}`} />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Quiz Complete!</h1>
-          <p className="text-gray-600">Here are your results</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Quiz Complete!</h1>
+          <p className="text-gray-600 dark:text-gray-400 dark:text-gray-500">Here are your results</p>
         </div>
 
         {/* Score Summary */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8 text-center">
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-8 mb-8 text-center">
           <div className="mb-6">
             <div className={`text-6xl font-bold ${getScoreColor(score.percentage)} mb-2`}>
               {score.percentage}%
             </div>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-400 dark:text-gray-500">
               You got {score.correct} out of {score.total} questions correct
             </p>
           </div>
@@ -234,7 +234,7 @@ export const QuizSystem: React.FC = () => {
                 setCurrentQuestionIndex(0);
                 setSelectedAnswers({});
               }}
-              className="flex items-center px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex items-center px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-950 transition-colors"
             >
               Choose Different Document
             </button>
@@ -248,10 +248,10 @@ export const QuizSystem: React.FC = () => {
             const isCorrect = userAnswer === question.correctAnswer;
             
             return (
-              <div key={question.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div key={question.id} className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center space-x-3">
-                    <div className="text-lg font-semibold text-gray-900">
+                    <div className="text-lg font-semibold text-gray-900 dark:text-white">
                       Question {index + 1}
                     </div>
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(question.difficulty)}`}>
@@ -265,7 +265,7 @@ export const QuizSystem: React.FC = () => {
                   )}
                 </div>
                 
-                <p className="text-gray-800 mb-4">{question.question}</p>
+                <p className="text-gray-800 dark:text-gray-100 mb-4">{question.question}</p>
                 
                 <div className="space-y-2 mb-4">
                   {question.options?.map((option, optionIndex) => (
@@ -276,7 +276,7 @@ export const QuizSystem: React.FC = () => {
                           ? 'border-green-500 bg-green-50'
                           : option === userAnswer && !isCorrect
                           ? 'border-red-500 bg-red-50'
-                          : 'border-gray-200'
+                          : 'border-gray-200 dark:border-gray-700'
                       }`}
                     >
                       <div className="flex items-center justify-between">
@@ -292,9 +292,9 @@ export const QuizSystem: React.FC = () => {
                   ))}
                 </div>
                 
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-blue-900 mb-2">Explanation</h4>
-                  <p className="text-blue-800">{question.explanation}</p>
+                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                  <h4 className="font-semibold text-blue-900 dark:text-blue-300 mb-2">Explanation</h4>
+                  <p className="text-blue-800 dark:text-blue-300">{question.explanation}</p>
                 </div>
               </div>
             );
@@ -323,21 +323,21 @@ export const QuizSystem: React.FC = () => {
       </div>
 
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
           {currentQuiz.title}
         </h1>
-        <p className="text-gray-600">
+        <p className="text-gray-600 dark:text-gray-400 dark:text-gray-500">
           Test your knowledge with questions based on "{selectedNote?.title}".
         </p>
       </div>
 
       {/* Quiz Progress */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
           <div className="flex items-center space-x-4 mb-4 sm:mb-0">
             <ClipboardCheck size={24} className="text-orange-600" />
             <div>
-              <h3 className="font-semibold text-gray-900">
+              <h3 className="font-semibold text-gray-900 dark:text-white">
                 Question {currentQuestionIndex + 1} of {quiz.length}
               </h3>
               <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(currentQuestion.difficulty)}`}>
@@ -347,11 +347,11 @@ export const QuizSystem: React.FC = () => {
           </div>
           
           <div className="flex items-center space-x-4">
-            <div className="flex items-center text-gray-600">
+            <div className="flex items-center text-gray-600 dark:text-gray-400 dark:text-gray-500">
               <Clock size={20} className="mr-2" />
               <span className="font-mono">{formatTime(timeRemaining)}</span>
             </div>
-            <div className="flex items-center text-gray-600">
+            <div className="flex items-center text-gray-600 dark:text-gray-400 dark:text-gray-500">
               <BarChart3 size={20} className="mr-2" />
               <span>{Object.keys(selectedAnswers).length}/{quiz.length} answered</span>
             </div>
@@ -359,7 +359,7 @@ export const QuizSystem: React.FC = () => {
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full bg-gray-200 rounded-full h-2">
+        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
           <div
             className="bg-orange-600 h-2 rounded-full transition-all duration-300"
             style={{ width: `${((currentQuestionIndex + 1) / quiz.length) * 100}%` }}
@@ -368,8 +368,8 @@ export const QuizSystem: React.FC = () => {
       </div>
 
       {/* Question */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">
+      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-8 mb-6">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
           {currentQuestion.question}
         </h2>
 
@@ -381,20 +381,20 @@ export const QuizSystem: React.FC = () => {
               className={`w-full text-left p-4 rounded-lg border transition-all ${
                 selectedAnswers[currentQuestion.id] === option
                   ? 'border-orange-500 bg-orange-50'
-                  : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                  : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:bg-gray-950'
               }`}
             >
               <div className="flex items-center">
                 <div className={`w-4 h-4 rounded-full border-2 mr-3 ${
                   selectedAnswers[currentQuestion.id] === option
                     ? 'border-orange-500 bg-orange-500'
-                    : 'border-gray-300'
+                    : 'border-gray-300 dark:border-gray-600'
                 }`}>
                   {selectedAnswers[currentQuestion.id] === option && (
-                    <div className="w-full h-full rounded-full bg-white scale-50"></div>
+                    <div className="w-full h-full rounded-full bg-white dark:bg-gray-900 scale-50"></div>
                   )}
                 </div>
-                <span className="text-gray-800">{option}</span>
+                <span className="text-gray-800 dark:text-gray-100">{option}</span>
               </div>
             </button>
           ))}
@@ -406,12 +406,12 @@ export const QuizSystem: React.FC = () => {
         <button
           onClick={handlePrevious}
           disabled={currentQuestionIndex === 0}
-          className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-950 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Previous
         </button>
 
-        <div className="text-sm text-gray-600">
+        <div className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
           {Object.keys(selectedAnswers).length > 0 && (
             <span>{Object.keys(selectedAnswers).length} questions answered</span>
           )}

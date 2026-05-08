@@ -220,8 +220,8 @@ export const DocumentUpload: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Upload Documents</h1>
-        <p className="text-gray-600">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Upload Documents</h1>
+        <p className="text-gray-600 dark:text-gray-400 dark:text-gray-500">
           Upload your documents to generate AI-powered notes, flashcards, and quizzes.
         </p>
       </div>
@@ -231,17 +231,17 @@ export const DocumentUpload: React.FC = () => {
         className={`border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 ${
           isDragging
             ? 'border-blue-500 bg-blue-50'
-            : 'border-gray-300 hover:border-gray-400'
+            : 'border-gray-300 dark:border-gray-600 hover:border-gray-400'
         }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
-        <Upload size={48} className="mx-auto text-gray-400 mb-4" />
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+        <Upload size={48} className="mx-auto text-gray-400 dark:text-gray-500 mb-4" />
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
           Drag and drop your files here
         </h3>
-        <p className="text-gray-600 mb-4">
+        <p className="text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-4">
           or click to browse files
         </p>
         <input
@@ -258,7 +258,7 @@ export const DocumentUpload: React.FC = () => {
         >
           Browse Files
         </label>
-        <p className="text-sm text-gray-500 mt-4">
+        <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-4">
           Supports PDF, DOC, DOCX, TXT, PPT, PPTX files up to 10MB
         </p>
       </div>
@@ -266,29 +266,29 @@ export const DocumentUpload: React.FC = () => {
       {/* File List */}
       {uploadedFiles.length > 0 && (
         <div className="mt-8">
-          <h3 className="text-xl font-semibold text-gray-900 mb-4">Processing Files</h3>
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Processing Files</h3>
           <div className="space-y-4">
             {uploadedFiles.map((file, index) => (
-              <div key={index} className="bg-white border border-gray-200 rounded-lg p-4">
+              <div key={index} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <File size={24} className="text-gray-400" />
+                    <File size={24} className="text-gray-400 dark:text-gray-500" />
                     <div>
-                      <p className="font-medium text-gray-900">{file.name}</p>
-                      <p className="text-sm text-gray-600">{file.size}</p>
+                      <p className="font-medium text-gray-900 dark:text-white">{file.name}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">{file.size}</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-3">
                     {file.status === 'uploading' && (
                       <div className="flex items-center space-x-2">
                         <Loader size={20} className="animate-spin text-blue-600" />
-                        <span className="text-sm text-gray-600">Uploading... {file.progress}%</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Uploading... {file.progress}%</span>
                       </div>
                     )}
                     {file.status === 'processing' && (
                       <div className="flex items-center space-x-2">
                         <Loader size={20} className="animate-spin text-orange-600" />
-                        <span className="text-sm text-gray-600">Processing...</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Processing...</span>
                       </div>
                     )}
                     {file.status === 'completed' && (
@@ -305,7 +305,7 @@ export const DocumentUpload: React.FC = () => {
                     )}
                     <button
                       onClick={() => removeFile(file.name)}
-                      className="text-gray-400 hover:text-red-600 transition-colors"
+                      className="text-gray-400 dark:text-gray-500 hover:text-red-600 transition-colors"
                     >
                       <X size={20} />
                     </button>
@@ -328,9 +328,9 @@ export const DocumentUpload: React.FC = () => {
       )}
 
       {/* Processing Info */}
-      <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-        <h4 className="font-semibold text-blue-900 mb-2">What happens after upload?</h4>
-        <ul className="space-y-2 text-blue-800">
+      <div className="mt-8 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+        <h4 className="font-semibold text-blue-900 dark:text-blue-300 mb-2">What happens after upload?</h4>
+        <ul className="space-y-2 text-blue-800 dark:text-blue-300">
           <li>â€¢ AI analyzes your document structure and content</li>
           <li>â€¢ Key concepts are extracted and highlighted</li>
           <li>â€¢ Structured notes are generated with summaries</li>

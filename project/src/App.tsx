@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { UserProvider, useUser } from './context/UserContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -12,7 +12,7 @@ import { ChatbotInterface } from './components/ChatbotInterface';
 import { AuthModal } from './components/AuthModal';
 import { StudentProfile } from './components/StudentProfile';
 
-// Map URL paths → ViewType strings (kept for Navigation active-state highlighting)
+// Map URL paths â†’ ViewType strings (kept for Navigation active-state highlighting)
 export const ROUTES = {
   home:       '/home',
   upload:     '/upload',
@@ -30,10 +30,10 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4" />
-          <p className="text-gray-600">Loading…</p>
+          <p className="text-gray-600 dark:text-gray-400">Loadingâ€¦</p>
         </div>
       </div>
     );
@@ -66,10 +66,10 @@ function AppContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4" />
-          <p className="text-gray-600">Loading…</p>
+          <p className="text-gray-600 dark:text-gray-400">Loadingâ€¦</p>
         </div>
       </div>
     );
@@ -81,19 +81,19 @@ function AppContent() {
       {user && <Navigation onLogout={handleLogout} />}
 
       <Routes>
-        {/* ── Landing / home ─────────────────────────────── */}
+        {/* â”€â”€ Landing / home â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <Route
           path="/home"
           element={
             user ? (
               <Navigate to={ROUTES.home} replace />
             ) : (
-              <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50 flex items-center justify-center">
+              <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 flex items-center justify-center">
                 <div className="text-center max-w-2xl mx-auto px-6">
-                  <h1 className="text-6xl font-bold text-gray-900 mb-6">
+                  <h1 className="text-6xl font-bold text-gray-900 dark:text-white mb-6">
                     Lecto<span className="text-blue-600">mate</span>
                   </h1>
-                  <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+                  <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
                     Your AI-powered learning companion. Upload documents, generate smart notes,
                     create flashcards, take quizzes, and get instant help through our intelligent chatbot.
                   </p>
@@ -112,7 +112,7 @@ function AppContent() {
           }
         />
 
-        {/* ── Authenticated routes ────────────────────────── */}
+        {/* â”€â”€ Authenticated routes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
         <Route path="/upload"    element={<RequireAuth><DocumentUpload /></RequireAuth>} />
         <Route path="/notes"     element={<RequireAuth><NotesViewer /></RequireAuth>} />
@@ -121,7 +121,7 @@ function AppContent() {
         <Route path="/chat"      element={<RequireAuth><ChatbotInterface /></RequireAuth>} />
         <Route path="/profile"   element={<RequireAuth><StudentProfile /></RequireAuth>} />
 
-        {/* ── Redirects ───────────────────────────────────── */}
+        {/* â”€â”€ Redirects â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <Route path="/" element={<Navigate to={user ? '/dashboard' : '/home'} replace />} />
         <Route path="*" element={<Navigate to={user ? '/dashboard' : '/home'} replace />} />
       </Routes>

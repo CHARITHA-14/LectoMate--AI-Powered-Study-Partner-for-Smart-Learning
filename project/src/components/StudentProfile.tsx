@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+﻿import React, { useState, useRef } from 'react';
 import { useUser } from '../context/UserContext';
 import {
   Mail, Calendar, BookOpen, Brain, ClipboardCheck,
@@ -136,15 +136,15 @@ export const StudentProfile: React.FC = () => {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Student Profile</h1>
-        <p className="text-gray-600">Manage your account and track your learning progress.</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Student Profile</h1>
+        <p className="text-gray-600 dark:text-gray-400 dark:text-gray-500">Manage your account and track your learning progress.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
         {/* Profile card */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div className="text-center mb-6">
 
               {/* Avatar */}
@@ -177,7 +177,7 @@ export const StudentProfile: React.FC = () => {
                     value={editedName}
                     onChange={e => setEditedName(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && handleSaveName()}
-                    className="text-lg font-bold text-gray-900 text-center border border-gray-300 rounded-lg px-3 py-1 w-full focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="text-lg font-bold text-gray-900 dark:text-white text-center border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1 w-full focus:ring-2 focus:ring-blue-500 outline-none"
                     autoFocus
                   />
                   {nameError && <p className="text-xs text-red-500">{nameError}</p>}
@@ -187,7 +187,7 @@ export const StudentProfile: React.FC = () => {
                       {nameLoading ? <Loader2 size={12} className="animate-spin" /> : <Check size={12} />} Save
                     </button>
                     <button onClick={() => { setEditedName(user.name); setIsEditingName(false); setNameError(''); }}
-                      className="px-3 py-1 border border-gray-300 text-gray-700 text-sm rounded-lg hover:bg-gray-50 transition-colors">
+                      className="px-3 py-1 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-50 dark:bg-gray-950 transition-colors">
                       Cancel
                     </button>
                   </div>
@@ -195,25 +195,25 @@ export const StudentProfile: React.FC = () => {
               ) : (
                 <div>
                   <div className="flex items-center justify-center gap-2 mb-1">
-                    <h2 className="text-xl font-bold text-gray-900">{user.name}</h2>
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">{user.name}</h2>
                     <button onClick={() => { setEditedName(user.name); setIsEditingName(true); }}
-                      className="text-gray-400 hover:text-gray-600 transition-colors">
+                      className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:text-gray-400 dark:text-gray-500 transition-colors">
                       <Edit3 size={15} />
                     </button>
                   </div>
-                  <p className="text-gray-500 text-sm">{user.email}</p>
+                  <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500 text-sm">{user.email}</p>
                 </div>
               )}
             </div>
 
             {/* Info rows */}
-            <div className="space-y-3 text-sm text-gray-600">
+            <div className="space-y-3 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
               <div className="flex items-center gap-3"><Mail size={15} /><span>{user.email}</span></div>
               <div className="flex items-center gap-3"><Calendar size={15} /><span>Joined {user.joinDate.toLocaleDateString()}</span></div>
               <div className="flex items-center gap-3"><TrendingUp size={15} /><span>{user.studyStreak} day study streak</span></div>
             </div>
 
-            <div className="mt-6 pt-6 border-t border-gray-200">
+            <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
               <button
                 onClick={openSettings}
                 className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
@@ -233,19 +233,19 @@ export const StudentProfile: React.FC = () => {
               { icon: <ClipboardCheck size={22} className="text-orange-600" />, value: totalQuizAttempts, label: 'Quiz Attempts' },
               { icon: <Award size={22} className="text-green-600" />, value: `${averageQuizScore}%`, label: 'Avg Score' },
             ].map((stat, i) => (
-              <div key={i} className="bg-white p-5 rounded-xl shadow-sm border border-gray-200 text-center">
+              <div key={i} className="bg-white dark:bg-gray-900 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 text-center">
                 <div className="flex justify-center mb-2">{stat.icon}</div>
-                <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
-                <div className="text-xs text-gray-500 mt-0.5">{stat.label}</div>
+                <div className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-0.5">{stat.label}</div>
               </div>
             ))}
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 className="text-base font-semibold text-gray-900 mb-4">Learning Statistics</h3>
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">Learning Statistics</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h4 className="text-sm font-medium text-gray-700 mb-3">Study Activity</h4>
+                <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Study Activity</h4>
                 <div className="space-y-2.5 text-sm">
                   {[
                     ['Total Flashcards Studied', totalFlashcardsStudied],
@@ -253,25 +253,25 @@ export const StudentProfile: React.FC = () => {
                     ['Quizzes Completed', totalQuizAttempts],
                   ].map(([label, val]) => (
                     <div key={label as string} className="flex justify-between items-center">
-                      <span className="text-gray-500">{label}</span>
-                      <span className="font-semibold text-gray-900">{val}</span>
+                      <span className="text-gray-500 dark:text-gray-400 dark:text-gray-500">{label}</span>
+                      <span className="font-semibold text-gray-900 dark:text-white">{val}</span>
                     </div>
                   ))}
                 </div>
               </div>
               <div>
-                <h4 className="text-sm font-medium text-gray-700 mb-3">Performance</h4>
+                <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Performance</h4>
                 <div className="space-y-2.5 text-sm">
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-500">Average Quiz Score</span>
+                    <span className="text-gray-500 dark:text-gray-400 dark:text-gray-500">Average Quiz Score</span>
                     <span className="font-semibold text-green-600">{averageQuizScore}%</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-500">Study Streak</span>
+                    <span className="text-gray-500 dark:text-gray-400 dark:text-gray-500">Study Streak</span>
                     <span className="font-semibold text-blue-600">{user.studyStreak} days</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-500">Total Flashcards</span>
+                    <span className="text-gray-500 dark:text-gray-400 dark:text-gray-500">Total Flashcards</span>
                     <span className="font-semibold text-purple-600">{flashcards.length}</span>
                   </div>
                 </div>
@@ -279,24 +279,24 @@ export const StudentProfile: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 className="text-base font-semibold text-gray-900 mb-4">Recent Activity</h3>
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">Recent Activity</h3>
             {recentActivity.length === 0 ? (
-              <p className="text-sm text-gray-400 text-center py-4">No activity yet. Start by uploading a document!</p>
+              <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-4">No activity yet. Start by uploading a document!</p>
             ) : (
               <div className="space-y-3">
                 {recentActivity.map((activity, i) => (
-                  <div key={i} className="flex items-center gap-4 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                  <div key={i} className="flex items-center gap-4 p-3 hover:bg-gray-50 dark:bg-gray-950 rounded-lg transition-colors">
                     <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${activity.type === 'document' ? 'bg-blue-100' : 'bg-orange-100'}`}>
                       {activity.type === 'document'
                         ? <BookOpen size={15} className="text-blue-600" />
                         : <ClipboardCheck size={15} className="text-orange-600" />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900">{activity.action}</p>
-                      <p className="text-xs text-gray-500 truncate">{activity.title}</p>
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">{activity.action}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 truncate">{activity.title}</p>
                     </div>
-                    <span className="text-xs text-gray-400 flex-shrink-0">{activity.date.toLocaleDateString()}</span>
+                    <span className="text-xs text-gray-400 dark:text-gray-500 flex-shrink-0">{activity.date.toLocaleDateString()}</span>
                   </div>
                 ))}
               </div>
@@ -305,16 +305,16 @@ export const StudentProfile: React.FC = () => {
         </div>
       </div>
 
-      {/* ── Account Settings Modal ─────────────────────────── */}
+      {/* â”€â”€ Account Settings Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       {showSettings && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl max-w-md w-full shadow-2xl">
             {/* Modal header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-              <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <Settings size={18} className="text-gray-600" /> Account Settings
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-700">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                <Settings size={18} className="text-gray-600 dark:text-gray-400 dark:text-gray-500" /> Account Settings
               </h2>
-              <button onClick={() => setShowSettings(false)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 transition-colors">
+              <button onClick={() => setShowSettings(false)} className="p-1.5 rounded-lg hover:bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 transition-colors">
                 <X size={18} />
               </button>
             </div>
@@ -322,31 +322,31 @@ export const StudentProfile: React.FC = () => {
             <div className="px-6 py-5 space-y-5">
               {/* Display name */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Display Name</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Display Name</label>
                 <input
                   type="text"
                   value={settingsName}
                   onChange={e => setSettingsName(e.target.value)}
-                  className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                   placeholder="Your name"
                 />
               </div>
 
               {/* Email (read-only) */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Email Address</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Email Address</label>
                 <input
                   type="email"
                   value={user.email}
                   readOnly
-                  className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm bg-gray-50 text-gray-500 cursor-not-allowed"
+                  className="w-full px-3 py-2.5 border border-gray-200 dark:border-gray-700 rounded-lg text-sm bg-gray-50 dark:bg-gray-950 text-gray-500 dark:text-gray-400 dark:text-gray-500 cursor-not-allowed"
                 />
-                <p className="text-xs text-gray-400 mt-1">Email cannot be changed.</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Email cannot be changed.</p>
               </div>
 
               {/* Divider */}
-              <div className="border-t border-gray-100 pt-4">
-                <p className="text-sm font-medium text-gray-700 mb-3">Change Password <span className="text-xs font-normal text-gray-400">(leave blank to keep current)</span></p>
+              <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Change Password <span className="text-xs font-normal text-gray-400 dark:text-gray-500">(leave blank to keep current)</span></p>
 
                 <div className="space-y-3">
                   <div className="relative">
@@ -355,10 +355,10 @@ export const StudentProfile: React.FC = () => {
                       value={currentPw}
                       onChange={e => setCurrentPw(e.target.value)}
                       placeholder="Current password"
-                      className="w-full px-3 py-2.5 pr-10 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      className="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                     />
                     <button type="button" onClick={() => setShowCurPw(v => !v)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:text-gray-400 dark:text-gray-500">
                       {showCurPw ? <EyeOff size={15} /> : <Eye size={15} />}
                     </button>
                   </div>
@@ -369,10 +369,10 @@ export const StudentProfile: React.FC = () => {
                       value={newPw}
                       onChange={e => setNewPw(e.target.value)}
                       placeholder="New password (min 6 chars)"
-                      className="w-full px-3 py-2.5 pr-10 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      className="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                     />
                     <button type="button" onClick={() => setShowNewPw(v => !v)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:text-gray-400 dark:text-gray-500">
                       {showNewPw ? <EyeOff size={15} /> : <Eye size={15} />}
                     </button>
                   </div>
@@ -382,7 +382,7 @@ export const StudentProfile: React.FC = () => {
                     value={confirmPw}
                     onChange={e => setConfirmPw(e.target.value)}
                     placeholder="Confirm new password"
-                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                   />
                 </div>
               </div>
@@ -390,7 +390,7 @@ export const StudentProfile: React.FC = () => {
               {/* Feedback */}
               {settingsError && (
                 <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-                  <span className="mt-0.5 flex-shrink-0">⚠</span><span>{settingsError}</span>
+                  <span className="mt-0.5 flex-shrink-0">âš </span><span>{settingsError}</span>
                 </div>
               )}
               {settingsSuccess && (
@@ -403,12 +403,12 @@ export const StudentProfile: React.FC = () => {
             {/* Modal footer */}
             <div className="flex gap-3 px-6 pb-6">
               <button onClick={() => setShowSettings(false)}
-                className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
+                className="flex-1 px-4 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-950 transition-colors text-sm font-medium">
                 Cancel
               </button>
               <button onClick={handleSettingsSave} disabled={settingsLoading}
                 className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
-                {settingsLoading ? <><Loader2 size={14} className="animate-spin" /> Saving…</> : 'Save Changes'}
+                {settingsLoading ? <><Loader2 size={14} className="animate-spin" /> Savingâ€¦</> : 'Save Changes'}
               </button>
             </div>
           </div>

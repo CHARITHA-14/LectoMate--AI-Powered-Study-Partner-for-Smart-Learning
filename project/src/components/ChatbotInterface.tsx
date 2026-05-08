@@ -58,12 +58,12 @@ const BotText: React.FC<{ text: string; streaming?: boolean }> = ({ text, stream
           );
         // Heading (##)
         if (line.startsWith('## '))
-          return <p key={i} className="font-bold text-gray-900 mt-2">{line.slice(3)}</p>;
+          return <p key={i} className="font-bold text-gray-900 dark:text-white mt-2">{line.slice(3)}</p>;
         if (line.startsWith('# '))
-          return <p key={i} className="font-bold text-gray-900 text-base mt-2">{line.slice(2)}</p>;
+          return <p key={i} className="font-bold text-gray-900 dark:text-white text-base mt-2">{line.slice(2)}</p>;
         // Horizontal rule
         if (line.trim() === '---' || line.trim() === '***')
-          return <hr key={i} className="border-gray-200 my-1" />;
+          return <hr key={i} className="border-gray-200 dark:border-gray-700 my-1" />;
         // Empty line
         if (line.trim() === '') return <div key={i} className="h-1" />;
         // Normal paragraph
@@ -81,9 +81,9 @@ const renderInline = (text: string): React.ReactNode => {
   const parts = text.split(/(\*\*[^*]+\*\*|`[^`]+`|\*[^*]+\*)/g);
   return parts.map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**'))
-      return <strong key={i} className="font-semibold text-gray-900">{part.slice(2, -2)}</strong>;
+      return <strong key={i} className="font-semibold text-gray-900 dark:text-white">{part.slice(2, -2)}</strong>;
     if (part.startsWith('`') && part.endsWith('`'))
-      return <code key={i} className="bg-gray-200 text-gray-800 px-1 py-0.5 rounded text-xs font-mono">{part.slice(1, -1)}</code>;
+      return <code key={i} className="bg-gray-200 text-gray-800 dark:text-gray-100 px-1 py-0.5 rounded text-xs font-mono">{part.slice(1, -1)}</code>;
     if (part.startsWith('*') && part.endsWith('*'))
       return <em key={i}>{part.slice(1, -1)}</em>;
     return part;
@@ -308,13 +308,13 @@ export const ChatbotInterface: React.FC = () => {
   const isPdf = selectedNote?.fileName?.toLowerCase().endsWith('.pdf') ?? false;
 
   return (
-    <div className="flex h-[calc(100vh-64px)] overflow-hidden bg-gray-50 select-none">
+    <div className="flex h-[calc(100vh-64px)] overflow-hidden bg-gray-950 dark:bg-gray-950 select-none">
 
       {/* LEFT SIDEBAR */}
-      <div className={`flex flex-col bg-white border-r border-gray-200 transition-all duration-300 flex-shrink-0 ${sidebarOpen ? 'w-64' : 'w-12'}`}>
-        <div className={`flex items-center border-b border-gray-100 px-3 py-3 ${sidebarOpen ? 'justify-between' : 'justify-center'}`}>
-          {sidebarOpen && <span className="text-xs font-semibold text-gray-700">Documents</span>}
-          <button onClick={() => setSidebarOpen(v => !v)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors">
+      <div className={`flex flex-col bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 flex-shrink-0 ${sidebarOpen ? 'w-64' : 'w-12'}`}>
+        <div className={`flex items-center border-b border-gray-100 dark:border-gray-800 px-3 py-3 ${sidebarOpen ? 'justify-between' : 'justify-center'}`}>
+          {sidebarOpen && <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">Documents</span>}
+          <button onClick={() => setSidebarOpen(v => !v)} className="p-1.5 rounded-lg hover:bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 dark:text-gray-500 transition-colors">
             {sidebarOpen ? <PanelLeftClose size={17} /> : <PanelLeftOpen size={17} />}
           </button>
         </div>
@@ -322,46 +322,46 @@ export const ChatbotInterface: React.FC = () => {
           <>
             <div className="px-3 pt-3 pb-2">
               <div className="relative">
-                <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
                 <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
                   placeholder="Search documents…"
-                  className="w-full pl-8 pr-3 py-2 text-xs border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent outline-none bg-gray-50" />
+                  className="w-full pl-8 pr-3 py-2 text-xs border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent outline-none bg-gray-50 dark:bg-gray-950" />
               </div>
             </div>
             <div className="flex-1 overflow-y-auto px-3 pb-3 space-y-1">
               <button onClick={handleCloseDoc}
-                className={`w-full text-left px-3 py-2.5 rounded-lg transition-all border ${!selectedNoteId ? 'bg-teal-50 border-teal-200' : 'hover:bg-gray-50 border-transparent'}`}>
-                <div className={`text-xs font-medium ${!selectedNoteId ? 'text-teal-800' : 'text-gray-700'}`}>General Chat</div>
-                <div className="text-xs text-gray-400 mt-0.5">Ask anything</div>
+                className={`w-full text-left px-3 py-2.5 rounded-lg transition-all border ${!selectedNoteId ? 'bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-700' : 'hover:bg-gray-50 dark:bg-gray-950 border-transparent'}`}>
+                <div className={`text-xs font-medium ${!selectedNoteId ? 'text-teal-800' : 'text-gray-700 dark:text-gray-300'}`}>General Chat</div>
+                <div className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Ask anything</div>
               </button>
               {notes.length === 0 ? (
                 <div className="text-center py-6">
                   <FileText size={28} className="mx-auto text-gray-300 mb-2" />
-                  <p className="text-xs text-gray-400">No documents yet.</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500">No documents yet.</p>
                   <button onClick={() => navigate('/upload')} className="mt-2 text-xs text-teal-600 hover:underline">Upload one</button>
                 </div>
               ) : filteredNotes.length === 0 ? (
-                <p className="text-xs text-gray-400 text-center py-4">No matches.</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 text-center py-4">No matches.</p>
               ) : filteredNotes.map(note => (
                 <button key={note.id} onClick={() => handleSelectDoc(note.id)}
-                  className={`w-full text-left px-3 py-2.5 rounded-lg transition-all border ${selectedNoteId === note.id ? 'bg-blue-50 border-blue-200' : 'hover:bg-gray-50 border-transparent'}`}>
-                  <div className={`text-xs font-medium truncate ${selectedNoteId === note.id ? 'text-blue-900' : 'text-gray-800'}`}>{note.title}</div>
-                  <div className="text-xs text-gray-400 mt-0.5 truncate">{note.fileName}</div>
+                  className={`w-full text-left px-3 py-2.5 rounded-lg transition-all border ${selectedNoteId === note.id ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700' : 'hover:bg-gray-50 dark:bg-gray-950 border-transparent'}`}>
+                  <div className={`text-xs font-medium truncate ${selectedNoteId === note.id ? 'text-blue-900' : 'text-gray-800 dark:text-gray-100'}`}>{note.title}</div>
+                  <div className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 truncate">{note.fileName}</div>
                   <div className="text-xs text-gray-300 mt-0.5">{note.uploadDate.toLocaleDateString()}</div>
                 </button>
               ))}
             </div>
-            <div className="px-3 pb-3 pt-2 border-t border-gray-100 space-y-1">
-              <button onClick={() => navigate('/flashcards')} className="w-full flex items-center gap-2 px-3 py-2 text-xs text-purple-700 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors"><Brain size={13} /> Flashcards</button>
-              <button onClick={() => navigate('/quiz')} className="w-full flex items-center gap-2 px-3 py-2 text-xs text-orange-700 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors"><ClipboardCheck size={13} /> Quiz</button>
-              <button onClick={() => navigate('/notes')} className="w-full flex items-center gap-2 px-3 py-2 text-xs text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"><BookOpen size={13} /> Notes</button>
+            <div className="px-3 pb-3 pt-2 border-t border-gray-100 dark:border-gray-800 space-y-1">
+              <button onClick={() => navigate('/flashcards')} className="w-full flex items-center gap-2 px-3 py-2 text-xs text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 rounded-lg transition-colors"><Brain size={13} /> Flashcards</button>
+              <button onClick={() => navigate('/quiz')} className="w-full flex items-center gap-2 px-3 py-2 text-xs text-orange-700 dark:text-orange-300 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 rounded-lg transition-colors"><ClipboardCheck size={13} /> Quiz</button>
+              <button onClick={() => navigate('/notes')} className="w-full flex items-center gap-2 px-3 py-2 text-xs text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors"><BookOpen size={13} /> Notes</button>
             </div>
           </>
         ) : (
           <div className="flex flex-col items-center gap-3 pt-4">
-            <button onClick={() => setSidebarOpen(true)} className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 transition-colors"><Search size={17} /></button>
-            <button onClick={() => setSidebarOpen(true)} className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 transition-colors"><BookOpen size={17} /></button>
-            <button onClick={() => setSidebarOpen(true)} className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 transition-colors"><MessageCircle size={17} /></button>
+            <button onClick={() => setSidebarOpen(true)} className="p-2 rounded-lg hover:bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 transition-colors"><Search size={17} /></button>
+            <button onClick={() => setSidebarOpen(true)} className="p-2 rounded-lg hover:bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 transition-colors"><BookOpen size={17} /></button>
+            <button onClick={() => setSidebarOpen(true)} className="p-2 rounded-lg hover:bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 transition-colors"><MessageCircle size={17} /></button>
           </div>
         )}
       </div>
@@ -369,8 +369,8 @@ export const ChatbotInterface: React.FC = () => {
       {/* DOCUMENT PANEL */}
       {docPanelOpen && selectedNote && (
         <>
-          <div className="flex flex-col bg-white border-r border-gray-200 flex-shrink-0 overflow-hidden" style={{ width: docPanelWidth }}>
-            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-blue-50 flex-shrink-0">
+          <div className="flex flex-col bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex-shrink-0 overflow-hidden" style={{ width: docPanelWidth }}>
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-800 bg-blue-50 flex-shrink-0">
               <div className="min-w-0 flex items-center gap-2">
                 <FileText size={15} className="text-blue-500 flex-shrink-0" />
                 <div className="min-w-0">
@@ -382,27 +382,27 @@ export const ChatbotInterface: React.FC = () => {
             </div>
             <div className="flex-1 overflow-hidden flex flex-col min-h-0">
               {!docFileUrl && !docLoadError && (
-                <div className="flex-1 flex flex-col items-center justify-center gap-3 bg-gray-50">
+                <div className="flex-1 flex flex-col items-center justify-center gap-3 bg-gray-50 dark:bg-gray-950">
                   <Loader2 size={28} className="text-blue-400 animate-spin" />
-                  <p className="text-xs text-gray-500">Loading document…</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Loading document…</p>
                 </div>
               )}
               {docFileUrl && isPdf && (
                 <iframe src={`${docFileUrl}#toolbar=1&navpanes=1&scrollbar=1`} className="flex-1 w-full border-0" title={selectedNote.fileName} style={{ minHeight: 0 }} />
               )}
               {docFileUrl && !isPdf && (
-                <div className="flex-1 overflow-y-auto px-4 py-4">
-                  <div className="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap break-words font-mono bg-gray-50 rounded-lg p-4 border border-gray-100">
+                <div className="flex-1 overflow-y-auto px-4 py-4 bg-white dark:bg-gray-900">
+                  <div className="text-sm text-gray-800 dark:text-gray-100 leading-relaxed whitespace-pre-wrap break-words font-mono bg-gray-50 dark:bg-gray-950 rounded-lg p-4 border border-gray-100 dark:border-gray-800">
                     {selectedNote.rawContent || selectedNote.sections.map(s => `${s.title}\n\n${s.content}`).join('\n\n---\n\n') || 'No content available.'}
                   </div>
                 </div>
               )}
               {docLoadError && (
-                <div className="flex-1 overflow-y-auto px-4 py-4">
-                  <div className="flex items-center gap-2 mb-3 pb-2 border-b border-gray-100">
+                <div className="flex-1 overflow-y-auto px-4 py-4 bg-white dark:bg-gray-900">
+                  <div className="flex items-center gap-2 mb-3 pb-2 border-b border-gray-100 dark:border-gray-800">
                     <span className="text-xs text-amber-500 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">Original file unavailable — showing extracted text</span>
                   </div>
-                  <div className="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap break-words bg-gray-50 rounded-lg p-4 border border-gray-100">
+                  <div className="text-sm text-gray-800 dark:text-gray-100 leading-relaxed whitespace-pre-wrap break-words bg-gray-50 dark:bg-gray-950 rounded-lg p-4 border border-gray-100 dark:border-gray-800">
                     {selectedNote.rawContent || selectedNote.sections.map(s => `${s.title}\n\n${s.content}`).join('\n\n---\n\n') || 'No content available.'}
                   </div>
                 </div>
@@ -410,21 +410,21 @@ export const ChatbotInterface: React.FC = () => {
             </div>
           </div>
           <div onMouseDown={onDragStart} className="w-1.5 flex-shrink-0 bg-gray-200 hover:bg-teal-400 active:bg-teal-500 cursor-col-resize transition-colors flex items-center justify-center group" title="Drag to resize">
-            <GripVertical size={14} className="text-gray-400 group-hover:text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+            <GripVertical size={14} className="text-gray-400 dark:text-gray-500 group-hover:text-white opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
         </>
       )}
 
       {/* AI CHATBOT */}
-      <div className="flex-1 flex flex-col min-w-[300px] bg-white">
+      <div className="flex-1 flex flex-col min-w-[300px] bg-white dark:bg-gray-900">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200 flex-shrink-0">
+        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 bg-teal-100 rounded-full flex items-center justify-center flex-shrink-0">
               <Bot size={20} className="text-teal-600" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-gray-900">AI Tutor</p>
+              <p className="text-sm font-semibold text-gray-900 dark:text-white">AI Tutor</p>
               <p className="text-xs flex items-center gap-1.5">
                 <span className={`w-1.5 h-1.5 rounded-full inline-block ${isStreaming ? 'bg-teal-400 animate-pulse' : 'bg-green-400'}`} />
                 <span className={isStreaming ? 'text-teal-600' : 'text-green-500'}>
@@ -441,19 +441,19 @@ export const ChatbotInterface: React.FC = () => {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4 bg-white dark:bg-gray-900">
           {messages.map(msg => (
             <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div className={`flex items-end gap-2 max-w-[85%] ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}>
                 <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${msg.sender === 'user' ? 'bg-blue-100' : 'bg-teal-100'}`}>
                   {msg.sender === 'user' ? <User size={13} className="text-blue-600" /> : <Bot size={13} className="text-teal-600" />}
                 </div>
-                <div className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${msg.sender === 'user' ? 'bg-blue-600 text-white rounded-br-sm' : 'bg-gray-100 text-gray-800 rounded-bl-sm'}`}>
+                <div className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${msg.sender === 'user' ? 'bg-blue-600 text-white rounded-br-sm' : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-bl-sm'}`}>
                   {msg.sender === 'bot'
                     ? <BotText text={msg.text || '…'} streaming={msg.streaming} />
                     : <span>{msg.text}</span>}
                   {!msg.streaming && (
-                    <p className={`text-xs mt-1.5 ${msg.sender === 'user' ? 'text-blue-200' : 'text-gray-400'}`}>
+                    <p className={`text-xs mt-1.5 ${msg.sender === 'user' ? 'text-blue-200' : 'text-gray-400 dark:text-gray-500'}`}>
                       {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </p>
                   )}
@@ -465,11 +465,11 @@ export const ChatbotInterface: React.FC = () => {
         </div>
 
         {/* Quick prompts */}
-        <div className="px-5 py-2 border-t border-gray-100 flex-shrink-0">
+        <div className="px-5 py-2 border-t border-gray-100 dark:border-gray-800 flex-shrink-0">
           <div className="flex flex-wrap gap-1.5">
             {quickPrompts.map((p, i) => (
               <button key={i} onClick={() => handleSend(p)} disabled={isStreaming}
-                className="text-xs px-3 py-1.5 bg-gray-100 hover:bg-teal-50 hover:text-teal-700 text-gray-600 rounded-full transition-colors disabled:opacity-40">
+                className="text-xs px-3 py-1.5 bg-gray-100 dark:bg-gray-800 hover:bg-teal-50 hover:text-teal-700 text-gray-600 dark:text-gray-400 dark:text-gray-500 rounded-full transition-colors disabled:opacity-40">
                 {p}
               </button>
             ))}
@@ -477,13 +477,13 @@ export const ChatbotInterface: React.FC = () => {
         </div>
 
         {/* Input */}
-        <div className="px-5 py-4 border-t border-gray-200 flex-shrink-0">
-          <div className={`flex items-center gap-3 bg-gray-50 border rounded-xl px-4 py-2 transition-all ${isStreaming ? 'border-teal-300 ring-2 ring-teal-100' : 'border-gray-200 focus-within:ring-2 focus-within:ring-teal-400 focus-within:border-transparent'}`}>
+        <div className="px-5 py-4 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
+          <div className={`flex items-center gap-3 bg-gray-50 dark:bg-gray-950 border rounded-xl px-4 py-2 transition-all ${isStreaming ? 'border-teal-300 dark:border-teal-600 ring-2 ring-teal-100 dark:ring-teal-900/30' : 'border-gray-200 dark:border-gray-700 focus-within:ring-2 focus-within:ring-teal-400 focus-within:border-transparent'}`}>
             <input type="text" value={inputText} onChange={e => setInputText(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && !e.shiftKey && !isStreaming && handleSend()}
               placeholder={selectedNote ? `Ask about "${selectedNote.title}"…` : 'Ask me anything…'}
               disabled={isStreaming}
-              className="flex-1 text-sm bg-transparent outline-none disabled:opacity-60 placeholder-gray-400" />
+              className="flex-1 text-sm bg-transparent outline-none disabled:opacity-60 placeholder-gray-400 dark:placeholder-gray-500" />
             {isStreaming ? (
               <button onClick={handleStop} className="p-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex-shrink-0" title="Stop generating">
                 <StopCircle size={15} />
@@ -496,9 +496,9 @@ export const ChatbotInterface: React.FC = () => {
             )}
           </div>
           {selectedNote && (
-            <p className="text-xs text-gray-400 mt-1.5 text-center">
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1.5 text-center">
               Context: <span className="text-blue-500 font-medium">{selectedNote.title}</span> •{' '}
-              <button onClick={handleCloseDoc} className="text-gray-400 hover:text-gray-600 underline">switch to general</button>
+              <button onClick={handleCloseDoc} className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:text-gray-400 dark:text-gray-500 underline">switch to general</button>
             </p>
           )}
         </div>

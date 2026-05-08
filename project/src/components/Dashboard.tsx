@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import { 
@@ -63,8 +63,8 @@ export const Dashboard: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome back{user?.name ? `, ${user.name.split(' ')[0]}` : ''}!</h1>
-        <p className="text-gray-600">Continue your learning journey with AI-powered tools.</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Welcome back{user?.name ? `, ${user.name.split(' ')[0]}` : ''}!</h1>
+        <p className="text-gray-600 dark:text-gray-400 dark:text-gray-500">Continue your learning journey with AI-powered tools.</p>
       </div>
 
       {/* Stats Grid */}
@@ -72,14 +72,14 @@ export const Dashboard: React.FC = () => {
         {stats.map((stat, index) => {
           const Icon = stat.icon;
           return (
-            <div key={index} className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+            <div key={index} className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
               <div className="flex items-center">
                 <div className={`p-2 rounded-lg bg-opacity-10 ${stat.color.replace('text-', 'bg-')}`}>
                   <Icon size={24} className={stat.color} />
                 </div>
                 <div className="ml-4">
-                  <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                  <p className="text-sm text-gray-600">{stat.label}</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">{stat.label}</p>
                 </div>
               </div>
             </div>
@@ -89,7 +89,7 @@ export const Dashboard: React.FC = () => {
 
       {/* Quick Actions */}
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Quick Actions</h2>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {quickActions.map((action) => {
             const Icon = action.icon;
@@ -97,13 +97,13 @@ export const Dashboard: React.FC = () => {
               <button
                 key={action.path}
                 onClick={() => navigate(action.path)}
-                className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-200 transform hover:scale-105 text-left"
+                className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-200 transform hover:scale-105 text-left"
               >
                 <div className={`inline-flex p-3 rounded-lg text-white ${action.color} ${action.hoverColor} transition-colors mb-4`}>
                   <Icon size={24} />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{action.title}</h3>
-                <p className="text-gray-600">{action.description}</p>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{action.title}</h3>
+                <p className="text-gray-600 dark:text-gray-400 dark:text-gray-500">{action.description}</p>
               </button>
             );
           })}
@@ -111,22 +111,22 @@ export const Dashboard: React.FC = () => {
       </div>
 
       {/* Recent Activity */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900">Recent Activity</h2>
+      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Recent Activity</h2>
         </div>
         <div className="p-6">
           <div className="space-y-4">
             {recentActivity.map((activity, index) => (
-              <div key={index} className="flex items-center space-x-4 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+              <div key={index} className="flex items-center space-x-4 p-3 hover:bg-gray-50 dark:bg-gray-950 rounded-lg transition-colors">
                 <div className="flex-shrink-0">
-                  <Clock size={16} className="text-gray-400" />
+                  <Clock size={16} className="text-gray-400 dark:text-gray-500" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">{activity.title}</p>
-                  <p className="text-sm text-gray-600">{activity.type}</p>
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">{activity.title}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">{activity.type}</p>
                 </div>
-                <div className="text-xs text-gray-500">{activity.time}</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">{activity.time}</div>
               </div>
             ))}
           </div>
