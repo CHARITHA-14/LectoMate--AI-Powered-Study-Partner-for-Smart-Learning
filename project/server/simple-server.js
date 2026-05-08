@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -16,10 +16,10 @@ require('dotenv').config();
 process.env.PDF_PARSE_NO_TEST = '1';
 const pdfParse = require('pdf-parse');
 
-// ── Config ────────────────────────────────────────────────────────
+// â”€â”€ Config â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const genAI = new GoogleGenerativeAI(process.env.OPENAI_API_KEY || '');
 const app = express();
-// Render injects PORT automatically — never hardcode it
+// Render injects PORT automatically â€” never hardcode it
 const PORT = Number(process.env.PORT || 3001);
 const JWT_SECRET = process.env.JWT_SECRET || 'lectomate_local_dev_secret';
 const MAX_FILE_SIZE = Number(process.env.MAX_FILE_SIZE || 10 * 1024 * 1024);
@@ -45,7 +45,7 @@ const ALLOWED_MIME_TYPES = new Set([
 ]);
 const ALLOWED_EXTENSIONS = new Set(['.pdf','.doc','.docx','.txt','.ppt','.pptx']);
 
-// ── Mongoose Schemas ──────────────────────────────────────────────
+// â”€â”€ Mongoose Schemas â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const userSchema = new mongoose.Schema({
   name:           { type: String, required: true, trim: true },
   email:          { type: String, required: true, unique: true, lowercase: true, trim: true },
@@ -125,7 +125,7 @@ const NoteModel     = mongoose.model('Note',     noteSchema);
 const FlashModel    = mongoose.model('Flashcard',flashcardSchema);
 const QuizModel     = mongoose.model('Quiz',     quizSchema);
 
-// ── Helpers ───────────────────────────────────────────────────────
+// â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const ensureDir = (p) => { if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true }); };
 
 const formatFileSize = (bytes) => {
@@ -207,7 +207,7 @@ const extractTextFromFile = async (filePath, mimeType) => {
   return '';
 };
 
-// ── AI helpers ────────────────────────────────────────────────────
+// â”€â”€ AI helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 // Retry helper with exponential backoff
 const withRetry = async (fn, maxAttempts = 3, baseDelayMs = 1000) => {
@@ -253,30 +253,30 @@ const generateAIContent = async (cleanText, originalName) => {
   const baseName = (originalName || 'Document').replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
 
   const proModel = genAI.getGenerativeModel({
-    model: 'gemini-1.5-pro',
+    model: 'gemini-2.5-pro',
     systemInstruction:
       'You are a precise academic content analyst. ' +
       'You extract and summarize information EXACTLY as it appears in the source document. ' +
       'Never invent, assume, or generalize beyond what the document states. ' +
-      'Always return valid JSON only — no markdown fences, no extra text.',
+      'Always return valid JSON only â€” no markdown fences, no extra text.',
     generationConfig: { temperature: 0.2, topP: 0.8 },
   });
 
   const flashModel = genAI.getGenerativeModel({
-    model: 'gemini-1.5-flash',
+    model: 'gemini-2.5-flash',
     systemInstruction:
       'You create educational flashcards and quiz questions strictly from the provided document. ' +
       'Every question and answer must be directly traceable to the document text. ' +
-      'Always return valid JSON only — no markdown fences, no extra text.',
+      'Always return valid JSON only â€” no markdown fences, no extra text.',
     generationConfig: { temperature: 0.3 },
   });
 
-  // Keep as much text as possible — pro model supports large context
+  // Keep as much text as possible â€” pro model supports large context
   const fullText = cleanText.length > 30000 ? cleanText.slice(0, 30000) + '\n\n[...document continues]' : cleanText;
   const studyText = cleanText.length > 16000 ? cleanText.slice(0, 16000) : cleanText;
 
   try {
-    // ── Call 1: Title, summary, sections ───────────────────────
+    // â”€â”€ Call 1: Title, summary, sections â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const notesPrompt = `Read the following document carefully and extract its content into structured study notes.
 
 Return ONLY this JSON structure (no markdown, no code blocks):
@@ -297,7 +297,7 @@ Return ONLY this JSON structure (no markdown, no code blocks):
 RULES:
 - Generate 5-8 sections that cover the ENTIRE document, not just the beginning
 - Section titles must reflect what is actually in that part of the document
-- Section content must be accurate — copy key sentences, preserve numbers and names
+- Section content must be accurate â€” copy key sentences, preserve numbers and names
 - Highlights must be exact terms or short phrases that appear in the document
 - Tags must be the actual subject areas covered
 
@@ -308,7 +308,7 @@ ${fullText}`;
     const notesText   = stripCodeFences(notesResult.response.text().trim());
     const notesParsed = JSON.parse(notesText);
 
-    // ── Call 2: Flashcards + Quiz ───────────────────────────────
+    // â”€â”€ Call 2: Flashcards + Quiz â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const studyPrompt = `Based on the document below, create study materials. Return ONLY this JSON (no markdown):
 {
   "flashcards": [
@@ -327,7 +327,7 @@ ${fullText}`;
         "question": "A question that tests understanding of a specific point in the document",
         "options": ["The correct answer from the document", "A plausible wrong answer", "Another plausible wrong answer", "Another plausible wrong answer"],
         "correctAnswer": "The correct answer from the document",
-        "explanation": "Why this is correct — cite the specific part of the document that supports this answer",
+        "explanation": "Why this is correct â€” cite the specific part of the document that supports this answer",
         "difficulty": "easy|medium|hard"
       }
     ]
@@ -338,7 +338,7 @@ FLASHCARD RULES (generate 12-15 cards):
 - Cover the full document, not just the first section
 - Mix types: definitions (25%), cause/effect (25%), compare/contrast (25%), application (25%)
 - Easy = recall a stated fact; Medium = explain a relationship; Hard = apply or analyze
-- Back must be a complete, standalone answer — not just one word
+- Back must be a complete, standalone answer â€” not just one word
 
 QUIZ RULES (generate 10-12 questions):
 - 7-8 multiple-choice: 4 options, exactly one correct, distractors are plausible misconceptions
@@ -400,8 +400,8 @@ ${studyText}`;
     console.error('AI content generation failed:', err.message);
     // Flash model single-call fallback
     try {
-      console.log('Falling back to gemini-1.5-flash single call...');
-      const fb = genAI.getGenerativeModel({ model: 'gemini-1.5-flash', generationConfig: { temperature: 0.2 } });
+      console.log('Falling back to gemini-2.5-flash single call...');
+      const fb = genAI.getGenerativeModel({ model: 'gemini-2.5-flash', generationConfig: { temperature: 0.2 } });
       const fbText = cleanText.length > 12000 ? cleanText.slice(0, 12000) : cleanText;
       const fbPrompt = `Analyze this document. Return ONLY valid JSON (no markdown):
 {"title":"title","summary":"3-5 sentence summary using specific terms from the document","tags":["t1","t2","t3"],"sections":[{"id":"s1","title":"heading","content":"5+ sentences of accurate content from the document","highlights":["term1","term2","term3"]}],"flashcards":[{"front":"specific question","back":"precise answer from document","difficulty":"medium"}],"quiz":{"title":"Quiz","questions":[{"id":"q1","type":"multiple-choice","question":"question","options":["correct","wrong1","wrong2","wrong3"],"correctAnswer":"correct","explanation":"why","difficulty":"medium"}]}}
@@ -425,13 +425,13 @@ DOCUMENT: ${fbText}`;
   }
 };
 
-// ── Chat — uses Gemini's native multi-turn Chat API ───────────────
+// â”€â”€ Chat â€” uses Gemini's native multi-turn Chat API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const generateChatReply = async (userMessage, notesContext, conversationHistory = []) => {
   if (!process.env.OPENAI_API_KEY) return generateFallbackReply(userMessage);
 
   try {
     const model = genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.5-flash',
       systemInstruction:
         'You are an expert AI tutor embedded in Lectomate, an AI-powered study assistant. ' +
         'Your job is to help students understand their uploaded documents deeply and accurately. ' +
@@ -441,14 +441,14 @@ const generateChatReply = async (userMessage, notesContext, conversationHistory 
         '- Use clear formatting: short paragraphs, **bold** for key terms, bullet points (- item) for lists.\n' +
         '- If asked to quiz the student, generate 3-5 specific questions from the document.\n' +
         '- If asked to summarize, give a structured summary with the main points.\n' +
-        '- Never say "I cannot answer" or "I don\'t have access" — always provide value.\n' +
+        '- Never say "I cannot answer" or "I don\'t have access" â€” always provide value.\n' +
         '- Keep responses focused and concise (2-4 paragraphs max unless a detailed explanation is needed).',
       generationConfig: { temperature: 0.4, topP: 0.9 },
     });
 
     // Build the document context block
     const ctxBlock = notesContext && notesContext.length > 0
-      ? `STUDENT DOCUMENTS:\n${'─'.repeat(40)}\n${notesContext.join('\n\n' + '─'.repeat(40) + '\n\n')}\n${'─'.repeat(40)}\n\n`
+      ? `STUDENT DOCUMENTS:\n${'â”€'.repeat(40)}\n${notesContext.join('\n\n' + 'â”€'.repeat(40) + '\n\n')}\n${'â”€'.repeat(40)}\n\n`
       : 'No documents selected. Answer from general knowledge.\n\n';
 
     // Use Gemini's native chat API for proper multi-turn conversation
@@ -479,17 +479,17 @@ const generateFallbackReply = (msg) => {
   if (m.includes('summarize') || m.includes('summarise') || m.includes('summary'))
     return "I can help summarize your documents! When you upload a document, I automatically generate structured notes with an executive summary and key sections. Check the Notes page to see the full breakdown.";
   if (m.includes('flashcard'))
-    return "Flashcards are automatically generated when you upload a document — covering key definitions, concepts, and relationships. Head to the Flashcards section to study them with spaced repetition!";
+    return "Flashcards are automatically generated when you upload a document â€” covering key definitions, concepts, and relationships. Head to the Flashcards section to study them with spaced repetition!";
   if (m.includes('quiz') || m.includes('test'))
     return "Quizzes with multiple-choice and true/false questions are automatically created from your uploaded documents. Go to the Quiz section to test your knowledge!";
   if (m.includes('explain') || m.includes('what is') || m.includes('how does'))
     return "Great question! To give you the most accurate explanation, please select a specific document from the sidebar so I can answer based on your actual study materials.";
   if (m.includes('help'))
     return "I'm your AI tutor! I can:\n- Explain concepts from your documents\n- Summarize sections\n- Quiz you on the content\n- Answer questions about your study materials\n\nSelect a document from the sidebar to get started!";
-  return "I'm here to help you understand your study materials! Select a document from the sidebar and ask me anything — I can explain concepts, summarize sections, quiz you, or answer specific questions about the content.";
+  return "I'm here to help you understand your study materials! Select a document from the sidebar and ask me anything â€” I can explain concepts, summarize sections, quiz you, or answer specific questions about the content.";
 };
 
-// ── Document processing ───────────────────────────────────────────
+// â”€â”€ Document processing â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const processDocument = async (docRecord) => {
   try {
     const rawText = await extractTextFromFile(docRecord.filePath, docRecord.mimeType);
@@ -548,7 +548,7 @@ const processDocument = async (docRecord) => {
   }
 };
 
-// ── Express setup ─────────────────────────────────────────────────
+// â”€â”€ Express setup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // CORS: allow listed origins OR all origins if FRONTEND_URL contains '*'
 const corsOptions = {
   origin: (origin, callback) => {
@@ -581,7 +581,7 @@ const upload = multer({
   }
 });
 
-// ── Health ────────────────────────────────────────────────────────
+// â”€â”€ Health â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 app.get('/health', async (_req, res) => {
   const [users, docs, notes, flash, quizzes] = await Promise.all([
     UserModel.countDocuments(), DocModel.countDocuments(), NoteModel.countDocuments(),
@@ -590,7 +590,7 @@ app.get('/health', async (_req, res) => {
   res.json({ status:'ok', db:'mongodb', counts:{ users, docs, notes, flash, quizzes }, ts: new Date().toISOString() });
 });
 
-// ── Auth ──────────────────────────────────────────────────────────
+// â”€â”€ Auth â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 app.post('/api/auth/register', async (req, res) => {
   try {
     const name  = String(req.body.name  || '').trim();
@@ -637,7 +637,7 @@ app.get('/api/auth/me', authenticate, async (req, res) => {
   }
 });
 
-// ── Documents ─────────────────────────────────────────────────────
+// â”€â”€ Documents â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 app.post('/api/documents/upload', authenticate, upload.single('file'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ success:false, error:'No file uploaded' });
@@ -676,13 +676,13 @@ app.delete('/api/documents/:id', authenticate, async (req, res) => {
   res.json({ success:true, message:'Document and study content deleted' });
 });
 
-// ── Notes ─────────────────────────────────────────────────────────
+// â”€â”€ Notes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 app.get('/api/notes', authenticate, async (req, res) => {
   const notes = await NoteModel.find({ userId: req.user.id }).lean();
   res.json({ success:true, data:{ notes: notes.map(n => ({ ...n, id:n._id.toString() })) } });
 });
 
-// ── Flashcards ────────────────────────────────────────────────────
+// â”€â”€ Flashcards â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 app.get('/api/flashcards', authenticate, async (req, res) => {
   const query = { userId: req.user.id };
   if (req.query.noteId) query.noteId = req.query.noteId;
@@ -701,7 +701,7 @@ app.post('/api/flashcards/:id/review', authenticate, async (req, res) => {
   res.json({ success:true, data:{ flashcard: { ...card, id:card._id.toString() } }, message:'Review recorded' });
 });
 
-// ── Quizzes ───────────────────────────────────────────────────────
+// â”€â”€ Quizzes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 app.get('/api/quizzes', authenticate, async (req, res) => {
   const query = { userId: req.user.id };
   if (req.query.noteId) query.noteId = req.query.noteId;
@@ -727,7 +727,7 @@ app.post('/api/quizzes/:id/attempt', authenticate, async (req, res) => {
   res.json({ success:true, data:{ attempt, gradedQuestions:scored }, message:'Quiz attempt submitted' });
 });
 
-// ── User profile update ───────────────────────────────────────────
+// â”€â”€ User profile update â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const avatarUpload = multer({
   storage: multer.diskStorage({
     destination: (_req, _file, cb) => { ensureDir(UPLOAD_DIR); cb(null, UPLOAD_DIR); },
@@ -785,7 +785,7 @@ app.post('/api/user/avatar', authenticate, avatarUpload.single('avatar'), async 
   }
 });
 
-// ── Serve document file by document ID ────────────────────────────
+// â”€â”€ Serve document file by document ID â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 app.get('/api/documents/:id/file', authenticate, async (req, res) => {
   try {
     const doc = await DocModel.findOne({ _id: req.params.id, userId: req.user.id }).lean();
@@ -815,14 +815,14 @@ app.post('/api/chat/message', authenticate, async (req, res) => {
     const docText = n.rawContent && n.rawContent.trim()
       ? n.rawContent.slice(0, 12000)   // send up to 12k chars of original text
       : (n.sections || []).map(s => `[${s.title}]\n${s.content}`).join('\n\n');
-    return `Document: "${n.title}" (${n.fileName})\n${'─'.repeat(50)}\n${docText}`;
+    return `Document: "${n.title}" (${n.fileName})\n${'â”€'.repeat(50)}\n${docText}`;
   });
 
   const reply = await generateChatReply(msg, ctx, conversationHistory);
   res.json({ success:true, data:{ reply } });
 });
 
-// ── Streaming chat endpoint (SSE) ─────────────────────────────────
+// â”€â”€ Streaming chat endpoint (SSE) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 app.post('/api/chat/stream', authenticate, async (req, res) => {
   const msg = String(req.body.message || '').trim();
   if (!msg) return res.status(400).json({ success:false, error:'Message is required' });
@@ -843,7 +843,7 @@ app.post('/api/chat/stream', authenticate, async (req, res) => {
 
   try {
     if (!process.env.OPENAI_API_KEY) {
-      // No API key — send a helpful non-static response
+      // No API key â€” send a helpful non-static response
       const fallback = generateFallbackReply(msg);
       // Stream it word by word for consistent UX
       const words = fallback.split(' ');
@@ -864,11 +864,11 @@ app.post('/api/chat/stream', authenticate, async (req, res) => {
       const docText = n.rawContent && n.rawContent.trim()
         ? n.rawContent.slice(0, 12000)
         : (n.sections || []).map(s => `[${s.title}]\n${s.content}`).join('\n\n');
-      return `Document: "${n.title}" (${n.fileName})\n${'─'.repeat(50)}\n${docText}`;
+      return `Document: "${n.title}" (${n.fileName})\n${'â”€'.repeat(50)}\n${docText}`;
     });
 
     const model = genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.5-flash',
       systemInstruction:
         'You are an expert AI tutor embedded in Lectomate, an AI-powered study assistant. ' +
         'Your job is to help students understand their uploaded documents deeply and accurately. ' +
@@ -878,17 +878,17 @@ app.post('/api/chat/stream', authenticate, async (req, res) => {
         '- Use clear formatting: short paragraphs, **bold** for key terms, bullet points (- item) for lists.\n' +
         '- If asked to quiz the student, generate 3-5 specific questions from the document.\n' +
         '- If asked to summarize, give a structured summary with the main points.\n' +
-        '- Never say "I cannot answer" or "I don\'t have access" — always provide value.\n' +
+        '- Never say "I cannot answer" or "I don\'t have access" â€” always provide value.\n' +
         '- Keep responses focused and concise (2-4 paragraphs max unless a detailed explanation is needed).\n' +
         '- You can answer ANY general question, not just document-related ones.',
       generationConfig: { temperature: 0.7, topP: 0.9 },
     });
 
     const ctxBlock = ctx.length > 0
-      ? `STUDENT DOCUMENTS:\n${'─'.repeat(40)}\n${ctx.join('\n\n' + '─'.repeat(40) + '\n\n')}\n${'─'.repeat(40)}\n\n`
+      ? `STUDENT DOCUMENTS:\n${'â”€'.repeat(40)}\n${ctx.join('\n\n' + 'â”€'.repeat(40) + '\n\n')}\n${'â”€'.repeat(40)}\n\n`
       : '';
 
-    // Build proper Gemini chat history — role must be 'user' or 'model' (not 'assistant')
+    // Build proper Gemini chat history â€” role must be 'user' or 'model' (not 'assistant')
     const geminiHistory = conversationHistory.slice(-8).map(m => ({
       role: m.role === 'user' ? 'user' : 'model',
       parts: [{ text: m.content }],
@@ -946,7 +946,7 @@ app.get('/api/chat/suggestions', authenticate, (_req, res) => {
   res.json({ success:true, data:{ suggestions:['Summarize my latest document','Generate flashcards','Create a quiz','Explain this topic'] } });
 });
 
-// ── Error handling ────────────────────────────────────────────────
+// â”€â”€ Error handling â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 app.use((err, _req, res, _next) => {
   if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE')
     return res.status(400).json({ success:false, error:`File too large. Max: ${formatFileSize(MAX_FILE_SIZE)}.` });
@@ -958,24 +958,24 @@ app.use((err, _req, res, _next) => {
 
 app.use((_req, res) => res.status(404).json({ success:false, error:'Route not found' }));
 
-// ── Start server ──────────────────────────────────────────────────
+// â”€â”€ Start server â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 (async () => {
   try {
-    console.log('🔌 Connecting to MongoDB...');
+    console.log('ðŸ”Œ Connecting to MongoDB...');
     await mongoose.connect(MONGODB_URI, {
       serverSelectionTimeoutMS: 10000,
       socketTimeoutMS: 45000,
     });
-    console.log('✅ MongoDB connected');
+    console.log('âœ… MongoDB connected');
     ensureDir(UPLOAD_DIR);
     // Must listen on 0.0.0.0 for Render (not just localhost)
     app.listen(PORT, '0.0.0.0', () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`📊 Health: http://0.0.0.0:${PORT}/health`);
-      console.log(`🌍 NODE_ENV: ${process.env.NODE_ENV || 'development'}`);
+      console.log(`ðŸš€ Server running on port ${PORT}`);
+      console.log(`ðŸ“Š Health: http://0.0.0.0:${PORT}/health`);
+      console.log(`ðŸŒ NODE_ENV: ${process.env.NODE_ENV || 'development'}`);
     });
   } catch (err) {
-    console.error('❌ Failed to start server:', err.message);
+    console.error('âŒ Failed to start server:', err.message);
     process.exit(1);
   }
 })();
