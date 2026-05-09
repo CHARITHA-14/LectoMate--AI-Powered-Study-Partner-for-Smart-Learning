@@ -23,8 +23,8 @@ const GLOBAL_KEY = '__global__';
 const makeWelcome = (docTitle?: string): Message => ({
   id: 'welcome',
   text: docTitle
-    ? `Hi! I'm your AI tutor for **${docTitle}**. Ask me anything about this document — I can explain concepts, quiz you, summarise sections, or answer any question.`
-    : "Hello! I'm your AI learning assistant powered by Gemini. Ask me anything — about your documents, study topics, or any subject you're learning.",
+    ? `Hi! I'm your AI tutor for **${docTitle}**. Ask me anything about this document -- I can explain concepts, quiz you, summarise sections, or answer any question.`
+    : "Hello! I'm your AI learning assistant powered by Gemini. Ask me anything -- about your documents, study topics, or any subject you're learning.",
   sender: 'bot',
   timestamp: new Date(),
 });
@@ -34,17 +34,17 @@ const getHistory = (key: string, docTitle?: string): Message[] => {
   return chatHistories[key];
 };
 
-// ── Markdown renderer — handles bold, bullets, code, paragraphs ──
+// -- Markdown renderer -- handles bold, bullets, code, paragraphs --
 const BotText: React.FC<{ text: string; streaming?: boolean }> = ({ text, streaming }) => {
   const lines = text.split('\n');
   return (
     <div className="space-y-1.5">
       {lines.map((line, i) => {
         // Bullet points
-        if (line.startsWith('- ') || line.startsWith('* ') || line.startsWith('• '))
+        if (line.startsWith('- ') || line.startsWith('* ') || line.startsWith('* '))
           return (
             <div key={i} className="flex gap-2">
-              <span className="text-teal-500 flex-shrink-0 mt-0.5 font-bold">•</span>
+              <span className="text-teal-500 flex-shrink-0 mt-0.5 font-bold">*</span>
               <span>{renderInline(line.slice(2))}</span>
             </div>
           );
@@ -190,7 +190,7 @@ export const ChatbotInterface: React.FC = () => {
     ));
   };
 
-  // ── Main send with SSE streaming ─────────────────────────────
+  // -- Main send with SSE streaming -----------------------------
   const handleSend = useCallback(async (text?: string) => {
     const msg = (text ?? inputText).trim();
     if (!msg || isStreaming) return;
@@ -286,7 +286,7 @@ export const ChatbotInterface: React.FC = () => {
 
     } catch (err: any) {
       if (err.name === 'AbortError') {
-        // User stopped — keep what was accumulated
+        // User stopped -- keep what was accumulated
         const stoppedMsg: Message = { id: botId, text: accumulated || '(Response stopped)', sender: 'bot', timestamp: new Date(), streaming: false };
         chatHistories[chatKey] = [...history, stoppedMsg];
         setMessages(prev => prev.map(m => m.id === botId ? stoppedMsg : m));
@@ -324,7 +324,7 @@ export const ChatbotInterface: React.FC = () => {
               <div className="relative">
                 <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
                 <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
-                  placeholder="Search documents…"
+                  placeholder="Search documents..."
                   className="w-full pl-8 pr-3 py-2 text-xs border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent outline-none bg-gray-50 dark:bg-gray-950" />
               </div>
             </div>
@@ -384,7 +384,7 @@ export const ChatbotInterface: React.FC = () => {
               {!docFileUrl && !docLoadError && (
                 <div className="flex-1 flex flex-col items-center justify-center gap-3 bg-gray-50 dark:bg-gray-950">
                   <Loader2 size={28} className="text-blue-400 animate-spin" />
-                  <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Loading document…</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Loading document...</p>
                 </div>
               )}
               {docFileUrl && isPdf && (
@@ -400,7 +400,7 @@ export const ChatbotInterface: React.FC = () => {
               {docLoadError && (
                 <div className="flex-1 overflow-y-auto px-4 py-4 bg-white dark:bg-gray-900">
                   <div className="flex items-center gap-2 mb-3 pb-2 border-b border-gray-100 dark:border-gray-800">
-                    <span className="text-xs text-amber-500 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">Original file unavailable — showing extracted text</span>
+                    <span className="text-xs text-amber-500 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">Original file unavailable -- showing extracted text</span>
                   </div>
                   <div className="text-sm text-gray-800 dark:text-gray-100 leading-relaxed whitespace-pre-wrap break-words bg-gray-50 dark:bg-gray-950 rounded-lg p-4 border border-gray-100 dark:border-gray-800">
                     {selectedNote.rawContent || selectedNote.sections.map(s => `${s.title}\n\n${s.content}`).join('\n\n---\n\n') || 'No content available.'}
@@ -428,7 +428,7 @@ export const ChatbotInterface: React.FC = () => {
               <p className="text-xs flex items-center gap-1.5">
                 <span className={`w-1.5 h-1.5 rounded-full inline-block ${isStreaming ? 'bg-teal-400 animate-pulse' : 'bg-green-400'}`} />
                 <span className={isStreaming ? 'text-teal-600' : 'text-green-500'}>
-                  {isStreaming ? 'Generating response…' : selectedNote ? `Focused on: ${selectedNote.title}` : 'Ready to help'}
+                  {isStreaming ? 'Generating response...' : selectedNote ? `Focused on: ${selectedNote.title}` : 'Ready to help'}
                 </span>
               </p>
             </div>
@@ -450,7 +450,7 @@ export const ChatbotInterface: React.FC = () => {
                 </div>
                 <div className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${msg.sender === 'user' ? 'bg-blue-600 text-white rounded-br-sm' : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-bl-sm'}`}>
                   {msg.sender === 'bot'
-                    ? <BotText text={msg.text || '…'} streaming={msg.streaming} />
+                    ? <BotText text={msg.text || '...'} streaming={msg.streaming} />
                     : <span>{msg.text}</span>}
                   {!msg.streaming && (
                     <p className={`text-xs mt-1.5 ${msg.sender === 'user' ? 'text-blue-200' : 'text-gray-400 dark:text-gray-500'}`}>
@@ -481,7 +481,7 @@ export const ChatbotInterface: React.FC = () => {
           <div className={`flex items-center gap-3 bg-gray-50 dark:bg-gray-950 border rounded-xl px-4 py-2 transition-all ${isStreaming ? 'border-teal-300 dark:border-teal-600 ring-2 ring-teal-100 dark:ring-teal-900/30' : 'border-gray-200 dark:border-gray-700 focus-within:ring-2 focus-within:ring-teal-400 focus-within:border-transparent'}`}>
             <input type="text" value={inputText} onChange={e => setInputText(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && !e.shiftKey && !isStreaming && handleSend()}
-              placeholder={selectedNote ? `Ask about "${selectedNote.title}"…` : 'Ask me anything…'}
+              placeholder={selectedNote ? `Ask about "${selectedNote.title}"...` : 'Ask me anything...'}
               disabled={isStreaming}
               className="flex-1 text-sm bg-transparent outline-none disabled:opacity-60 placeholder-gray-400 dark:placeholder-gray-500" />
             {isStreaming ? (
@@ -497,7 +497,7 @@ export const ChatbotInterface: React.FC = () => {
           </div>
           {selectedNote && (
             <p className="text-xs text-gray-400 dark:text-gray-500 mt-1.5 text-center">
-              Context: <span className="text-blue-500 font-medium">{selectedNote.title}</span> •{' '}
+              Context: <span className="text-blue-500 font-medium">{selectedNote.title}</span> *{' '}
               <button onClick={handleCloseDoc} className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:text-gray-400 dark:text-gray-500 underline">switch to general</button>
             </p>
           )}

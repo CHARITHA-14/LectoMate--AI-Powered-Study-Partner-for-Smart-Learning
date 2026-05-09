@@ -23,7 +23,7 @@ const chatHistories: Record<string, ChatMessage[]> = {};
 
 const makeWelcome = (noteTitle: string): ChatMessage => ({
   id: 'welcome',
-  text: `Hi! I'm your AI tutor for **${noteTitle}**. Ask me anything â€” I can explain concepts, summarise sections, or quiz you on the content.`,
+  text: `Hi! I'm your AI tutor for **${noteTitle}**. Ask me anything â€" I can explain concepts, summarise sections, or quiz you on the content.`,
   sender: 'bot',
   timestamp: new Date(),
 });
@@ -35,8 +35,8 @@ const getHistory = (noteId: string, noteTitle: string): ChatMessage[] => {
   return chatHistories[noteId];
 };
 
-// â”€â”€ Simple markdown-like renderer for bot messages â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// ── Markdown renderer for bot messages ───────────────────────────
+// â"€â"€ Simple markdown-like renderer for bot messages â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
+// -- Markdown renderer for bot messages ---------------------------
 const BotText: React.FC<{ text: string }> = ({ text }) => {
   if (!text || text.trim() === '') {
     return (
@@ -52,7 +52,7 @@ const BotText: React.FC<{ text: string }> = ({ text }) => {
     <div className="space-y-1">
       {lines.map((line, i) => {
         if (line.startsWith('- ') || line.startsWith('* '))
-          return <div key={i} className="flex gap-1.5"><span className="mt-0.5 text-teal-500 flex-shrink-0">•</span><span>{line.slice(2)}</span></div>;
+          return <div key={i} className="flex gap-1.5"><span className="mt-0.5 text-teal-500 flex-shrink-0">*</span><span>{line.slice(2)}</span></div>;
         if (/^\d+\.\s/.test(line))
           return <div key={i} className="flex gap-1.5"><span className="text-teal-600 flex-shrink-0 font-semibold text-xs mt-0.5">{line.match(/^\d+/)?.[0]}.</span><span>{line.replace(/^\d+\.\s/, '')}</span></div>;
         if (line.startsWith('## ')) return <p key={i} className="font-bold text-gray-900 mt-1">{line.slice(3)}</p>;
@@ -135,7 +135,7 @@ export const NotesViewer: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatMessages, isTyping]);
 
-  // â”€â”€ Empty state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // â"€â"€ Empty state â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
   if (notes.length === 0) {
     return (
       <div className="flex items-center justify-center h-[calc(100vh-64px)] bg-gray-50">
@@ -160,7 +160,7 @@ export const NotesViewer: React.FC = () => {
     n.fileName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // â"€â"€ Helpers â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 
   const highlightText = (text: string, highlights: string[]) => {
     // Strip any existing HTML tags to prevent double-encoding from stored data
@@ -181,7 +181,7 @@ export const NotesViewer: React.FC = () => {
     setSelectedNoteId(noteId);
   };
 
-  // â”€â”€ Chat â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // â"€â"€ Chat â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
   const sendMessage = useCallback(async (text?: string) => {
     const msg = (text ?? chatInput).trim();
     if (!msg || isTyping) return;
@@ -297,13 +297,13 @@ export const NotesViewer: React.FC = () => {
 
   const quickPrompts = ['Summarise this document', 'What are the key concepts?', 'Quiz me on this', 'Explain the main ideas'];
 
-  // â”€â”€ Render â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // â"€â"€ Render â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
   return (
     <div className="flex h-[calc(100vh-64px)] overflow-hidden bg-gray-50 dark:bg-gray-950 transition-colors duration-200">
 
-      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-          LEFT PANEL â€” Search Documents (collapsible)
-      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+      {/* â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*
+          LEFT PANEL â€" Search Documents (collapsible)
+      â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â* */}
       <div className={`flex flex-col bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 flex-shrink-0 ${docsOpen ? 'w-[260px]' : 'w-12'}`}>
 
         {/* Header */}
@@ -384,13 +384,13 @@ export const NotesViewer: React.FC = () => {
         )}
       </div>
 
-      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-          CENTER â€” Unified Document Summary & Notes
-      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+      {/* â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*
+          CENTER â€" Unified Document Summary & Notes
+      â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â* */}
       <div className="flex-1 overflow-y-auto min-w-0 bg-gray-50 dark:bg-gray-950">
         <div className="max-w-3xl mx-auto px-6 py-6">
 
-          {/* â”€â”€ Document header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+          {/* â"€â"€ Document header â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
           <div className="mb-6">
             <div className="flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500 mb-2 flex-wrap">
               <FileText size={13} />
@@ -414,7 +414,7 @@ export const NotesViewer: React.FC = () => {
             )}
           </div>
 
-          {/* â”€â”€ Single unified Document Summary â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+          {/* â"€â"€ Single unified Document Summary â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
           <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md dark:hover:shadow-gray-800 overflow-hidden mb-5 transition-all duration-200">
             {/* Card header */}
             <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
@@ -428,26 +428,49 @@ export const NotesViewer: React.FC = () => {
             </div>
 
             {/* Content */}
-            <div className="px-5 py-5 space-y-5">
-              {/* AI executive summary paragraph */}
+            <div className="px-5 py-5 space-y-6">
+
+              {/* AI executive summary -- styled as a highlighted intro block */}
               {(currentDoc.summary || currentDoc.sections[0]?.content) && (
-                <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-                  {currentDoc.summary || currentDoc.sections[0]?.content?.slice(0, 500)}
-                </p>
+                <div className="bg-teal-50 dark:bg-teal-900/20 border-l-4 border-teal-500 pl-4 pr-2 py-3 rounded-r-lg">
+                  <p className="text-xs font-bold text-teal-700 dark:text-teal-400 uppercase tracking-wide mb-1.5">Overview</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                    {currentDoc.summary || currentDoc.sections[0]?.content?.slice(0, 500)}
+                  </p>
+                </div>
               )}
 
-              {/* All section content merged as flowing paragraphs */}
-              {currentDoc.sections.map((section, idx) => (
-                <div key={section.id}>
-                  {/* Skip first section content if it was already shown as summary */}
-                  {(idx > 0 || currentDoc.summary) && (
+              {/* Sections with headings and subheadings */}
+              {currentDoc.sections.map((section, idx) => {
+                // Skip first section content if already shown as summary
+                if (idx === 0 && !currentDoc.summary) return null;
+                return (
+                  <div key={section.id} className="space-y-2">
+                    {/* Section heading */}
+                    <div className="flex items-center gap-2">
+                      <span className="w-5 h-5 rounded bg-blue-600 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">
+                        {idx + (currentDoc.summary ? 1 : 0)}
+                      </span>
+                      <h3 className="text-sm font-bold text-gray-900 dark:text-white">{section.title}</h3>
+                    </div>
+                    {/* Section content with highlights */}
                     <div
-                      className="text-sm text-gray-700 leading-relaxed"
+                      className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed pl-7"
                       dangerouslySetInnerHTML={{ __html: highlightText(section.content, section.highlights) }}
                     />
-                  )}
-                </div>
-              ))}
+                    {/* Key terms for this section */}
+                    {section.highlights.length > 0 && (
+                      <div className="pl-7 flex flex-wrap gap-1">
+                        {section.highlights.map((term, i) => (
+                          <span key={i} className="px-2 py-0.5 text-xs text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-full">
+                            {term}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
 
             {/* Key terms footer */}
@@ -470,7 +493,7 @@ export const NotesViewer: React.FC = () => {
             })()}
           </div>
 
-          {/* â”€â”€ Study tools â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+          {/* â"€â"€ Study tools â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
           <div className="mt-5 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-5">
             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3">Study Tools</p>
             <div className="flex flex-wrap gap-3">
@@ -486,11 +509,11 @@ export const NotesViewer: React.FC = () => {
         </div>
       </div>
 
-      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-          RIGHT PANEL â€” AI Chat (collapsible + resizable)
-      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+      {/* â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*
+          RIGHT PANEL â€" AI Chat (collapsible + resizable)
+      â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â*â* */}
 
-      {/* Drag handle â€” only visible when chat is open */}
+      {/* Drag handle â€" only visible when chat is open */}
       {chatOpen && (
         <div
           onMouseDown={onChatDragStart}

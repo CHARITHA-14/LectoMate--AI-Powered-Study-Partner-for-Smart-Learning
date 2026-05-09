@@ -12,7 +12,7 @@ import { ChatbotInterface } from './components/ChatbotInterface';
 import { AuthModal } from './components/AuthModal';
 import { StudentProfile } from './components/StudentProfile';
 
-// Map URL paths â†’ ViewType strings (kept for Navigation active-state highlighting)
+// Map URL paths â†' ViewType strings (kept for Navigation active-state highlighting)
 export const ROUTES = {
   home:       '/home',
   upload:     '/upload',
@@ -79,7 +79,7 @@ function AppContent() {
       {user && <Navigation onLogout={handleLogout} />}
 
       <Routes>
-        {/* â”€â”€ Landing / home â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+        {/* â"€â"€ Landing / home â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
         <Route
           path="/home"
           element={
@@ -110,7 +110,7 @@ function AppContent() {
           }
         />
 
-        {/* â”€â”€ Authenticated routes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+        {/* â"€â"€ Authenticated routes â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
         <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
         <Route path="/upload"    element={<RequireAuth><DocumentUpload /></RequireAuth>} />
         <Route path="/notes"     element={<RequireAuth><NotesViewer /></RequireAuth>} />
@@ -119,7 +119,7 @@ function AppContent() {
         <Route path="/chat"      element={<RequireAuth><ChatbotInterface /></RequireAuth>} />
         <Route path="/profile"   element={<RequireAuth><StudentProfile /></RequireAuth>} />
 
-        {/* â”€â”€ Redirects â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+        {/* â"€â"€ Redirects â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
         <Route path="/" element={<Navigate to={user ? '/dashboard' : '/home'} replace />} />
         <Route path="*" element={<Navigate to={user ? '/dashboard' : '/home'} replace />} />
       </Routes>

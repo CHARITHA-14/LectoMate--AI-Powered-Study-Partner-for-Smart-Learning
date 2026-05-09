@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+﻿import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { User, Note, Flashcard, Quiz } from '../types';
 import { API } from '../config/api';
 
@@ -200,21 +200,21 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         return;
       }
 
-      // Load user profile — if this fails, clear token and redirect to login
+      // Load user profile -- if this fails, clear token and redirect to login
       let userResponse: Response;
       try {
         userResponse = await fetch(`${API_BASE}/auth/me`, {
           headers: { 'Authorization': `Bearer ${token}` },
         });
       } catch {
-        // Network error — backend unreachable
+        // Network error -- backend unreachable
         console.error('Backend unreachable');
         setLoading(false);
         return;
       }
 
       if (!userResponse.ok) {
-        // Token invalid or expired — clear it
+        // Token invalid or expired -- clear it
         if (userResponse.status === 401) {
           localStorage.removeItem('lectomate_token');
           setUser(null);
@@ -228,7 +228,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         setUser(normalizeUser(userData.data.user));
       }
 
-      // Load notes, flashcards, quizzes in parallel — failures are non-fatal
+      // Load notes, flashcards, quizzes in parallel -- failures are non-fatal
       const [notesRes, flashcardsRes, quizzesRes] = await Promise.allSettled([
         fetch(`${API_BASE}/notes`, { headers: { 'Authorization': `Bearer ${token}` } }),
         fetch(`${API_BASE}/flashcards`, { headers: { 'Authorization': `Bearer ${token}` } }),
