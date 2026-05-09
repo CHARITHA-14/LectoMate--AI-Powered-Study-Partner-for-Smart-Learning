@@ -206,7 +206,7 @@ export const NotesViewer: React.FC = () => {
     }
 
     const convHistory = history.filter(m => m.id !== 'welcome').slice(-10).map(m => ({
-      role: m.sender === 'user' ? 'user' : 'assistant', content: m.text,
+      role: m.sender === 'user' ? 'user' : 'model', content: m.text,
     }));
 
     const botId = `bot-${Date.now()}`;

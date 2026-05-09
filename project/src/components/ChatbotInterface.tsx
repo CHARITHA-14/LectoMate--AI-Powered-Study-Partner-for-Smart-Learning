@@ -212,11 +212,11 @@ export const ChatbotInterface: React.FC = () => {
       return;
     }
 
-    // Build conversation history (exclude welcome message, last 10 exchanges)
+    // Build conversation history — use 'model' not 'assistant' (Gemini requirement)
     const convHistory = history
       .filter(m => m.id !== 'welcome')
       .slice(-10)
-      .map(m => ({ role: m.sender === 'user' ? 'user' : 'assistant', content: m.text }));
+      .map(m => ({ role: m.sender === 'user' ? 'user' : 'model', content: m.text }));
 
     // Add streaming bot message placeholder
     const botId = (Date.now() + 1).toString();
@@ -229,71 +229,83 @@ export const ChatbotInterface: React.FC = () => {
     abortRef.current = controller;
     let accumulated = '';
 
+    // Helper to finalize the bot message
+    const finalize = (text: string) => {
+      const finalMsg: Message = { id: botId, text: text || 'No response received. Please try again.', sender: 'bot', timestamp: new Date(), streaming: false };
+      chatHistories[chatKey] = [...history, finalMsg];
+      setMessages(prev => prev.map(m => m.id === botId ? finalMsg : m));
+    };
+
     try {
-      const res = await fetch(`${API}/chat/stream`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ message: msg, noteId: selectedNoteId ?? undefined, history: convHistory }),
-        signal: controller.signal,
-      });
+      // Try streaming first
+      let streamFailed = false;
+      try {
+        const res = await fetch(`${API}/chat/stream`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ message: msg, noteId: selectedNoteId ?? undefined, history: convHistory }),
+          signal: controller.signal,
+        });
 
-      if (!res.ok || !res.body) throw new Error(`HTTP ${res.status}`);
+        if (!res.ok || !res.body) {
+          streamFailed = true;
+        } else {
+          const reader = res.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = '';
 
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = '';
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() ?? '';
 
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        buffer = lines.pop() ?? '';
-
-        for (const line of lines) {
-          if (!line.startsWith('data: ')) continue;
-          try {
-            const payload = JSON.parse(line.slice(6));
-            if (payload.token) {
-              accumulated += payload.token;
-              const currentText = accumulated;
-              setMessages(prev => prev.map(m =>
-                m.id === botId ? { ...m, text: currentText, streaming: true } : m
-              ));
-              messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+            for (const line of lines) {
+              if (line.startsWith(': ')) continue; // SSE keep-alive comment
+              if (!line.startsWith('data: ')) continue;
+              try {
+                const payload = JSON.parse(line.slice(6));
+                if (payload.token) {
+                  accumulated += payload.token;
+                  const currentText = accumulated;
+                  setMessages(prev => prev.map(m =>
+                    m.id === botId ? { ...m, text: currentText, streaming: true } : m
+                  ));
+                  messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+                }
+                if (payload.error) accumulated += payload.error;
+                if (payload.done) finalize(accumulated);
+              } catch { /* skip malformed SSE line */ }
             }
-            if (payload.error) {
-              // Treat error as a token so it's visible
-              accumulated += payload.error;
-            }
-            if (payload.done) {
-              const finalText = accumulated || 'No response received. Please try again.';
-              const finalMsg: Message = { id: botId, text: finalText, sender: 'bot', timestamp: new Date(), streaming: false };
-              chatHistories[chatKey] = [...history, finalMsg];
-              setMessages(prev => prev.map(m => m.id === botId ? finalMsg : m));
-            }
-          } catch { /* skip malformed SSE line */ }
+          }
+          // Ensure finalized even if 'done' event was missed
+          if (accumulated) finalize(accumulated);
         }
+      } catch (streamErr: any) {
+        if (streamErr.name === 'AbortError') {
+          finalize(accumulated || '(Response stopped)');
+          return;
+        }
+        streamFailed = true;
       }
 
-      // Ensure final state even if 'done' event was missed
-      if (accumulated) {
-        const finalMsg: Message = { id: botId, text: accumulated, sender: 'bot', timestamp: new Date(), streaming: false };
-        chatHistories[chatKey] = [...history, finalMsg];
-        setMessages(prev => prev.map(m => m.id === botId ? finalMsg : m));
+      // Fallback to non-streaming if stream failed
+      if (streamFailed) {
+        setMessages(prev => prev.map(m => m.id === botId ? { ...m, text: 'Connecting...', streaming: true } : m));
+        const fallbackRes = await fetch(`${API}/chat/message`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ message: msg, noteId: selectedNoteId ?? undefined, history: convHistory }),
+        });
+        const fallbackData = await fallbackRes.json();
+        finalize(fallbackData?.data?.reply || 'Sorry, I could not get a response. Please try again.');
       }
 
     } catch (err: any) {
-      if (err.name === 'AbortError') {
-        // User stopped -- keep what was accumulated
-        const stoppedMsg: Message = { id: botId, text: accumulated || '(Response stopped)', sender: 'bot', timestamp: new Date(), streaming: false };
-        chatHistories[chatKey] = [...history, stoppedMsg];
-        setMessages(prev => prev.map(m => m.id === botId ? stoppedMsg : m));
-      } else {
-        const errMsg: Message = { id: botId, text: 'Sorry, I encountered an error. Please try again.', sender: 'bot', timestamp: new Date(), streaming: false };
-        chatHistories[chatKey] = [...history, errMsg];
-        setMessages(prev => prev.map(m => m.id === botId ? errMsg : m));
+      if (err.name !== 'AbortError') {
+        finalize('Sorry, I encountered an error. Please try again.');
       }
     } finally {
       setIsStreaming(false);

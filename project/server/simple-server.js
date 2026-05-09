@@ -1,4 +1,5 @@
-﻿const express = require('express');
+﻿require("dotenv").config();
+const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -809,118 +810,135 @@ app.get('/api/documents/:id/file', authenticate, async (req, res) => {
     return res.status(500).json({ success: false, error: 'Failed to serve file' });
   }
 });
-app.post('/api/chat/message', authenticate, async (req, res) => {
-  const msg = String(req.body.message || '').trim();
-  if (!msg) return res.status(400).json({ success:false, error:'Message is required' });
-  const noteId = req.body.noteId;
-  const conversationHistory = Array.isArray(req.body.history) ? req.body.history.slice(-10) : [];
-
-  const allNotes = await NoteModel.find({ userId: req.user.id }).lean();
-  const targetNotes = noteId
-    ? allNotes.filter(n => n._id.toString() === noteId)
-    : allNotes.slice(0, 2);
-
-  // Build rich context: prefer rawContent (full extracted text), fall back to sections
-  const ctx = targetNotes.map(n => {
+// Helper: build document context string (no mojibake chars)
+const buildDocContext = (targetNotes) => {
+  if (!targetNotes || targetNotes.length === 0) return '';
+  const sep = '-'.repeat(50);
+  const docs = targetNotes.map(n => {
     const docText = n.rawContent && n.rawContent.trim()
-      ? n.rawContent.slice(0, 12000)   // send up to 12k chars of original text
-      : (n.sections || []).map(s => `[${s.title}]\n${s.content}`).join('\n\n');
-    return `Document: "${n.title}" (${n.fileName})\n${'â"€'.repeat(50)}\n${docText}`;
+      ? n.rawContent.slice(0, 12000)
+      : (n.sections || []).map(s => '[' + s.title + ']\n' + s.content).join('\n\n');
+    return 'Document: "' + n.title + '" (' + n.fileName + ')\n' + sep + '\n' + docText;
   });
+  return 'STUDENT DOCUMENTS:\n' + sep + '\n' + docs.join('\n\n' + sep + '\n\n') + '\n' + sep + '\n\n';
+};
 
-  const reply = await generateChatReply(msg, ctx, conversationHistory);
-  res.json({ success:true, data:{ reply } });
-});
+// Helper: build valid Gemini history array
+const buildGeminiHistory = (conversationHistory) => {
+  return (conversationHistory || [])
+    .slice(-8)
+    .filter(m => m && m.content && String(m.content).trim())
+    .map(m => ({
+      role: m.role === 'user' ? 'user' : 'model',
+      parts: [{ text: String(m.content) }]
+    }));
+};
 
-// â"€â"€ Streaming chat endpoint (SSE) â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
-app.post('/api/chat/stream', authenticate, async (req, res) => {
-  const msg = String(req.body.message || '').trim();
-  if (!msg) return res.status(400).json({ success:false, error:'Message is required' });
-
-  const noteId = req.body.noteId;
-  const conversationHistory = Array.isArray(req.body.history) ? req.body.history.slice(-10) : [];
-
-  // Set SSE headers
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
-  res.setHeader('X-Accel-Buffering', 'no'); // disable nginx buffering
-  res.flushHeaders();
-
-  const send = (data) => {
-    res.write(`data: ${JSON.stringify(data)}\n\n`);
-  };
-
+// -- Non-streaming chat endpoint (used as fallback) --
+app.post('/api/chat/message', authenticate, async (req, res) => {
   try {
-    if (!process.env.OPENAI_API_KEY) {
-      // No API key -- send a helpful non-static response
-      const fallback = generateFallbackReply(msg);
-      // Stream it word by word for consistent UX
-      const words = fallback.split(' ');
-      for (const word of words) {
-        send({ token: word + ' ' });
-        await new Promise(r => setTimeout(r, 30));
-      }
-      send({ done: true });
-      return res.end();
-    }
+    const msg = String(req.body.message || '').trim();
+    if (!msg) return res.status(400).json({ success: false, error: 'Message is required' });
+
+    const noteId = req.body.noteId;
+    const conversationHistory = Array.isArray(req.body.history) ? req.body.history : [];
 
     const allNotes = await NoteModel.find({ userId: req.user.id }).lean();
     const targetNotes = noteId
       ? allNotes.filter(n => n._id.toString() === noteId)
       : allNotes.slice(0, 2);
 
-    const ctx = targetNotes.map(n => {
-      const docText = n.rawContent && n.rawContent.trim()
-        ? n.rawContent.slice(0, 12000)
-        : (n.sections || []).map(s => `[${s.title}]\n${s.content}`).join('\n\n');
-      return `Document: "${n.title}" (${n.fileName})\n${'â"€'.repeat(50)}\n${docText}`;
-    });
+    const ctx = buildDocContext(targetNotes);
+    const reply = await generateChatReply(msg, ctx ? [ctx] : [], conversationHistory);
+    res.json({ success: true, data: { reply } });
+  } catch (err) {
+    console.error('Chat message error:', err.message);
+    res.json({ success: true, data: { reply: generateFallbackReply(req.body.message || '') } });
+  }
+});
+
+// -- Streaming chat endpoint (SSE) --
+app.post('/api/chat/stream', authenticate, async (req, res) => {
+  const msg = String(req.body.message || '').trim();
+  if (!msg) return res.status(400).json({ success: false, error: 'Message is required' });
+
+  const noteId = req.body.noteId;
+  const conversationHistory = Array.isArray(req.body.history) ? req.body.history : [];
+
+  // SSE headers -- critical for production (Render/Vercel proxy)
+  res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-cache, no-transform');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('X-Accel-Buffering', 'no');
+  res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.flushHeaders();
+
+  const send = (data) => {
+    try {
+      res.write('data: ' + JSON.stringify(data) + '\n\n');
+    } catch (e) { /* client disconnected */ }
+  };
+
+  // Keep-alive ping every 15s to prevent Render from closing idle connections
+  const keepAlive = setInterval(() => {
+    try { res.write(': ping\n\n'); } catch (e) { clearInterval(keepAlive); }
+  }, 15000);
+
+  const cleanup = () => clearInterval(keepAlive);
+  req.on('close', cleanup);
+
+  try {
+    const apiKey = process.env.OPENAI_API_KEY || process.env.GEMINI_API_KEY || '';
+
+    if (!apiKey) {
+      console.warn('No AI API key found in environment variables');
+      const fallback = generateFallbackReply(msg);
+      const words = fallback.split(' ');
+      for (const word of words) {
+        send({ token: word + ' ' });
+        await new Promise(r => setTimeout(r, 20));
+      }
+      send({ done: true });
+      cleanup();
+      return res.end();
+    }
+
+    // Fetch notes for context
+    const allNotes = await NoteModel.find({ userId: req.user.id }).lean();
+    const targetNotes = noteId
+      ? allNotes.filter(n => n._id.toString() === noteId)
+      : allNotes.slice(0, 2);
+
+    const ctxBlock = buildDocContext(targetNotes);
+    const geminiHistory = buildGeminiHistory(conversationHistory);
+
+    // Always include document context in the message
+    const fullMessage = ctxBlock
+      ? ctxBlock + 'Student question: ' + msg
+      : msg;
+
+    console.log('Chat stream: noteId=' + (noteId || 'none') + ' hasContext=' + !!ctxBlock + ' historyLen=' + geminiHistory.length);
 
     const model = genAI.getGenerativeModel({
       model: 'gemini-2.5-flash',
       systemInstruction:
-        'You are an expert AI tutor embedded in Lectomate, an AI-powered study assistant. ' +
-        'Your job is to help students understand their uploaded documents deeply and accurately. ' +
-        '\n\nCORE RULES:\n' +
-        '- Base all answers on the provided document context. Quote or cite specific parts when relevant.\n' +
-        '- Be educational: explain WHY and HOW, not just WHAT.\n' +
-        '- Use clear formatting: short paragraphs, **bold** for key terms, bullet points (- item) for lists.\n' +
-        '- If asked to quiz the student, generate 3-5 specific questions from the document.\n' +
-        '- If asked to summarize, give a structured summary with the main points.\n' +
-        '- Never say "I cannot answer" or "I don\'t have access" -- always provide value.\n' +
-        '- Keep responses focused and concise (2-4 paragraphs max unless a detailed explanation is needed).\n' +
-        '- You can answer ANY general question, not just document-related ones.',
+        'You are an expert AI tutor embedded in Lectomate. ' +
+        'Help students understand their uploaded documents. ' +
+        'Base answers on the provided document context. ' +
+        'Use clear formatting: **bold** for key terms, - for bullet points. ' +
+        'Be concise (2-4 paragraphs). Never refuse to answer.',
       generationConfig: { temperature: 0.7, topP: 0.9 },
     });
 
-    const ctxBlock = ctx.length > 0
-      ? `STUDENT DOCUMENTS:\n${'â"€'.repeat(40)}\n${ctx.join('\n\n' + 'â"€'.repeat(40) + '\n\n')}\n${'â"€'.repeat(40)}\n\n`
-      : '';
-
-    // Build proper Gemini chat history -- role must be 'user' or 'model' (not 'assistant')
-    const geminiHistory = conversationHistory.slice(-8).map(m => ({
-      role: m.role === 'user' ? 'user' : 'model',
-      parts: [{ text: m.content }],
-    }));
-
-    // Always include document context in every message, not just the first
-    const fullMessage = ctxBlock
-      ? `${ctxBlock}Student question: ${msg}`
-      : msg;
-
     let chat;
     try {
-      // Only use history if it's valid (non-empty and properly formatted)
-      chat = model.startChat({
-        history: geminiHistory.length > 0 ? geminiHistory : [],
-      });
+      chat = model.startChat({ history: geminiHistory });
     } catch (histErr) {
-      console.warn('Chat history error, starting fresh:', histErr.message);
+      console.warn('History error, starting fresh:', histErr.message);
       chat = model.startChat({ history: [] });
     }
 
-    // Stream the response token by token
     const streamResult = await chat.sendMessageStream(fullMessage);
     let hasContent = false;
 
@@ -932,24 +950,28 @@ app.post('/api/chat/stream', authenticate, async (req, res) => {
       }
     }
 
-    // If no content was streamed, send a fallback
     if (!hasContent) {
       send({ token: generateFallbackReply(msg) });
     }
 
     send({ done: true });
+    cleanup();
     res.end();
 
   } catch (err) {
     console.error('Stream chat error:', err.message);
-    // Always send a readable error token so the bubble shows text
-    const errMsg = err.message && err.message.includes('API key')
-      ? 'API key error. Please check your Gemini API key configuration.'
-      : `Sorry, I encountered an error: ${err.message || 'Unknown error'}. Please try again.`;
-    send({ token: errMsg });
+    const errToken = err.message && (err.message.includes('API key') || err.message.includes('403'))
+      ? 'API key error. Please check the OPENAI_API_KEY environment variable in Render.'
+      : 'Sorry, the AI service encountered an error: ' + (err.message || 'Unknown') + '. Please try again.';
+    send({ token: errToken });
     send({ done: true });
+    cleanup();
     res.end();
   }
+});
+
+app.get('/api/chat/suggestions', authenticate, (_req, res) => {
+  res.json({ success: true, data: { suggestions: ['Summarize my latest document', 'Generate flashcards', 'Create a quiz', 'Explain this topic'] } });
 });
 
 app.get('/api/chat/suggestions', authenticate, (_req, res) => {
